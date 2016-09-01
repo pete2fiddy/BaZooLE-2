@@ -214,9 +214,11 @@ public class Player extends Toolbox implements Runnable
                 //System.out.println("travelToClosestPath() failed!");
             }
         }else{
-            Tile t = getIntersectingTile();
-            if(t != null)
+            
+            
+            if(getBoundPath() != null)
             {
+                Tile t = getBoundTile();
                 int smallestDistIndex = 0;
                 double smallestDist = 10000;
                 for(int i = 0; i < t.getPathList().size(); i++)
@@ -240,9 +242,11 @@ public class Player extends Toolbox implements Runnable
                 {
                     x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
                     y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+                    
+
                 }
-                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
                 unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
             }
         }
         

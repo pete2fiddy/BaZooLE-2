@@ -72,7 +72,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         TileDrawer2.tileList.add(this);
         
         thread.start();
-        addRandomFlowers(5, 12);
+        addRandomFlowers(5, 15);
     }
     
     public void setSpinnable(boolean b){spinnable = b;}
@@ -104,15 +104,18 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             s.draw(g);
         }
     }
-    private void addRandomFlowers(int min, int max)
+    private void addRandomFlowers(int heightMin, int heightMax)
     {
+        int min = getArea()*2;
+        int max = getArea()*4;
         double radiusApart = 0.05;
         int numFlowers = min+(int)(max*Math.random());
         for(int i = 0; i < numFlowers; i++)
         {
             double randomX = 0.05*(int)(Math.random()/radiusApart);
             double randomY = 0.05*(int)(Math.random()/radiusApart);
-            Flower f = new Flower(this,randomX,randomY,10, 1.0);
+            int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
+            Flower f = new Flower(this,randomX,randomY,randomHeight, 1.0);
         }
     }
     public ArrayList<Scenery> getSceneryList(){return sceneryList;}
