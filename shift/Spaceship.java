@@ -199,7 +199,7 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
             LevelLoader.isLoading = true;
             fireAnimationCount += .25;
             y += 10.0;
-            if(fireAnimationCount >= 15)
+            if(fireAnimationCount >= 15)f;
             {
                 fireAnimationCount = 0;
             }
