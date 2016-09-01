@@ -161,47 +161,104 @@ public class Player extends Toolbox implements Runnable
         {
             travelToClosestPath();
            
+        }else if(boundPath.getBoundTile().getInTransit())
+        {
+            travelToClosestPath();
         }
         
     }
+    
+    
     
     public void setFreezePlayer(boolean b){freezePlayer = b;}
     
     private void travelToClosestPath()//used if player becomes off-center, making path chains difficult to make and determining what path the player is on is difficult. Sets the player to the nearest path point to him. Can't see any way that this could stick him on the wrong path.
     {
-        try{
-            Tile t = getBoundTile();
-            int smallestDistIndex = 0;
-            double smallestDist = 100;
-            for(int i = 0; i < t.getPathList().size(); i++)
+        Path p = getBoundPath();
+        
+        if(p != null)
+        {
+            try{
+                Tile t = p.getBoundTile();
+
+                int smallestDistIndex = 0;
+                double smallestDist = 10000;
+                for(int i = 0; i < t.getPathList().size(); i++)
+                {
+
+                    double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
+                    double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
+                    double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
+                    if(i == 0)
+                    {
+                        smallestDist = dist;
+                    }
+                    if(dist < smallestDist)
+                    {
+                        smallestDist = dist;
+                        smallestDistIndex = i;
+                    }
+                }
+                //IS IT
+                if(smallestDist < 10000)
+                {
+                    x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
+                    y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+                }
+                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+                unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                //System.out.println(height);
+            }catch(Exception e)
             {
 
-                double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
-                double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
-                double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
-                if(i == 0)
-                {
-                    smallestDist = dist;
-                }
-                if(dist < smallestDist)
-                {
-                    smallestDist = dist;
-                    smallestDistIndex = i;
-                }
+                //System.out.println("travelToClosestPath() failed!");
             }
-            //IS IT
-            x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
-            y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
-            //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
-            unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
-            //System.out.println(height);
-        }catch(Exception e)
-        {
-            System.out.println("travelToClosestPath() failed!");
+        }else{
+            Tile t = getIntersectingTile();
+            if(t != null)
+            {
+                int smallestDistIndex = 0;
+                double smallestDist = 10000;
+                for(int i = 0; i < t.getPathList().size(); i++)
+                {
+
+                    double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
+                    double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
+                    double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
+                    if(i == 0)
+                    {
+                        smallestDist = dist;
+                    }
+                    if(dist < smallestDist)
+                    {
+                        smallestDist = dist;
+                        smallestDistIndex = i;
+                    }
+                }
+                //IS IT
+                if(smallestDist < 10000)
+                {
+                    x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
+                    y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+                }
+                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+                unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+            }
         }
         
     }
     
+    public Tile getIntersectingTile()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            if(TileDrawer2.tileList.get(i).tileContainsPoint((int)getX(), (int)getY()))
+            {
+                return TileDrawer2.tileList.get(i);
+            }
+        }
+        return null;
+    }
     
     
     private void drawPlayer(Graphics g)
