@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 /*Is a tile that denies movement of other tiles into this slot -- e.g. what is surrounding the edges of maps.*/
 public class BlockTile extends Tile
 {
+    private boolean isEdgeBlock;
     /*
     params: coordinate position of X, coordinate position of Y, 
     coordinates width, coordinates length, PIXELS height,
@@ -18,7 +19,18 @@ public class BlockTile extends Tile
         super(inX, inY, inWidth, inLength, inHeight);
         setMoveable(false);
         MergedBlockTiles.blockTiles.add(this);
+        isEdgeBlock = false;
     }
+    
+    public BlockTile(int inX, int inY, int inWidth, int inLength, int inHeight, boolean isEdgeBlockIn) 
+    {
+        super(inX, inY, inWidth, inLength, inHeight);
+        setMoveable(false);
+        MergedBlockTiles.blockTiles.add(this);
+        isEdgeBlock = isEdgeBlockIn;
+    }
+    
+    public boolean getIsEdgeBlock(){return isEdgeBlock;}
     @Override
     /*
     overwrites superclass's abstract method to draw.

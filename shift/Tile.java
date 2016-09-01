@@ -51,7 +51,6 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     //private double transitX = 0, transitY = 0;
     
     int l = 1;
-    sout    
             
     public Tile(int inX, int inY, int inWidth, int inLength, int inHeight)//not sure why position isi given as a double. Can't see myself using half a unit or something.
     {
@@ -69,10 +68,9 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         movingX = x; 
         movingY = y;
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);
-        if(getClass() != BlockTile.class)
-        {
-            TileDrawer2.tileList.add(this);
-        }
+        
+        TileDrawer2.tileList.add(this);
+        
         thread.start();
         addRandomFlowers(5, 12);
     }
@@ -622,7 +620,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     public boolean pathIsClear(int startX, int startY, int endX, int endY)
     {
         
-        System.out.println("Start X: " + startX + " Start Y: " + startY + " End X: " + endX + " End Y: " + endY);
+        //System.out.println("Start X: " + startX + " Start Y: " + startY + " End X: " + endX + " End Y: " + endY);
         if(startX == endX)//y is moving
         {
             if(endY < startY)

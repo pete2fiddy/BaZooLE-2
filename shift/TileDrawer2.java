@@ -70,7 +70,16 @@ public class TileDrawer2 implements Runnable
         //drawReflectionOutlines(g);
         for(int i = 0; i < tileList.size(); i++)
         {
-            tileList.get(i).draw(g);
+            if(tileList.get(i).getClass() != BlockTile.class)
+            {
+                tileList.get(i).draw(g);
+            }else{
+                BlockTile bt = (BlockTile)tileList.get(i);
+                if(!bt.getIsEdgeBlock())
+                {
+                    tileList.get(i).draw(g);
+                }
+            }
         }
         for(WaterDroplet wd : waterDroplets)
         {
