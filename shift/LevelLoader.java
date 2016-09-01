@@ -106,6 +106,11 @@ public class LevelLoader
                         BlockTile bt2 = new BlockTile((worldWidth/2) - 1, -worldHeight/2, 1, worldHeight, 5, true);
                         BlockTile bt3 = new BlockTile(-worldWidth/2, (worldHeight/2)-1, worldWidth, 1, 5, true);
                         BlockTile bt4 = new BlockTile(-worldWidth/2, (-worldHeight/2), worldWidth, 1, 5, true);
+                        
+                        /*BlockTile bt1 = new BlockTile(-worldWidth/2, 1-(worldHeight/2), 1, worldHeight-2, 5, true);
+                        BlockTile bt2 = new BlockTile((worldWidth/2) - 1, 1-(worldHeight/2), 1, worldHeight-2, 5, true);
+                        BlockTile bt3 = new BlockTile(1-(worldWidth/2), (worldHeight/2)-1, worldWidth-2, 1, 5, true);
+                        BlockTile bt4 = new BlockTile(1-(worldWidth/2), (-worldHeight/2), worldWidth-2, 1, 5, true);*/
                     }else{
                         if(line.contains("Shift:"))
                         {   

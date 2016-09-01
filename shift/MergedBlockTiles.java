@@ -1,9 +1,12 @@
 package shift;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.font.GraphicAttribute;
+import java.awt.font.ShapeGraphicAttribute;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
@@ -15,6 +18,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     public static ArrayList<BlockTile> blockTiles = new ArrayList<BlockTile>();//holds all the blocktiles in the game. Is added to when a blocktile object is made.
     public static Area threadedArea;//Area represented by all the blocktiles. Can be useful for seeing where the player clicked and if they clicked any part of this merged area, tile movement can be denied.
     private Thread thread;//thread that fires run()
+    private final int blockHeight = 5;
     
     public MergedBlockTiles()
     {
@@ -53,7 +57,28 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             area.add(new Area(blockTiles.get(i).getUpperPolygon()));
         }
         drawBackArea(g);
+        //strokeBack(g);
         threadedArea = area;
+    }
+    
+    private void strokeFront(Graphics g)
+    {
+        g.setColor(Color.BLACK);
+        switch(WorldPanel.spinQuadrant())
+        {
+            case 1:
+                g.drawLine((int)(convertToPoint((-WorldPanel.worldTilesWidth/2) + 1, (WorldPanel.worldTilesHeight/2) - 1)[0]), (int)(convertToPoint((-WorldPanel.worldTilesWidth/2) + 1, (WorldPanel.worldTilesHeight/2) - 1)[1] - scaledDistortedHeight(blockHeight)), (int)(convertToPoint((-WorldPanel.worldTilesWidth/2)+1, (-WorldPanel.worldTilesHeight/2) + 1)[0]), (int)(convertToPoint((-WorldPanel.worldTilesWidth/2)+1, (-WorldPanel.worldTilesHeight/2) + 1)[1]-scaledDistortedHeight(blockHeight)));
+                break;
+            case 2:
+                     
+
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+        //g.drawLine(blockHeight, blockHeight, blockHeight, blockHeight);
     }
     
     public void drawFrontArea(Graphics g)
@@ -61,11 +86,14 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         Graphics2D g2 = (Graphics2D)g;
         g2.setPaint(WorldPanel.grassTexture);
         g2.fill(getFrontArea());
+        //strokeFront(g);
         for(Polygon p : getFrontPolygons())
         {
             g.fillPolygon(p);
         }
         g.setColor(Color.BLACK);
+        
+        //g2.draw(getFrontArea());
         //g2.draw(getFrontArea());
         Area frontSideArea = new Area();
         for(Polygon p : getFrontPolygons())
@@ -96,17 +124,26 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             //area.add(new Area(blockTiles.get(i).getUpperPolygon()));
         }
         //g.setColor(Color.GREEN);
+        
+        g2.setPaint(WorldPanel.grassTexture);
+        g2.fill(getBackArea());
+        g.setColor(Color.BLACK);
+        
+        g2.draw(getBackArea());
+        g2.setStroke(new BasicStroke(2));
+        //ShapeGraphicAttribute areaStroke = new ShapeGraphicAttribute(getArea(), ShapeGraphicAttribute.CENTER_ALIGNMENT, true);
+        //g.setColor(Color.WHITE);
+        //areaStroke.draw(g2, 0, 0);
+        //g2.draw(getArea());
+        g2.draw(getArea());
+        g2.setStroke(new BasicStroke(1));
+        g2.setPaint(WorldPanel.grassTexture);
+        g2.fill(getArea());
         g.setColor(Color.BLACK);
         for(Polygon p:getBackPolygons())
         {
             g.drawPolygon(p);
         }
-        g2.setPaint(WorldPanel.grassTexture);
-        g2.fill(getBackArea());
-        g.setColor(Color.BLACK);
-        
-        //g2.draw(getBackArea());
-        
     }
     
     /*
@@ -281,42 +318,85 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         Area area = new Area();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            if(blockTiles.get(i).getIsEdgeBlock())
             {
-                case 1:
-                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }else if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                switch(WorldPanel.spinQuadrant())
+                {
+                    /*case 1:
+                        if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
 
-                    }
-                case 2:
-                    if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == (-WorldPanel.worldTilesHeight/2))
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }
-                    break;
-                case 3:
-                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }
-                    break;
-                case 4: 
-                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength())
-                    {
-                        area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-                    }
-                    break;
-            
+                        }
+                    case 2:
+                        if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == (-WorldPanel.worldTilesHeight/2))
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                    case 3:
+                        if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                    case 4: 
+                        if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                    */
+                    
+                    case 1:
+                         //}else if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+
+                        if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() > 0 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() > 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+
+                        }
+                        break;
+                    case 2:
+                        if(blockTiles.get(i).getRawX() > 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                    case 3:
+                        if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                    case 4:
+                        if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() < 0 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }else if(blockTiles.get(i).getRawX() < 0 && blockTiles.get(i).getRawY() > 0 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                        {
+                            area.add(new Area(blockTiles.get(i).getUpperPolygon()));
+                        }
+                        break;
+                }
             }
         }
         return area;  
