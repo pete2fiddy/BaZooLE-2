@@ -1,0 +1,15 @@
+World: 4,4
+
+Tiles:
+
+Start Shift: -2,0,1,1,5 | Path: 0.5,0.5,1,1 |
+Shift: -2,1,1,1,5 | Path: 0.5,0.5,1,0 |
+Shift: 0,1,1,1,5 | Path: 0.5,0.5,0,0 |
+Shift: 0,-1,1,1,5 | Path: 0.5,0.5,1,1 |
+Shift: -1,0,1,1,5 | Path: 0.5,0.5,0,1 |
+Spin: 0,0,1,5,270 |
+Spin: -1,-1,1,5,0 |
+Spin: 0,-2,1,5,90 |
+End: 1,-2,1,1,5 |
+
+//Designed by Manav Ghandi. Needs to be made more difficult.

@@ -1,0 +1,8 @@
+World: 8,8
+
+Tiles: 
+
+Start Shift: -3,2,2,2,5 | StraightPath: 0.5,0.0,0.5,1.0 | Scenery //  Tree: 0.25,0.25,.75 | Tree: 0.25,0.75,.75 | Tree: 0.5,0.75,.75 | Tree: 0.75,0.75,.75 | Tree: 0.75,0.5,.75 | Tree: 0.75,0.25,.75 |
+ShiftBreak: -2,2,2,2,5 | Path: 0.5,0.5,1,0 |
+ShiftElevator: 1,1,2,2,5 | Path: 0.5,0.5,1,1 | Scenery // Tree: 0.25,0.25,0.75 |
+End: -3,-2,2,2,5 | Scenery // 
