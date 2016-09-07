@@ -7,7 +7,9 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.geom.Area;
 
 /**
  *
@@ -18,6 +20,7 @@ public abstract class SolidShape
     private double xCoord, yCoord, width, length, spin;
     private double centerCoordX, centerCoordY;
     private int height, zPos;
+    private Polygon[] visibleShapeSidePolygons;
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
     {
         centerCoordX = inX;
@@ -29,6 +32,7 @@ public abstract class SolidShape
         length = inLength;
         height = inHeight;
         spin = 0;
+        //visibleShapeSidePolygons = getV
     }
     
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight, double spinIn)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
@@ -49,8 +53,11 @@ public abstract class SolidShape
     public int getZPos(){return zPos;}
     public int getHeight(){return height;}
     public double getWidth(){return width;}
+    public void setWidth(double d){width = d;}
+    public void setLength(double d){length = d;}
     public double getLength(){return length;}
-    
+    public void setSidePolygons(Polygon[] p){visibleShapeSidePolygons = p;}
+    public Polygon[] getVisibleShapeSidePolygons(){return visibleShapeSidePolygons;}
     public double getSortDistanceConstant()
     {
         double cornerX, cornerY;
@@ -290,8 +297,107 @@ public abstract class SolidShape
         return giveReturn;
     }
     
+    public Polygon[] getDropShadowPolygons(double dropShadowHeight)
+    {
+        int[][] leftPoints = getLeftBoundingShapePolyPoints().clone();
+        int[][] rightPoints = getRightBoundingShapePolyPoints().clone();
+        /*for(int i = 0; i < leftPoints[1].length/2; i++)
+        {
+            leftPoints[1][i] -= getScaledDistortedHeight(dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+            rightPoints[1][i] -= getScaledDistortedHeight(dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+        }
+        for(int i = 0; i < leftPoints[1].length; i++)
+        {
+            leftPoints[1][i] += getScaledDistortedHeight(height);
+            rightPoints[1][i] += getScaledDistortedHeight(height);
+        }*/
+        for(int i = 0; i < leftPoints[1].length; i++)
+        {
+            leftPoints[1][i] += getScaledDistortedHeight(dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+            rightPoints[1][i] += getScaledDistortedHeight(dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+        }
+        for(int i = 2; i < leftPoints[1].length; i++)
+        {
+            leftPoints[1][i] += getScaledDistortedHeight(height - dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+            rightPoints[1][i] += getScaledDistortedHeight(height - dropShadowHeight);//getScaledDistortedHeight(height)/1.25;
+        }
+        
+        Polygon[] giveReturn = {new Polygon(leftPoints[0], leftPoints[1], leftPoints[0].length), new Polygon(rightPoints[0], rightPoints[1], rightPoints[0].length)};
+        return giveReturn;
+    }
+    
+    public void fillDropShadowOntoSolid(Graphics g, Polygon[] sides, double dropShadowHeight)
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        Area a = new Area();
+        if(sides != null)
+        {
+            
+            for(Polygon p : sides)
+            {
+                a.add(new Area(p));
+            }
+        }else{
+            System.out.println("IS null!");
+        }
+        
+        int shadowResolution = 5;
+        for(int i = 1; i < shadowResolution; i++)
+        {
+            Polygon[] shadows = getDropShadowPolygons(dropShadowHeight-((dropShadowHeight/(double)shadowResolution)*(double)i)).clone();
+            //System.out.println("Shadow height:" + dropShadowHeight/(double)i);
+            Area a2 = new Area();
+            for(Polygon p : shadows)
+            {
+                a2.add(new Area(p));
+            }
+            Area tempA = new Area();
+            tempA.add(a);
+            a.intersect(a2);
+            g.setColor(new Color(0, 0, 0, 20));
+            g2.fill(a);
+            /*for(Polygon p : shadows)
+            {
+                g.fillPolygon(p);
+            }*/
+            /*if(i == 1)
+            {
+                g.setColor(new Color(255, 0, 0, 100));
+                g2.fill(a);
+            }else if(i == 2)
+            {
+                g.setColor(new Color(0, 255, 0, 100));
+                g2.fill(a);
+            }else{
+                g.setColor(new Color(0, 0, 255, 100));
+                g2.fill(a);
+            }*/
+            a = tempA;
+        }
+        
+        
+        
+        
+    }
+    
+    public void fillDropShadow(Graphics g, int lowerHeight)
+    {
+        int[][] points = getLowerBoundingShapePolyPoints().clone();
+        for(int i = 0; i < points[1].length; i++)
+        {
+            
+            points[1][i] += getScaledDistortedHeight(zPos-lowerHeight);
+        }
+        
+        //Polygon[] shadows = getDropShadowPolygons(dropShadowHeight);
+        g.setColor(new Color(0, 0, 0, 70));
+        g.fillPolygon(points[0], points[1], points[0].length);
+        
+    }
+    
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons)
     {
+        visibleShapeSidePolygons = sidePolygons.clone();
         int numSides = sidePolygons.length;
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         int shadeAlpha = 80;
@@ -305,6 +411,8 @@ public abstract class SolidShape
     }
     
     abstract void updateShapePolygons();
+    abstract void fill(Graphics g);
+    abstract void stroke(Graphics g);
     //abstract void setShapeSpecificPolygons();
     //abstract void paintShading(Graphics g);
     abstract void draw(Graphics g);

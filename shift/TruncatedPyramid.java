@@ -22,7 +22,7 @@ public class TruncatedPyramid extends SolidShape
     private int numSides;
     public TruncatedPyramid(double inX, double inY, int inZPos, double radiusIn, int inHeight, int numSidesIn, double topSideScaleIn)
     {
-        super(inX, inY, inZPos, radiusIn, radiusIn, inHeight);
+        super(inX, inY, inZPos, 2*radiusIn, 2*radiusIn, inHeight);
         numSides = numSidesIn;
         topSideScale = topSideScaleIn;
         baseShape = new FlatShape(inX, inY, inZPos, radiusIn, numSidesIn);
@@ -33,7 +33,7 @@ public class TruncatedPyramid extends SolidShape
     
     public TruncatedPyramid(double inX, double inY, int inZPos, double radiusIn, int inHeight, int numSidesIn)
     {
-        super(inX, inY, inZPos, radiusIn, radiusIn, inHeight);
+        super(inX, inY, inZPos, 2*radiusIn, 2*radiusIn, inHeight);
         //topSideScale = topSideWidth/radiusIn;
         numSides = numSidesIn;
         baseShape = new FlatShape(inX, inY, inZPos, radiusIn, numSidesIn);
@@ -43,6 +43,8 @@ public class TruncatedPyramid extends SolidShape
     
     public void setTopShape(double topSideRadius)
     {
+        //setWidth(baseShape.getWidth());
+        //setLength(baseShape.getLength());
         topSideScale = topSideRadius*2.0/baseShape.getWidth();
         topShape = new FlatShape(baseShape.getCenterCoordX(), baseShape.getCenterCoordY(), baseShape.getZPos() + getHeight(), topSideRadius*2.0, topSideRadius*2.0, numSides);
     }
@@ -132,6 +134,37 @@ public class TruncatedPyramid extends SolidShape
 
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    void fill(Graphics g) 
+    {
+        Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
+        for(Polygon p : sidePolygons)
+        {
+            g.fillPolygon(p);
+        }
+        int[][] topShapePoints = topShape.getShapePolyPoints();
+        g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
+        
+        shadeSidePolygons(g, sidePolygons);
+    }
+
+    @Override
+    void stroke(Graphics g) 
+    {
+        Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
+       
+        int[][] topShapePoints = topShape.getShapePolyPoints();
+       
+        g.setColor(Color.BLACK);
+        for(Polygon p : threadedVisibleSidePolygons)
+        {
+            g.drawPolygon(p);
+            
+        }
+        g.drawPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
+        
     }
     
 }

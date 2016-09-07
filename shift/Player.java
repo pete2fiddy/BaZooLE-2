@@ -287,12 +287,12 @@ public class Player extends Toolbox implements Runnable
 
             double shrinkMultiplier = .33;
             Image tempImage = flameArray[(int)fireAnimationCount].getScaledInstance((int)(WorldPanel.scale*26), (int)(WorldPanel.scale*distortedHeight(16)), Image.SCALE_AREA_AVERAGING);
-            g.drawImage(tempImage, (int)getX()-(int)(13*WorldPanel.scale), (int)(getY()+(WorldPanel.scale * (hoverAmount*shrinkMultiplier - distortedHeight(5)))), null);//flameArray[(int)fireAnimationCount], 10, 10, null);
+            //g.drawImage(tempImage, (int)getX()-(int)(13*WorldPanel.scale), (int)(getY()+(WorldPanel.scale * (hoverAmount*shrinkMultiplier - distortedHeight(5)))), null);//flameArray[(int)fireAnimationCount], 10, 10, null);
             //Graphics2D g2 = (Graphics2D)g;
             g2.setStroke(new BasicStroke(1));
 
 
-
+            
             g.setColor(Color.GRAY);
 
             g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*21)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(17-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*42), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(8)));

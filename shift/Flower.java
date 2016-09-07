@@ -77,7 +77,8 @@ public class Flower extends Scenery implements Runnable
                     rp.updateShapePolygons();
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
-                    rp.draw(g);
+                    //rp.draw(g);
+                    rp.fill(g);
                 }
                 
             }else{
@@ -86,7 +87,8 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordX(getCoordX()-(stemSize/2.0)-(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
-                    rp.draw(g);
+                    //rp.draw(g);
+                    rp.fill(g);
                 }
             }
             //rp.setCenterCoordX(getCoordX());
@@ -95,7 +97,8 @@ public class Flower extends Scenery implements Runnable
             
         }
         g.setColor(Toolbox.grassColor);
-        stemPrism.draw(g);
+        //stemPrism.draw(g);
+        stemPrism.fill(g);
         for(RectPrism rp : leafPrisms)//done this way to sort leaves by draw order.
         {
             g.setColor(Toolbox.grassColor);
@@ -107,7 +110,8 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
                     
-                    rp.draw(g);
+                    //rp.draw(g);
+                    rp.fill(g);
                 }
                 
             }else{
@@ -116,12 +120,14 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
-                    rp.draw(g);
+                    //rp.draw(g);
+                    rp.fill(g);
                 }
             }
         }
         g.setColor(petalColor);
-        petalPrism.draw(g);
+        //petalPrism.draw(g);
+        petalPrism.fill(g);
         //g.setColor(Color.WHITE);
         //g.drawString(Double.toString((int)(100.0*getSortDistanceConstant())/100.0), (int)getX(), (int)getY());
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

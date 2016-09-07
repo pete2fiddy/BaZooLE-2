@@ -168,8 +168,8 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
     
     @Override
     public void draw(Graphics g) 
-    {
-        sortShapes();
+    { 
+       sortShapes();
         
         for(SolidShape s : shipShapes)
         {

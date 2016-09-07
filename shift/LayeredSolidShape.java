@@ -98,5 +98,50 @@ public class LayeredSolidShape extends SolidShape{
     void drawExcludingTop(Graphics g) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    void fill(Graphics g) 
+    {
+        updateShapePolygons();
+        Color drawColor = g.getColor();
+        int numPolygons = 0;
+        
+        for(int i = 0; i < threadedVisibleSidePolygons.size(); i++)//Polygon p : threadedVisibleSidePolygons)
+        {
+            g.setColor(drawColor);
+            g.fillPolygon(threadedVisibleSidePolygons.get(i));
+            
+            if(((i)%(int)(Math.ceil((double)numSides/2.0))) == 1)
+            {
+                Polygon[] sides = new Polygon[(int)(Math.ceil((double)numSides/2.0))];
+                for(int j = 0; j < sides.length; j++)
+                {
+                    sides[j] = threadedVisibleSidePolygons.get(i-1+ j);
+                }
+                /*g.setColor(Color.WHITE);
+                g.fillPolygon(sides[0]);
+                g.setColor(Color.GREEN);
+                g.fillPolygon(sides[1]);*/
+                shadeSidePolygons(g, sides);
+            }
+        }
+    }
+
+    @Override
+    void stroke(Graphics g) 
+    {
+        updateShapePolygons();
+        Color drawColor = g.getColor();
+        int numPolygons = 0;
+        
+        for(int i = 0; i < threadedVisibleSidePolygons.size(); i++)//Polygon p : threadedVisibleSidePolygons)
+        {
+            
+            g.setColor(Color.BLACK);
+            g.drawPolygon(threadedVisibleSidePolygons.get(i));
+            
+        }
+        
+    }
     
 }

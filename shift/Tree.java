@@ -242,17 +242,30 @@ public class Tree extends Scenery implements Runnable
         
         g2.setStroke(Toolbox.worldStroke);
         */
+        
+        treeShapes[1].fillDropShadow(g, getBoundTile().getHeight());
         g.setColor(new Color(86, 53, 17));
-        treeShapes[0].draw(g);
+        treeShapes[0].fill(g);
         
         for(int i = 1; i < treeShapes.length; i++)
         {
-            g2.setPaint(WorldPanel.leavesTexture);
+            g.setColor(Toolbox.grassColor);
+            //g2.setPaint(WorldPanel.leavesTexture);
+            
             if(i < treeShapes.length -1)
             {
-                treeShapes[i].drawExcludingTop(g);
+                treeShapes[i].fill(g);//drawExcludingTop(g);
+                //treeShapes[i].shadeBoundingBoxSides(g);
+                
+                if(i != 1)
+                {
+                    treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
+                }
+                //g.drawString(Double.toString(treeShapes[i].getWidth()), (int)treeShapes[i].convertToPointX(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()), (int)treeShapes[i].convertToPointY(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()));
             }else{
-                treeShapes[i].draw(g);
+                //treeShapes[i].draw(g);
+                treeShapes[i].fill(g);
+                treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
             }
             
         }
