@@ -3,6 +3,7 @@ package shift;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -174,7 +176,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        
+        startTime = System.nanoTime();
         
         tick();
         
@@ -188,7 +190,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         //g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         //g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         
-        startTime = System.nanoTime();
+        
         //tick();
         frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
         drawMap(g);
@@ -201,13 +203,13 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//limit FPS. sometimes gets a negative timeout thrown. FIX
         {
             try {
+                //System.out.println("HI");
                 Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
-            } catch (InterruptedException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
-        getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
+        
         //System.out.println(getFPS);
         player.draw(g);
         //g.setColor(Color.RED);
@@ -287,6 +289,10 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         //g.setColor(Color.GREEN);
         //prism.updateShapePolygons();
         //prism.draw(g);
+        getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
+       // System.out.println(getFPS);
+       drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
+        
         repaint();
     }
     public static int[] getMouseUnitPos()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
@@ -355,6 +361,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     private void drawDebugInfo(Graphics g)//draws important dev info.
     {
         g.setColor(Color.BLACK);
+        g.setFont(new Font("Futura", Font.PLAIN, 12));
         for(int i = 0; i<4; i++)
         {
             g.drawString(i+"",mapPoints[0][i], mapPoints[1][i]);

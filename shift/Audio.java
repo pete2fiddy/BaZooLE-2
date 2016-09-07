@@ -24,6 +24,7 @@ public class Audio implements LineListener
     private AudioInputStream musicStream1, musicStream2;
     private int backgroundClipNumber = 1;
     private FloatControl musicVolume;
+    private Clip currentClip;
     
     public Audio()
     {
@@ -42,6 +43,7 @@ public class Audio implements LineListener
             musicClip2.open(musicStream2);
             //musicClip2.addLineListener(this);
             
+            currentClip = musicClip1;
             musicClip1.drain();
             //musicClip1.setMicrosecondPosition(musicClip1.getMicrosecondLength() - 30000000);
             musicVolume = (FloatControl)musicClip1.getControl(FloatControl.Type.MASTER_GAIN);
@@ -70,6 +72,7 @@ public class Audio implements LineListener
             {
                 backgroundClipNumber = 1;
             }
+            float saveVolume;
             switch(backgroundClipNumber)
             {
                 case 1:
@@ -77,14 +80,20 @@ public class Audio implements LineListener
                     //musicClip1.setMicrosecondPosition(musicClip1.getMicrosecondLength() - 30000000);
                     musicClip1.start();
                     musicClip1.addLineListener(this);
+                    saveVolume = musicVolume.getValue();
                     musicVolume = (FloatControl)musicClip1.getControl(FloatControl.Type.MASTER_GAIN);
+                    musicVolume.setValue(saveVolume);
+                    currentClip = musicClip1;
                     break;
                 case 2:
                     musicClip2.drain();
                     //musicClip2.setMicrosecondPosition(musicClip2.getMicrosecondLength() - 30000000);
                     musicClip2.start();
                     musicClip2.addLineListener(this);
+                    saveVolume = musicVolume.getValue();
                     musicVolume = (FloatControl)musicClip2.getControl(FloatControl.Type.MASTER_GAIN);
+                    musicVolume.setValue(saveVolume);
+                    currentClip = musicClip2;
                     break;
             }
         }

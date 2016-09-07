@@ -56,10 +56,10 @@ public class ShiftTile extends Tile
             lake.draw(g);
         }*/
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawSidePolygons(g);//draws the sides of the tile.
+        //drawSidePolygons(g);//draws the sides of the tile.
         g.setColor(Color.BLACK);
         
-        g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+        //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         for(Path path : getPathList())
         {
             path.draw(g);
