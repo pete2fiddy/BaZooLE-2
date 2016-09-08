@@ -977,6 +977,20 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         g.setColor(Color.BLACK);
     }
     
+    public void reverseShadeSides(Graphics g)
+    {
+        int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        
+        g.setColor(new Color(0,0,0,leftAlpha));
+        g.fillPolygon(getLeftSidePoints()[0], getLeftSidePoints()[1], 4);
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        int rightAlpha = 50+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        g.setColor(new Color(0,0,0,rightAlpha));
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        g.fillPolygon(getRightSidePoints()[0], getRightSidePoints()[1], 4);
+        g.setColor(Color.BLACK);
+    }
+    
     public void drawWaterReflectionCover(Graphics g)
     {
         if(!tileCurrentlyMoving)

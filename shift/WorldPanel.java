@@ -25,12 +25,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
 public class WorldPanel extends JPanel implements ActionListener, Runnable, ChangeListener
 {
+    private Timer tickTimer;
     private boolean drawWater = true;
     private int tempQuadrant, frameCount;
     private long startTime;
@@ -53,7 +55,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     private UI ui;
     private double colorRotation = 0;
     public static BufferedImage grassImage, leavesImage;
-    public static TexturePaint grassTexture, leavesTexture;
+    public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
     private Thread thread;
     private JButton turnLeft, turnRight, resetLevel;
@@ -109,6 +111,10 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         thread = new Thread(this);
         
         thread.start();
+        tickTimer = new Timer(5, this);
+        tickTimer.setActionCommand("tick");
+        tickTimer.setRepeats(true);
+        tickTimer.start();
     }
     private void initVariables()
     {
@@ -117,6 +123,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         frameCount = 0;
         scale = 2.0;
         ui = new UI(this);
+        
         
     }
     private void initButtons()
@@ -180,7 +187,10 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
         startTime = System.nanoTime();
         
-        tick();
+        //thread.interrupt();
+        //thread = new Thread(this);
+        //thread.start();
+        //tick();
         
         
         colorRotation += Math.PI/5000.0;
@@ -230,7 +240,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
             AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
             AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-            grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*256), (int)(scale*256*getShrink)));
+            grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
             
             leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
             
@@ -657,7 +667,10 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public void actionPerformed(ActionEvent e) 
     {
         String command = e.getActionCommand();
-        if(command.equals("randomShapes"))
+        if(command.equals("tick"))
+        {
+            tick();
+        }else if(command.equals("randomShapes"))
         {
             
 
@@ -722,10 +735,12 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public void run() 
     {
         
-        tick();
+        //tick();
             
         
     }
+    
+    
 
     @Override
     public void stateChanged(ChangeEvent e) 

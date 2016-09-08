@@ -156,6 +156,21 @@ public class FlatShape
         }
         return sidePoints;
     }
+    
+    public void fillDropShadow(Graphics g, int lowerHeight)
+    {
+        int[][] points = getShapePolyPoints().clone();
+        for(int i = 0; i < points[1].length; i++)
+        {
+            
+            points[1][i] += getScaledDistortedHeight(zPos-lowerHeight);
+        }
+        
+        //Polygon[] shadows = getDropShadowPolygons(dropShadowHeight);
+        g.setColor(new Color(0, 0, 0, 70));
+        g.fillPolygon(points[0], points[1], points[0].length);
+    }
+    
     public int getPointSideStartNumber()
     {
         int polyStartNumber = ((int)((WorldPanel.radSpin+spin+(Math.PI*2.0/(double)(numSides*2.0)))/((Math.PI*2.0)/(double)numSides))%numSides);

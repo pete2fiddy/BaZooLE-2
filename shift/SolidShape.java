@@ -400,7 +400,23 @@ public abstract class SolidShape
         visibleShapeSidePolygons = sidePolygons.clone();
         int numSides = sidePolygons.length;
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        int shadeAlpha = 80;
+        int shadeAlpha = 60 - (3*(zPos/20));//not sure if this is good
+        //int shadeAlpha = 80;
+        for(Polygon p : sidePolygons)
+        {
+            shadeAlpha -= (int)(30.0/(double)numSides);
+            g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+            g.fillPolygon(p);
+        }
+        
+    }
+    
+    public void shadeSidePolygonsWithZPos(Graphics g, Polygon[] sidePolygons, int inZPos)
+    {
+        visibleShapeSidePolygons = sidePolygons.clone();
+        int numSides = sidePolygons.length;
+        //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        int shadeAlpha = 60 + (int)(35*((double)(height-inZPos)/(double)height));//not sure if this is good
         for(Polygon p : sidePolygons)
         {
             shadeAlpha -= (int)(30.0/(double)numSides);

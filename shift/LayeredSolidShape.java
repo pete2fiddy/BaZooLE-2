@@ -122,11 +122,37 @@ public class LayeredSolidShape extends SolidShape{
                 g.fillPolygon(sides[0]);
                 g.setColor(Color.GREEN);
                 g.fillPolygon(sides[1]);*/
-                shadeSidePolygons(g, sides);
+                
             }
+        }
+        for(int i = 0; i < flatShapes.length - 1; i++)
+        {
+            Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
+            shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
         }
     }
 
+    @Override
+    public void fillDropShadow(Graphics g, int lowerHeight)
+    {
+        int biggestWidthIndex = 0;
+        int biggestLengthIndex = 0;
+        for(int i = 0; i < flatShapes.length; i++)
+        {
+            if(flatShapes[i].getWidth() > flatShapes[biggestWidthIndex].getWidth())
+            {
+                biggestWidthIndex = i;
+            }
+            if(flatShapes[i].getLength() > flatShapes[biggestLengthIndex].getLength())
+            {
+                biggestLengthIndex = i;
+            }
+        }
+        g.setColor(new Color(0,0,0,20));
+        flatShapes[biggestWidthIndex].fillDropShadow(g, lowerHeight);
+        flatShapes[biggestLengthIndex].fillDropShadow(g, lowerHeight);
+    }
+    
     @Override
     void stroke(Graphics g) 
     {

@@ -66,7 +66,7 @@ public class Flower extends Scenery implements Runnable
         petalPrism.setCenterCoordY(getCoordY());
         stemPrism.updateShapePolygons();
         petalPrism.updateShapePolygons();
-        
+        petalPrism.fillDropShadow(g, getBoundTile().getHeight());
         for(RectPrism rp : leafPrisms)
         {
             g.setColor(Toolbox.grassColor);
@@ -78,6 +78,7 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     //rp.draw(g);
+                    //rp.fillDropShadow(g, getBoundTile().getHeight());
                     rp.fill(g);
                 }
                 
@@ -88,6 +89,7 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
                     //rp.draw(g);
+                    //rp.fillDropShadow(g, getBoundTile().getHeight());
                     rp.fill(g);
                 }
             }

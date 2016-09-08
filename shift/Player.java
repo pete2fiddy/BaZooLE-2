@@ -270,7 +270,7 @@ public class Player extends Toolbox implements Runnable
         
         if(!inSpaceship)
         {
-            
+            WorldPanel.scale/=1.5;
             
             Graphics2D g2 = (Graphics2D)g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -348,6 +348,7 @@ public class Player extends Toolbox implements Runnable
                 g.drawString(boundPath.toString(), 100, 100);
                 g.drawString(boundTile.toString(), 100, 120);
             }
+               WorldPanel.scale*=1.5;
         }
         
     }

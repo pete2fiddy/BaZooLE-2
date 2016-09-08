@@ -178,11 +178,13 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
             //s.updateShapePolygons();
             if(s == shipBody)
             {
+                s.fillDropShadow(g, getBoundTile().getHeight());
                 g.setColor(Color.GRAY);
             }else{
+                s.fillDropShadow(g, getBoundTile().getHeight());
                 g.setColor(Color.RED);
             }
-            s.draw(g);
+            s.fill(g);
         }
         //finShape.draw(g);
         //Graphics2D g2 = (Graphics2D)g;
