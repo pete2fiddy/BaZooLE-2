@@ -316,7 +316,7 @@ public class Player extends Toolbox implements Runnable
     {
         for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            if(TileDrawer2.tileList.get(i).tileContainsPoint((int)getX(), (int)getY()))
+            if(TileDrawer2.tileList.get(i).tileAtCoord((int)getX(), (int)getY()))
             {
                 return TileDrawer2.tileList.get(i);
             }
@@ -412,11 +412,11 @@ public class Player extends Toolbox implements Runnable
 
             g2.setStroke(Toolbox.worldStroke);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-            if(boundPath != null && boundTile != null)
+            /*if(boundPath != null && boundTile != null)
             {
                 g.drawString(boundPath.toString(), 100, 100);
                 g.drawString(boundTile.toString(), 100, 120);
-            }
+            }*/
                WorldPanel.scale*=1.5;
         }
         

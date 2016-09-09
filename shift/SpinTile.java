@@ -80,6 +80,9 @@ public class SpinTile extends Tile implements Runnable
         }
         cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons());
         cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
+        
+        drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        
         //cylinder.draw(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //g.setColor(Color.BLUE);

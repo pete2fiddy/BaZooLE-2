@@ -100,10 +100,8 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public void drawAssortedScenery(Graphics g)
     {
-        if(Player.boundTile != null && Player.boundTile == this)
-        {
-            drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
-        }
+        drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        
         for(int i = 0; i < assortedScenery.size(); i++)
         {
             assortedScenery.get(i).draw(g);
@@ -463,10 +461,12 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public void drawPlayerShadow(Graphics g, int xIn, int yIn, double shadowExpand)
     {
-        g.setColor(new Color(0,0,0,50));
-        int expandPixels = 2;
-        g.fillOval((int)Math.round(xIn - ((6 + (expandPixels*shadowExpand))*WorldPanel.scale)), (int)Math.round(yIn-((6 + (expandPixels*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale)), (int)Math.round((12 + (expandPixels*2*shadowExpand))*WorldPanel.scale), (int)Math.round((12+(expandPixels*2*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale));
-            
+        if(Player.boundTile != null && Player.boundTile == this)
+        {
+            g.setColor(new Color(0,0,0,50));
+            int expandPixels = 2;
+            g.fillOval((int)Math.round(xIn - ((6 + (expandPixels*shadowExpand))*WorldPanel.scale)), (int)Math.round(yIn-((6 + (expandPixels*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale)), (int)Math.round((12 + (expandPixels*2*shadowExpand))*WorldPanel.scale), (int)Math.round((12+(expandPixels*2*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale));
+        }
     }
     
     public static void unclickEveryTile()
@@ -941,7 +941,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         g2.setComposite(originalComposite);
         
         g.setColor(Color.BLACK);
-        g.drawString(Boolean.toString(tileCurrentlyMoving), (int)getX(), (int)getY());
+        //g.drawString(Boolean.toString(tileCurrentlyMoving), (int)getX(), (int)getY());
         
     }
     

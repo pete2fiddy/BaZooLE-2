@@ -156,7 +156,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         resetLevel = new JButton("Reset Level");
         resetLevel.addActionListener(this);
         resetLevel.setActionCommand("resetLevel");
-        resetLevel.setBounds(0, 150, 100, 50);
+        resetLevel.setBounds(10, 120, 100, 50);
         add(resetLevel);
         resetLevel.setVisible(false);
         //add(randomShapes);
@@ -203,10 +203,11 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         
         
         
-        drawMap(g);
+        //drawMap(g);
         //ArrayList<Tile> tempTile = ts.holdList;//create a temp list of held tiles to be drawn. Maybe is clunky for no reason, but was originally made to skirt the list being modified while it was drawn.
         
-        
+        stripeMap(g, spin); 
+        drawWater(g);
         td2.draw(g);
         fillBelowMap(g);
         if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//limit FPS. sometimes gets a negative timeout thrown. FIX
@@ -226,8 +227,16 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         
         getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
        
-        drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
-        
+        //drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
+        if(frameCount > 100)
+        {
+            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
+            frameCount = 0;
+        }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setFont(new Font("Futura", Font.PLAIN, 16));
+        g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         repaint();
     }
     
@@ -356,9 +365,8 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
                 g.drawPolygon(xPoints, yPoints, 4);
             }
         }
-        drawRotationLine(g);
-        stripeMap(g, spin); 
-        drawWater(g);
+        //drawRotationLine(g);
+        
         
     }
     private void drawDebugInfo(Graphics g)//draws important dev info.
@@ -593,10 +601,11 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         radSpin += Input.dSpin;
         rotation+=Input.dRotation;
         /*resets the spins if they go over or under a full revolution*/
-        if(rotation > Math.PI/2.0){
-            rotation = Math.PI/2.0;
-        }else if(rotation<.1){
-            rotation = .1;
+        
+        if(rotation > Math.PI/2.3){
+            rotation = Math.PI/2.3;
+        }else if(rotation<0.5){
+            rotation = .5;
         }if(radSpin > (2*Math.PI)){
             radSpin -= 2*Math.PI;
         }else if(radSpin < 0){

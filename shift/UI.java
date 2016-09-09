@@ -8,6 +8,8 @@ package shift;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  *
@@ -81,8 +83,13 @@ public class UI
     
     public void draw(Graphics g)
     {
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(Color.BLACK);
+        g.setFont(new Font("Futura", Font.PLAIN, 16));
+         g.drawString("Volume", 25, 50);
         g.setFont(mediumFont);
+       
         g.drawString("Level: " + Integer.toString(level), WorldPanel.screenWidth - 200, 50);
         if(drawMenu && !drawInstructions)
         {
@@ -91,5 +98,6 @@ public class UI
         {
             menu.getInstructions().draw(g);
         }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 }
