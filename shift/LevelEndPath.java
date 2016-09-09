@@ -32,7 +32,7 @@ public class LevelEndPath extends Path
         g.fillPolygon(getBoundTile().threadedUpperPoints()[0], getBoundTile().threadedUpperPoints()[1],4);
         g.setColor(Color.BLACK);
         //g.drawPolygon(getThreadedPathPolygon()[0], getThreadedPathPolygon()[1],6);
-        g.drawPolygon(getBoundTile().threadedUpperPoints()[0], getBoundTile().threadedUpperPoints()[1],4);
+        //g.drawPolygon(getBoundTile().threadedUpperPoints()[0], getBoundTile().threadedUpperPoints()[1],4);
         /*for(int i = 0; i < getLinks().length; i++)
         {
             g.setColor(Color.BLACK);

@@ -166,26 +166,14 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
         //System.out.println();
     }
     
+   
+    
     @Override
     public void draw(Graphics g) 
     { 
        sortShapes();
         
-        for(SolidShape s : shipShapes)
-        {
-            //System.out.println("Order Constant: " + s.getSortDistanceConstant());
-            
-            //s.updateShapePolygons();
-            if(s == shipBody)
-            {
-                s.fillDropShadow(g, getBoundTile().getHeight());
-                g.setColor(Color.GRAY);
-            }else{
-                s.fillDropShadow(g, getBoundTile().getHeight());
-                g.setColor(Color.RED);
-            }
-            s.fill(g);
-        }
+        
         //finShape.draw(g);
         //Graphics2D g2 = (Graphics2D)g;
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -201,13 +189,20 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
             LevelLoader.isLoading = true;
             fireAnimationCount += .25;  
             
-            y += 10.0;
+           
+            for(SolidShape s : shipShapes)
+            {
+                s.setDZ(10);
+                //s.setZPos(s.getZPos() + 10);
+                //System.out.println("Z Pos: " + s.getZPos());
+            }
+             y += 10.0*WorldPanel.scale;
             if(fireAnimationCount >= 15)
             {
                 fireAnimationCount = 0;
             }
             Image scaledFire = flameArray[(int)fireAnimationCount].getScaledInstance((int)(WorldPanel.scale*34), (int)(WorldPanel.scale*distortedHeight(21)), Image.SCALE_AREA_AVERAGING);
-            g.drawImage(scaledFire, (int)(getX()-(int)(WorldPanel.scale*17)), (int)(getY()- distortedHeight((int)(y)) -(int)(WorldPanel.scale*distortedHeight(15))), null);
+            g.drawImage(scaledFire, (int)(getX()-(int)(WorldPanel.scale*17)), (int)(getY()- distortedHeight((int)(y)) +(int)(WorldPanel.scale*distortedHeight(5))), null);
             if(y > (WorldPanel.screenHeight/distortedHeight(WorldPanel.screenHeight))*WorldPanel.screenHeight)
             {
                 shipShapes = new SolidShape[0];
@@ -217,7 +212,29 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
                 //LevelLoader.spawnLevel(UI.level);
                 LevelLoader ll = new LevelLoader();
                 ll.spawnLevel(UI.level);
+                for(SolidShape s : shipShapes)
+                {
+                    s.setDZ(0);
+                    
+                    //System.out.println("Z Pos: " + s.getZPos());
+                }
             }
+        }
+        for(SolidShape s : shipShapes)
+        {
+            //System.out.println("Order Constant: " + s.getSortDistanceConstant());
+            
+            //s.setZPos(s.getZPos() + (int)s.getDZ());
+            //s.updateShapePolygons();
+            if(s == shipBody)
+            {
+                s.fillDropShadow(g, getBoundTile().getHeight());
+                g.setColor(Color.GRAY);
+            }else{
+                s.fillDropShadow(g, getBoundTile().getHeight());
+                g.setColor(Color.RED);
+            }
+            s.fill(g);
         }
         
     }

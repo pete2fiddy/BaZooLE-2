@@ -48,9 +48,10 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     private int walkedOn = 0;
     private boolean heightChangeable = false;
     private double movingX = 0, movingY = 0;
+    
     //private double transitX = 0, transitY = 0;
     
-    int l = 1;
+    
             
     public Tile(int inX, int inY, int inWidth, int inLength, int inHeight)//not sure why position isi given as a double. Can't see myself using half a unit or something.
     {
@@ -99,10 +100,18 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public void drawAssortedScenery(Graphics g)
     {
-        for(Scenery s : assortedScenery)
+        if(Player.boundTile != null && Player.boundTile == this)
+        {
+            drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        }
+        for(int i = 0; i < assortedScenery.size(); i++)
+        {
+            assortedScenery.get(i).draw(g);
+        }
+        /*for(Scenery s : assortedScenery)
         {
             s.draw(g);
-        }
+        }*/
     }
     private void addRandomFlowers(int heightMin, int heightMax)
     {
@@ -151,7 +160,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public Polygon getUpperPolygon(){return new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], 4);}
     
-    
+    public void setPlayersTile(boolean b){isPlayersTile = b;}
     public Polygon getHitPolygon(){return hitPolygon;}    
     public Color getColor(){return color;}
     public void setColor(Color c){color = c;}
@@ -452,6 +461,14 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         }
     }
     
+    public void drawPlayerShadow(Graphics g, int xIn, int yIn, double shadowExpand)
+    {
+        g.setColor(new Color(0,0,0,50));
+        int expandPixels = 2;
+        g.fillOval((int)Math.round(xIn - ((6 + (expandPixels*shadowExpand))*WorldPanel.scale)), (int)Math.round(yIn-((6 + (expandPixels*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale)), (int)Math.round((12 + (expandPixels*2*shadowExpand))*WorldPanel.scale), (int)Math.round((12+(expandPixels*2*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale));
+            
+    }
+    
     public static void unclickEveryTile()
     {
         for(int i = 0; i < TileDrawer.tileList.size(); i++)
@@ -464,10 +481,10 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     private void sortAssortedScenery()
     {
-        for(int i = 0; i < assortedScenery.size(); i++)
+        for(int i = 0; i < assortedScenery.size()-1; i++)
         {
             int smallestIndex = i;
-            for(int j = i; j < assortedScenery.size(); j++)
+            for(int j = i+1; j < assortedScenery.size(); j++)
             {
                 if(assortedScenery.get(j).getSortDistanceConstant() > assortedScenery.get(smallestIndex).getSortDistanceConstant())
                 {
@@ -938,7 +955,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         g2.setComposite(transparencyComposite);
         g2.setPaint(WorldPanel.grassTexture);
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();
-        int[][] points2 = new int[2][4];getRightSidePoints().clone();
+        int[][] points2 = new int[2][4];//getRightSidePoints().clone();
         for(int i = 0; i < points1[0].length; i++)
         {
             points1[0][i] = getLeftSidePoints()[0][i];

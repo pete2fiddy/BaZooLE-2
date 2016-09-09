@@ -184,6 +184,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        
         frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
         startTime = System.nanoTime();
         
@@ -198,7 +199,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
         
-        
+        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         
         
@@ -213,11 +214,11 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
             try {
                 //System.out.println("HI");
                 Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
+                Thread.sleep(50);
             } catch (Exception ex) {
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
         player.draw(g);
         ui.draw(g);
         renderTextures();

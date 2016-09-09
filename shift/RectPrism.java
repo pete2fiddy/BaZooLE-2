@@ -116,6 +116,7 @@ public class RectPrism extends SolidShape
         
         Polygon[] poly = threadedVisibleSidePolygons;
         shadeSidePolygons(g, poly);
+        //dotSortCorner(g);
     }
 
     @Override

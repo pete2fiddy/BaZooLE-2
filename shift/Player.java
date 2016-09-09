@@ -47,7 +47,8 @@ public class Player extends Toolbox implements Runnable
     private double tempWorldX, tempWorldY;
     private boolean addLevelDebounce = false;
     private boolean freezePlayer = false;
-    
+    public static int xPoint = 0, yPoint = 0;
+    public static double shadowExpand = 0;
     public Player(double xIn, double yIn, double heightIn)//x and y are relative to WorldPanel's x and y
     {
         x=xIn; y=yIn; height = heightIn;
@@ -157,18 +158,46 @@ public class Player extends Toolbox implements Runnable
                 }
             }
         }
+        
+        if(getIntersectingTile() != null && getIntersectingTile().getClicked())
+        {
+            freezePlayer = false;
+        }
         if(!inTransit && !freezePlayer && !boundPath.getBoundTile().getClicked())
         {
             travelToClosestPath();
+            
            
         }else if(boundPath.getBoundTile().getInTransit())
         {
             travelToClosestPath();
         }
         
+        if(getBoundPath() == null && !inTransit && !freezePlayer)
+        {
+            travelToClosestPath();
+        }
+        if(!playerOnPathPoint() && !inTransit && !freezePlayer)
+        {
+            travelToClosestPath();
+        }
+        System.out.println(freezePlayer);
+        
     }
     
     
+    public boolean playerOnPathPoint()
+    {
+        Path p = getBoundPath();
+        if(p != null)
+        {
+            if(getX() >= p.getX()-1 && getX() <= p.getX() + 1 && getY() >= p.getY()-1 && getY() <= p.getY() + 1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
     public void setFreezePlayer(boolean b){freezePlayer = b;}
     
@@ -247,6 +276,37 @@ public class Player extends Toolbox implements Runnable
                 }
                 unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
                 //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+            }else{
+                Tile t = getIntersectingTile();
+                if(t != null)
+                {
+                    int smallestDistIndex = 0;
+                    double smallestDist = 10000;
+                    for(int i = 0; i < t.getPathList().size(); i++)
+                    {
+
+                        double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
+                        double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
+                        double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
+                        if(i == 0)
+                        {
+                            smallestDist = dist;
+                        }
+                        if(dist < smallestDist)
+                        {
+                            smallestDist = dist;
+                            smallestDistIndex = i;
+                        }
+                    }
+                    //IS IT
+                    if(smallestDist < 10000)
+                    {
+                        x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
+                        y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+                    }
+                    //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+                    unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                }
             }
         }
         
@@ -270,7 +330,15 @@ public class Player extends Toolbox implements Runnable
         
         if(!inSpaceship)
         {
+            
+             shadowExpand = 1.0+(-scaledDistortedHeight(hoverAmount + 15)/30);
+            //g.fillOval((int)(getX() - (10*WorldPanel.scale) - (shadowExpand/2)), (int)(getY()-((10)*WorldPanel.getShrink*WorldPanel.scale)-(shadowExpand/2)), (int)((20+(shadowExpand/2))*WorldPanel.scale), (int)((20+(shadowExpand/2))*WorldPanel.getShrink*WorldPanel.scale));
+            xPoint = (int)getX();
+            yPoint = (int)getY();
+            
             WorldPanel.scale/=1.5;
+            
+            
             
             Graphics2D g2 = (Graphics2D)g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -340,6 +408,7 @@ public class Player extends Toolbox implements Runnable
             g.setColor(Color.BLACK);
             g.drawPolygon(xPoints2, yPoints1, 4);
 
+            
 
             g2.setStroke(Toolbox.worldStroke);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -481,6 +550,7 @@ public class Player extends Toolbox implements Runnable
                 t.getSpaceship().setTakeoff(true);
                 inSpaceship = true;
                 
+                
             }
             
             
@@ -491,12 +561,14 @@ public class Player extends Toolbox implements Runnable
     
     public Tile getBoundTile()
     {
+        getBoundPath().getBoundTile().setPlayersTile(true);
         return getBoundPath().getBoundTile();
     }
     
     public Path getBoundPath()
     {
-        
+       
+         
         if(boundPath != null && !boundPath.getBoundTile().getClicked())
         {
             int tileListSize = TileDrawer.tileList.size();

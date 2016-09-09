@@ -61,7 +61,7 @@ public class LevelEndTile extends Tile
         drawSidePolygons(g);//draws the sides of the tile.
         shadeSides(g);
         g.setColor(Color.BLACK);
-        g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+        //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         for(Path path : getPathList())
         {
             path.draw(g);
@@ -89,10 +89,10 @@ public class LevelEndTile extends Tile
     
     private void drawSidePolygons(Graphics g)
     {
-        g.setColor(Color.BLACK);
-        g.drawPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.drawPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        g.setColor(getColor());
+        //g.setColor(Color.BLACK);
+        //g.drawPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.drawPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        //g.setColor(getColor());
     }
     
     private void fillPolygons(Graphics g)

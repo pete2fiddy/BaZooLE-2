@@ -36,14 +36,26 @@ public class LayeredSolidShape extends SolidShape{
     void updateShapePolygons() 
     {
         threadedVisibleSidePolygons.clear();
-        for(int i = 0; i < flatShapes.length - 1; i++)
+        for(int i = 0; i < flatShapes.length ; i++)
         {
-            Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
-            for(int j = 0; j < visibleSides.length; j++)
+            
+            
+            
+            //flatShapes[i].setCenterCoordX(getCenterCoordX());
+            //flatShapes[i].setCenterCoordY(getCenterCoordY());//didn't work here since at any point the entire ship was never fully updated.???
+            if(i < flatShapes.length - 1)
             {
-                threadedVisibleSidePolygons.add(visibleSides[j]);
+                Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
+                for(int j = 0; j < visibleSides.length; j++)
+                {
+                    threadedVisibleSidePolygons.add(visibleSides[j]);
+                }
             }
+            setZPos(getZPos()+(int)getDZ());
+            flatShapes[i].setZPos((int)(flatShapes[i].getZPos() + getDZ()));
+            
         }
+        //flatShapes[flatShapes.length - 1].setZPos((int)(flatShapes[flatShapes.length - 1].getZPos() + getDZ()));
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -88,7 +100,7 @@ public class LayeredSolidShape extends SolidShape{
                 g.fillPolygon(sides[0]);
                 g.setColor(Color.GREEN);
                 g.fillPolygon(sides[1]);*/
-                shadeSidePolygons(g, sides);
+                //shadeSidePolygons(g, sides);
             }
         }
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -106,6 +118,8 @@ public class LayeredSolidShape extends SolidShape{
         Color drawColor = g.getColor();
         int numPolygons = 0;
         
+        
+        
         for(int i = 0; i < threadedVisibleSidePolygons.size(); i++)//Polygon p : threadedVisibleSidePolygons)
         {
             g.setColor(drawColor);
@@ -118,6 +132,7 @@ public class LayeredSolidShape extends SolidShape{
                 {
                     sides[j] = threadedVisibleSidePolygons.get(i-1+ j);
                 }
+                shadeSidePolygonsWithZPos(g, sides, flatShapes[((i)/(int)(Math.ceil((double)numSides/2.0)))].getZPos());
                 /*g.setColor(Color.WHITE);
                 g.fillPolygon(sides[0]);
                 g.setColor(Color.GREEN);
@@ -128,8 +143,9 @@ public class LayeredSolidShape extends SolidShape{
         for(int i = 0; i < flatShapes.length - 1; i++)
         {
             Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
-            shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
+            //shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
         }
+        
     }
 
     @Override

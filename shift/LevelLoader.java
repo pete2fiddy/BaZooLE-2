@@ -177,6 +177,7 @@ public class LevelLoader
         }
         isLoading = false;
         
+        
     }
     
     private static LevelEndTile spawnLevelEndTile(String line)

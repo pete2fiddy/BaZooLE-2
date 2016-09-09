@@ -5,7 +5,9 @@
  */
 package shift;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -21,6 +23,7 @@ public abstract class SolidShape
     private double centerCoordX, centerCoordY;
     private int height, zPos;
     private Polygon[] visibleShapeSidePolygons;
+    private double dz = 0;
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
     {
         centerCoordX = inX;
@@ -50,11 +53,13 @@ public abstract class SolidShape
     
     public double getCenterCoordX(){return centerCoordX;}
     public double getCenterCoordY(){return centerCoordY;}
-    public int getZPos(){return zPos;}
+    public int getZPos(){zPos+=(int)dz;return zPos;}
     public int getHeight(){return height;}
     public double getWidth(){return width;}
     public void setWidth(double d){width = d;}
     public void setLength(double d){length = d;}
+    public void setDZ(double d){dz = d;}
+    public double getDZ(){return dz;}
     public double getLength(){return length;}
     public void setSidePolygons(Polygon[] p){visibleShapeSidePolygons = p;}
     public Polygon[] getVisibleShapeSidePolygons(){return visibleShapeSidePolygons;}
@@ -90,6 +95,36 @@ public abstract class SolidShape
        
         return constant;
         
+    }
+    
+    public void dotSortCorner(Graphics g)
+    {
+        double cornerX = 0;
+        double cornerY=0;
+        if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= (Math.PI/2.0))
+        {
+            cornerX = xCoord;
+            cornerY = yCoord;
+            
+        }else if(WorldPanel.radSpin > Math.PI/2.0 && WorldPanel.radSpin <= (Math.PI))
+        {
+            cornerX = xCoord;
+            cornerY = yCoord+length;
+            
+        }else if(WorldPanel.radSpin > Math.PI && WorldPanel.radSpin <= (3*Math.PI/2.0))
+        {
+            cornerX = xCoord+width;
+            cornerY = yCoord+length;
+            
+        }else{
+            
+            cornerX = xCoord+width;
+            cornerY = yCoord;
+           
+        }
+        g.setColor(Color.WHITE);
+        g.fillOval((int)convertToPointX(cornerX, cornerY)-5, (int)(convertToPointY(cornerX, cornerY)-5-getScaledDistortedHeight(zPos)), 10, 10);
+         
     }
     
     public void setCenterCoordX(double newX)
@@ -399,16 +434,52 @@ public abstract class SolidShape
     {
         visibleShapeSidePolygons = sidePolygons.clone();
         int numSides = sidePolygons.length;
+        int maxZPos = 500;
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        int shadeAlpha = 60 - (3*(zPos/20));//not sure if this is good
+        int shadeAlpha = 75 - (int)(75 * ((double)zPos/(double)maxZPos));//not sure if this is good
+        if(shadeAlpha < 0)
+        {
+            shadeAlpha = 0;
+        }
         //int shadeAlpha = 80;
         for(Polygon p : sidePolygons)
         {
             shadeAlpha -= (int)(30.0/(double)numSides);
             g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
+            //g.setColor(Color.WHITE);
+            //g.drawString(Integer.toString(shadeAlpha), (int)p.getBounds().getX(), (int)p.getBounds().getY());
         }
         
+    }
+    
+    public void shadeWaterReflections(Graphics g, Polygon[] sidePolygons)
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        visibleShapeSidePolygons = sidePolygons.clone();
+        int numSides = sidePolygons.length;
+        //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        int shadeAlpha = 60 - (3*(zPos/20));//not sure if this is good
+        //int shadeAlpha = 80;
+        Composite originalComposite = g2.getComposite();
+        int type = AlphaComposite.SRC_OVER;
+        
+        AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
+        g2.setComposite(transparencyComposite);
+        g2.setPaint(WorldPanel.grassTexture);
+        for(Polygon p : sidePolygons)
+        {
+            p.translate(0, (int)getScaledDistortedHeight(height));
+            shadeAlpha -= (int)(30.0/(double)numSides);
+            g2.setComposite(AlphaComposite.getInstance(type, (float)((double)shadeAlpha/255.0)));
+            //g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+            g.fillPolygon(p);
+        }
+        g2.setComposite(AlphaComposite.getInstance(type, (float)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+        
+        g2.setComposite(originalComposite);
+        
+    
     }
     
     public void shadeSidePolygonsWithZPos(Graphics g, Polygon[] sidePolygons, int inZPos)
@@ -416,10 +487,11 @@ public abstract class SolidShape
         visibleShapeSidePolygons = sidePolygons.clone();
         int numSides = sidePolygons.length;
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        int shadeAlpha = 60 + (int)(35*((double)(height-inZPos)/(double)height));//not sure if this is good
+        int shadeAlpha = 60 + (int)(35*((double)(height + zPos -inZPos)/(double)(height + zPos)));//not sure if this is good
         for(Polygon p : sidePolygons)
         {
             shadeAlpha -= (int)(30.0/(double)numSides);
+            System.out.println("this height: "+ height + " this zPos: " + inZPos);
             g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
         }

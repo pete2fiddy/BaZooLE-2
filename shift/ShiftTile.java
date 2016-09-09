@@ -10,7 +10,7 @@ public class ShiftTile extends Tile
 {
     public static final Color redAlpha = new Color(255, 0, 0, 100);
     Ladder ld;
-    private Flower f;
+    //private Flower f;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
@@ -24,7 +24,7 @@ public class ShiftTile extends Tile
         Waterfall wf = new Waterfall(this, 1, .5);
         ld = new Ladder(this, dp, .5, 1, .1);*/
         //Lake lake = new Lake(this, .5, .5, .8, .8);
-        f = new Flower(this,0.2,0.5,10, 1.0);
+        //f = new Flower(this,0.2,0.5,10, 1.0);
     }
     @Override
     public void draw(Graphics g)
@@ -90,7 +90,7 @@ public class ShiftTile extends Tile
         }else{
             drawWaterReflectionsWithColor(g, redAlpha);
         }
-        f.draw(g);
+        //f.draw(g);
         //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);
     }
     
