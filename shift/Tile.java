@@ -158,7 +158,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public Polygon getUpperPolygon(){return new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], 4);}
     
-    public void setPlayersTile(boolean b){isPlayersTile = b;}
+    //public void setPlayersTile(boolean b){isPlayersTile = b;}
     public Polygon getHitPolygon(){return hitPolygon;}    
     public Color getColor(){return color;}
     public void setColor(Color c){color = c;}
@@ -549,93 +549,108 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             //MouseInput.rightClicked = false;
         }else if(!tileClicked() && MouseInput.clicked && thisClicked && !inTransit)
         {
-            if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] >= x && convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] <= x+width)//(WorldPanel.getMouseUnitPos()[0] >= x && WorldPanel.getMouseUnitPos()[0] <= x+width)//if x is a straight line
+            if(Player.boundTile != this)
             {
-                //System.out.println("hi");
-                int endPos;
-                if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]) > y)
+                if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] >= x && convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] <= x+width)//(WorldPanel.getMouseUnitPos()[0] >= x && WorldPanel.getMouseUnitPos()[0] <= x+width)//if x is a straight line
                 {
-                    //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
-                    endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - length  + 1);//WorldPanel.getMouseUnitPos()[1]-length;
+                    //System.out.println("hi");
+                    int endPos;
+                    if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]) > y)
+                    {
+                        //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - length  + 1);//WorldPanel.getMouseUnitPos()[1]-length;
 
-                }else{
-                    endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
-                }
-                if(pathIsClear((int)x, (int)y, (int)x, endPos) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
-                {
-                    oldPos[0]=x;
-                    oldPos[1]=y;
-                    transitPos[0]=(int)x;
-                    movingX = x;
-                    movingY = y;
-                    transitPos[1] = endPos;
-                    /*if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]) > y)
-                    {
-                        transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
                     }else{
-                        transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
-                    }*/
-                    inTransit = true;
-                    
-                    //MouseInput.clicked = false;
-                    //MouseInput.rightClicked = false;
-                }else{
-                    thisClicked = false;
-                    tileJustUnclicked = true;
-                    if(heightChangeable)
-                    {
-                        MouseInput.scrollType = "Zoom";
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
                     }
-                    //MouseInput.clicked = false;
-                    //MouseInput.rightClicked = false;
-                    color = Toolbox.grassColor;
-                }
-            }else if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] >= y && convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] <= y+length)//(WorldPanel.getMouseUnitPos()[1] >= y && WorldPanel.getMouseUnitPos()[1] <= y+length)
-            {
-                int endPos;
-                if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0])>x)
-                {
-                    //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
-                    endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - width + 1);//WorldPanel.getMouseUnitPos()[1]-length;
+                    if(pathIsClear((int)x, (int)y, (int)x, endPos) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
+                    {
+                        oldPos[0]=x;
+                        oldPos[1]=y;
+                        transitPos[0]=(int)x;
+                        movingX = x;
+                        movingY = y;
+                        transitPos[1] = endPos;
+                        /*if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]) > y)
+                        {
+                            transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
+                        }else{
+                            transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
+                        }*/
+                        inTransit = true;
 
-                }else{
-                    endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
-                }
-                if(pathIsClear((int)x, (int)y, endPos, (int)y) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
-                {
-                    oldPos[0]=x;
-                    oldPos[1]=y;
-                    movingX = x;
-                    movingY = y;
-                    transitPos[0]=endPos;
-                    /*if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0])>x)
-                    {
-                        transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
-                        
+                        //MouseInput.clicked = false;
+                        //MouseInput.rightClicked = false;
                     }else{
-                        transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
-                    }*/
-                    transitPos[1]=(int)y;
-                    
-                    inTransit = true;
-                    
-                    //MouseInput.clicked = false;
-                    //MouseInput.rightClicked = false;
-                }else{
-                    thisClicked = false;
-                    tileJustUnclicked = true;
-                    if(heightChangeable)
-                    {
-                        MouseInput.scrollType = "Zoom";
+                        thisClicked = false;
+                        tileJustUnclicked = true;
+                        if(heightChangeable)
+                        {
+                            MouseInput.scrollType = "Zoom";
+                        }
+                        //MouseInput.clicked = false;
+                        //MouseInput.rightClicked = false;
+                        color = Toolbox.grassColor;
                     }
-                    //MouseInput.clicked = false;
-                    //MouseInput.rightClicked = false;
-                    color = Toolbox.grassColor;
+                }else if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] >= y && convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] <= y+length)//(WorldPanel.getMouseUnitPos()[1] >= y && WorldPanel.getMouseUnitPos()[1] <= y+length)
+                {
+                    int endPos;
+                    if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0])>x)
+                    {
+                        //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - width + 1);//WorldPanel.getMouseUnitPos()[1]-length;
+
+                    }else{
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
+                    }
+                    if(pathIsClear((int)x, (int)y, endPos, (int)y) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
+                    {
+                        oldPos[0]=x;
+                        oldPos[1]=y;
+                        movingX = x;
+                        movingY = y;
+                        transitPos[0]=endPos;
+                        /*if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0])>x)
+                        {
+                            transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
+
+                        }else{
+                            transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
+                        }*/
+                        transitPos[1]=(int)y;
+
+                        inTransit = true;
+
+                        //MouseInput.clicked = false;
+                        //MouseInput.rightClicked = false;
+                    }else{
+                        thisClicked = false;
+                        tileJustUnclicked = true;
+                        if(heightChangeable)
+                        {
+                            MouseInput.scrollType = "Zoom";
+                        }
+                        //MouseInput.clicked = false;
+                        //MouseInput.rightClicked = false;
+                        color = Toolbox.grassColor;
+                    }
                 }
+            }else{
+                thisClicked = false;
+                tileJustUnclicked = true;
+                if(heightChangeable)
+                        {
+                            MouseInput.scrollType = "Zoom";
+                        }
+                        //MouseInput.clicked = false;
+                        //MouseInput.rightClicked = false;
+                        color = Toolbox.grassColor;
             }
         }
         
     }
+    
+    abstract void drawReflections(Graphics g);
     
     public boolean pathIsClear(int startX, int startY, int endX, int endY)
     {
@@ -813,6 +828,12 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             }
         }
         return false;
+    }
+    
+    public boolean atCoord(double xIn, double yIn)
+    {
+        return (xIn >= getRawX() && xIn <= getRawX() + getRawWidth() && yIn >= getRawY() && yIn <= getRawY() + getRawLength());//!= this so that a tile can't be blocking its own path
+           
     }
     
     private void transitMovement()
@@ -1041,6 +1062,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             g.fillPolygon(points1[0], points1[1],points1[0].length);
             //g2.setComposite(AlphaComposite.getInstance(type, 0.57f));
             g.fillPolygon(points2[0], points2[1], points2[0].length);
+            
             //g2.setComposite(originalComposite);
         }
     }

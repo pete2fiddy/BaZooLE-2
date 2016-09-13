@@ -53,6 +53,13 @@ public class SpinTile extends Tile implements Runnable
         setSpin(((double)angleIn/180.0)*Math.PI);
         cylinder = new Prism(getMiddleCoordX(), getMiddleCoordY(), 0, ((double)diameterIn/2.0)/Math.sqrt(2), inHeight, 32);
     }
+    
+    @Override
+    public void drawReflections(Graphics g)
+    {
+        cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons());
+        cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
+    }
     @Override
     public void draw(Graphics g)
     {
@@ -78,8 +85,7 @@ public class SpinTile extends Tile implements Runnable
         {
             p.draw(g);
         }
-        cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons());
-        cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
+        
         
         drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
         

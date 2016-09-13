@@ -30,10 +30,21 @@ public class ElevatorShiftTile extends Tile
         DirtPath dp = new DirtPath(this, vertex, 0, 1);
     }
     @Override
+    public void drawReflections(Graphics g)
+    {
+        drawWaterReflectionCover(g);
+        if(!getClicked())
+        {
+            drawWaterReflectionsWithColor(g, yellowAlpha);
+        }else{
+            drawWaterReflectionsWithColor(g, redAlpha);
+        }
+    }
+    @Override
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        drawWaterReflectionCover(g);
+        //drawWaterReflectionCover(g);
         //heightRound += MouseInput.dHeight;
         if(MouseInput.dHeight < 0 && getHeight() > 5)
         {
@@ -105,12 +116,7 @@ public class ElevatorShiftTile extends Tile
                 wf.draw(g);
             }
         }
-        if(!getClicked())
-        {
-            drawWaterReflectionsWithColor(g, yellowAlpha);
-        }else{
-            drawWaterReflectionsWithColor(g, redAlpha);
-        }
+        
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //setHeight(getHeight()+1);
         //ld.draw(g);

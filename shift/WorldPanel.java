@@ -72,6 +72,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     MouseInput mouseInput = new MouseInput(this);
     Player player = new Player(0, 0, 5);
     private LevelLoader levelLoader = new LevelLoader(player, this);
+    private WaterRipple[] waterRipples = new WaterRipple[8];
     
     public WorldPanel()
     {
@@ -116,6 +117,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         tickTimer.setRepeats(true);
         tickTimer.start();
     }
+    
     private void initVariables()
     {
         worldX = screenWidth/2; worldY=3*screenHeight/5; rotation = Math.toRadians(75); spin = 0; spinCalc = spin+Math.PI + (Math.PI/4); radSpin = spinCalc - (Math.PI/2); tempQuadrant = spinQuadrant();
@@ -123,7 +125,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         frameCount = 0;
         scale = 2.0;
         ui = new UI(this);
-        
+        //fillWaterRipples();
         
     }
     private void initButtons()
@@ -208,14 +210,16 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         
         stripeMap(g, spin); 
         drawWater(g);
+        
         td2.draw(g);
+        
         fillBelowMap(g);
         if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//limit FPS. sometimes gets a negative timeout thrown. FIX
         {
             try {
                 //System.out.println("HI");
                 Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
-                Thread.sleep(50);
+                
             } catch (Exception ex) {
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -228,7 +232,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
        
         //drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
-        if(frameCount > 100)
+        if(frameCount > 20)
         {
             fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
             frameCount = 0;
@@ -237,6 +241,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         g.setFont(new Font("Futura", Font.PLAIN, 16));
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        
         repaint();
     }
     

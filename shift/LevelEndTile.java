@@ -34,10 +34,17 @@ public class LevelEndTile extends Tile
         setColor(Color.GRAY);
     }
 
+    @Override 
+    public void drawReflections(Graphics g)
+    {
+       
+        drawWaterReflectionCover(g);
+        drawWaterReflectionsWithColor(g, Color.MAGENTA);
+    }
     @Override
     public void draw(Graphics g) 
     {
-        drawWaterReflectionCover(g);
+        //drawWaterReflectionCover(g);
         if(Input.dRotation != 0 || MouseInput.dScale != 0)
         {
             spaceship.getThread().interrupt();
@@ -78,7 +85,7 @@ public class LevelEndTile extends Tile
             }
         }
         spaceship.draw(g);
-        drawWaterReflectionsWithColor(g, Color.MAGENTA);
+        //drawWaterReflectionsWithColor(g, Color.MAGENTA);
         //spaceship.initShapes();
     }
     

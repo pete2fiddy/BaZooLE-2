@@ -7,7 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ public class Player extends Toolbox implements Runnable
     private double fireAnimationCount = 0;
     private BufferedImage[] flameArray;
     public static boolean inSpaceship = false;
-    
+    private int armDirection = 1;
     private int ticksMoved = 0;
     private Path boundPath;
     private int hoverAmount = 0;
@@ -49,6 +53,7 @@ public class Player extends Toolbox implements Runnable
     private boolean freezePlayer = false;
     public static int xPoint = 0, yPoint = 0;
     public static double shadowExpand = 0;
+    private double armTheta = Math.PI/6.0;
     public Player(double xIn, double yIn, double heightIn)//x and y are relative to WorldPanel's x and y
     {
         x=xIn; y=yIn; height = heightIn;
@@ -316,7 +321,7 @@ public class Player extends Toolbox implements Runnable
     {
         for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            if(TileDrawer2.tileList.get(i).tileAtCoord((int)getX(), (int)getY()))
+            if(TileDrawer2.tileList.get(i).atCoord(x, y))
             {
                 return TileDrawer2.tileList.get(i);
             }
@@ -369,13 +374,21 @@ public class Player extends Toolbox implements Runnable
             g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*34)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
             g.fillRect((int)(getX() + (shrinkMultiplier*WorldPanel.scale*28)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
 
-            int[]xPoints1 = {(int)(getX() -(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*47))};
-            int[]yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(78-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(23-hoverAmount)))};
-
-
+            //int[]xPoints1 = {(int)(getX() -(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            //int[]yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(78-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(23-hoverAmount)))};
+            /*int[] xPoints1 ={(int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*48)),(int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*48))};
+            int[] yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount)))};
+            
             int[]xPoints2 = {(int)(getX() +(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            */
+            
+            
+            
+            
+            //Polygon arm1 = new Polygon(xPoints1, yPoints1, xPoints1.length);
+            //Polygon arm2 = new Polygon(xPoints2, yPoints1, xPoints2.length);
 
-
+            
 
             g.setColor(Color.WHITE);
 
@@ -397,16 +410,73 @@ public class Player extends Toolbox implements Runnable
 
             //int[]xPoints1 = {(int)(getX() -(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*47))};
             //int[]yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(78))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(23)))};
+            int armRotate1x = (int)(getX() - (shrinkMultiplier*WorldPanel.scale*34));
+            int armRotate2x = (int)(getX() + (shrinkMultiplier*WorldPanel.scale*34));
+            int armRotatey = (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount)));
+            
+            
+            
+            armTheta += armDirection*Math.toRadians(0.4);
+            
+            if(armTheta > Math.toRadians(20))
+            {
+                
+                armDirection = -1;
+            }else if(armTheta < 0)
+            {
+                armDirection = 1;
+            }
+            
+            
+            int[] xPoints1 = {armRotate1x, armRotate1x, armRotate1x - 4, armRotate1x - 4};
+            int[] yPoints1 = {armRotatey, armRotatey + 15, armRotatey+15, armRotatey};
+            int[] xPoints2 = {armRotate2x, armRotate2x + 4, armRotate2x+4, armRotate2x};
+            
+            Polygon arm1 = new Polygon();
+            Polygon arm2 = new Polygon();
+            for(int i = 0; i < xPoints1.length;i++)
+            {
+                double dy = yPoints1[i]-armRotatey;
+                double dx = xPoints1[i]-armRotate1x;
+                double thetaIn = Math.atan2(dy,dx);
+                double xyz=Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2));
+                
+                /*if(i != 2 && i!= 0)
+                {
+                    xyz = 15.0;
+                }else if (i == 2){
+                    xyz = 15.0*Math.sqrt(2);
+                }else{
+                    xyz=0;
+                }*/
+                //double radius = Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2));
+                //double r = Math.sqrt(Math.pow(dy,2) + Math.pow(dx,2));
+                
+                //g.drawString(Double.toString(r), 200, 500);
+               
+                
+                
+                arm1.addPoint(armRotate1x + (int)(WorldPanel.scale*xyz*Math.cos(thetaIn+armTheta)), armRotatey + (int)(scaledDistortedHeight(xyz*Math.sin(thetaIn+armTheta))));
+                arm2.addPoint(armRotate2x - (int)(WorldPanel.scale*xyz*Math.cos(thetaIn+armTheta)), armRotatey + (int)(scaledDistortedHeight(xyz*Math.sin(thetaIn+armTheta))));
+                //xPoints1[i] +=(int)(xyz*Math.cos(thetaIn+theta));
+                //yPoints1[i] +=(int)(xyz*Math.sin(thetaIn+theta));
+                
+               
+            }
             g.setColor(Color.GRAY);
-            g.fillPolygon(xPoints1, yPoints1, 4);
+            g.fillPolygon(arm1);
+            //g.fillPolygon(xPoints1, yPoints1, 4);
             g.setColor(Color.BLACK);
-            g.drawPolygon(xPoints1, yPoints1, 4);
+            g.drawPolygon(arm1);
+            //g.drawPolygon(xPoints1, yPoints1, 4);
 
             //int[]xPoints2 = {(int)(getX() +(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*47))};
             g.setColor(Color.GRAY);
-            g.fillPolygon(xPoints2, yPoints1, 4);
+            g.fillPolygon(arm2);
+            //g.fillPolygon(xPoints2, yPoints1, 4);
             g.setColor(Color.BLACK);
-            g.drawPolygon(xPoints2, yPoints1, 4);
+            g.drawPolygon(arm2);
+            //g.drawPolygon(xPoints2, yPoints1, 4);
 
             
 
@@ -561,7 +631,7 @@ public class Player extends Toolbox implements Runnable
     
     public Tile getBoundTile()
     {
-        getBoundPath().getBoundTile().setPlayersTile(true);
+        
         return getBoundPath().getBoundTile();
     }
     

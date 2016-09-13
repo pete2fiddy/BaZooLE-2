@@ -22,11 +22,11 @@ public class Toolbox
     
     
     
-    public double distortedHeight(int heightIn)//one of the distortedHeights is redundant...
+    public double distortedHeight(double heightIn)//one of the distortedHeights is redundant...
     {
         return Math.sin(WorldPanel.rotation)*heightIn;
     }  
-    public double scaledDistortedHeight(int heightIn)
+    public double scaledDistortedHeight(double heightIn)
     {
         return WorldPanel.scale * distortedHeight(heightIn);
     }

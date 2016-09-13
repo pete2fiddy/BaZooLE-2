@@ -491,7 +491,7 @@ public abstract class SolidShape
         for(Polygon p : sidePolygons)
         {
             shadeAlpha -= (int)(30.0/(double)numSides);
-            System.out.println("this height: "+ height + " this zPos: " + inZPos);
+            //System.out.println("this height: "+ height + " this zPos: " + inZPos);
             g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
         }

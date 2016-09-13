@@ -26,11 +26,23 @@ public class ShiftTile extends Tile
         //Lake lake = new Lake(this, .5, .5, .8, .8);
         //f = new Flower(this,0.2,0.5,10, 1.0);
     }
+    
+    @Override
+    public void drawReflections(Graphics g)
+    {
+        drawWaterReflectionCover(g);
+        if(!getClicked())
+        {
+            drawWaterReflections(g);
+        }else{
+            drawWaterReflectionsWithColor(g, redAlpha);
+        }
+    }
     @Override
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        drawWaterReflectionCover(g);
+        //drawWaterReflectionCover(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for(Waterfall wf : getWaterfalls())
         {
@@ -84,12 +96,7 @@ public class ShiftTile extends Tile
             g.setColor(Color.BLUE);
             g.fillPolygon(getHitPolygon());
         }
-        if(!getClicked())
-        {
-            drawWaterReflections(g);
-        }else{
-            drawWaterReflectionsWithColor(g, redAlpha);
-        }
+        
         //f.draw(g);
         //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);
     }

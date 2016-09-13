@@ -30,6 +30,14 @@ public class BlockTile extends Tile
         isEdgeBlock = isEdgeBlockIn;
     }
     
+    @Override
+    public void drawReflections(Graphics g)
+    {
+        
+        drawWaterReflectionCover(g);
+        drawWaterReflections(g);
+    
+    }
     public boolean getIsEdgeBlock(){return isEdgeBlock;}
     @Override
     /*
