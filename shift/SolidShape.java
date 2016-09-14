@@ -373,7 +373,7 @@ public abstract class SolidShape
                 a.add(new Area(p));
             }
         }else{
-            System.out.println("IS null!");
+            //System.out.println("IS null!");
         }
         
         int shadowResolution = 5;

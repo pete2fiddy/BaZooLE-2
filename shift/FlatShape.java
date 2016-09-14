@@ -152,7 +152,7 @@ public class FlatShape
             {
                 pointStartNumber = 0;
             }
-            //System.out.println("PointStartNumber: " + pointStartNumber);
+            
         }
         return sidePoints;
     }

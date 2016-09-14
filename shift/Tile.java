@@ -459,6 +459,11 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         }
     }
     
+    public void drawPlayer(Graphics g)
+    {
+        
+    }
+    
     public void drawPlayerShadow(Graphics g, int xIn, int yIn, double shadowExpand)
     {
         if(Player.boundTile != null && Player.boundTile == this)
@@ -529,7 +534,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             
             thisClicked = true;
             color = Color.RED;
-            System.out.println("Was clicked");
+            //System.out.println("Was clicked");
             //MouseInput.clicked = false;
             //MouseInput.rightClicked = false;
             if(heightChangeable)
@@ -1177,7 +1182,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             }
             MouseInput.clicked = false;
             MouseInput.rightClicked = false;
-            System.out.println("Was clicked");
+            //System.out.println("Was clicked");
         }else if(tileContainsPoint(MouseInput.x, MouseInput.y) && MouseInput.rightClicked && !thisClicked && !inTransit && Player.boundTile != this)
         {
             
@@ -1205,7 +1210,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             }
             MouseInput.clicked = false;
             MouseInput.rightClicked = false;
-            System.out.println("Was clicked");
+            //System.out.println("Was clicked");
         }
         /*else if(thisClicked && MouseInput.clicked)
         {

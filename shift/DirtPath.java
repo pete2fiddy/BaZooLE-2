@@ -3,6 +3,7 @@ package shift;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 
 
@@ -42,6 +43,12 @@ public class DirtPath extends Path
         g.setColor(evenDarkerBrown);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g.drawPolygon(getThreadedPathPolygon()[0], getThreadedPathPolygon()[1],getThreadedPathPolygon()[0].length);
-       
+        //drawPathDot(g);
+        g.setColor(Color.BLUE);
+        for(Point p : getLinks())
+        {
+            g.fillOval((int)p.getX() - 5, (int)p.getY() - 5, 10, 10);
+        }
+        //drawLinks(g);
     }
 }

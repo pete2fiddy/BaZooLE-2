@@ -108,6 +108,10 @@ public class Player extends Toolbox implements Runnable
         g.setColor(Color.BLACK);
         //g.fillOval((int)(getX())-playerRadius, (int)(getY() - getDistortedHeight())-playerRadius, playerRadius * 2, playerRadius * 2);
         drawPlayer(g);
+        if(playersChain != null)
+        {
+            g.drawString(playersChain.toString(), 500, 500);
+        }
         if(playersChain != null && MouseInput.clicked && playersChain.getChain().size() > 1)
         {
             
@@ -186,7 +190,7 @@ public class Player extends Toolbox implements Runnable
         {
             travelToClosestPath();
         }
-        System.out.println(freezePlayer);
+        //System.out.println(freezePlayer);
         
     }
     
@@ -490,6 +494,16 @@ public class Player extends Toolbox implements Runnable
                WorldPanel.scale*=1.5;
         }
         
+        for(int i = 0; i < pathChains.getChains().size(); i++)
+        {
+            pathChains.getChains().get(i).drawChain(g);
+        }
+        
+    }
+    
+    public static void drawPlayerOntoTile(Graphics g)
+    {
+        
     }
     
     private ArrayList<Double> convertPointsToXCoords(ArrayList<Point> points)
@@ -614,7 +628,7 @@ public class Player extends Toolbox implements Runnable
             {
                 freezePlayer = true;
                 addLevelDebounce = true;
-                System.out.println("level ended!");
+                //System.out.println("level ended!");
                 UI.addLevel();
                 LevelEndTile t = (LevelEndTile)boundPath.getBoundTile();
                 t.getSpaceship().setTakeoff(true);
@@ -768,11 +782,11 @@ public class Player extends Toolbox implements Runnable
     public void run() 
     {
         tick();
-        System.out.println("X: " + x);
+        /*System.out.println("X: " + x);
         System.out.println("Y: " + y);
         System.out.println("OffsetTheta: " + getOffsetTheta());
         System.out.println("Radius: " + getRadius());
-        System.out.println(getX());
+        System.out.println(getX());*/
         playersChain = pathChains.chainOnPoint(getX(), getY());
         if(playersChain != null)
         {

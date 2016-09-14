@@ -30,8 +30,8 @@ public class GameSaver
         try{
             jarPath = GameSaver.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
             saveFile = new File(new File(jarPath).getParentFile().getPath() + "/saves");
-            System.out.println("SAVE PATH: " + saveFile.getPath());
-            System.out.println("saved level was: " + getSavedLevel());
+            //System.out.println("SAVE PATH: " + saveFile.getPath());
+            //System.out.println("saved level was: " + getSavedLevel());
             //System.out.println(saveFile);
         }catch(Exception e)
         {
