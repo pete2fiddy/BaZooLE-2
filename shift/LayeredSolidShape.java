@@ -131,8 +131,10 @@ public class LayeredSolidShape extends SolidShape{
                 for(int j = 0; j < sides.length; j++)
                 {
                     sides[j] = threadedVisibleSidePolygons.get(i-1+ j);
+                    //g.setColor(Color.BLUE);
+                    //g.fillPolygon(sides[j]);
                 }
-                shadeSidePolygonsWithZPos(g, sides, flatShapes[((i)/(int)(Math.ceil((double)numSides/2.0)))].getZPos());
+                //shadeSidePolygonsWithZPos(g, sides, flatShapes[((i)/(int)(Math.ceil((double)numSides/2.0)))].getZPos());
                 /*g.setColor(Color.WHITE);
                 g.fillPolygon(sides[0]);
                 g.setColor(Color.GREEN);
@@ -144,6 +146,8 @@ public class LayeredSolidShape extends SolidShape{
         {
             Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
             //shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
+            //shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[((i)/(int)(Math.ceil((double)numSides/2.0)))].getZPos());
+            shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
         }
         
     }

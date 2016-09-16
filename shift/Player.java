@@ -94,7 +94,40 @@ public class Player extends Toolbox implements Runnable
         //PathChains.thread = new Thread(pathChains);
         //PathChains.thread.start();
     }
-    public void draw(Graphics g)
+    public double getSortDistanceConstant()
+    {
+        double cornerX, cornerY;
+        int slope;
+        double constant;
+        if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= (Math.PI/2.0))
+        {
+            cornerX = x;
+            cornerY = y;
+            slope = -1;
+            constant = (cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI/2.0 && WorldPanel.radSpin <= (Math.PI))
+        {
+            cornerX = x;
+            cornerY = y;
+            slope = 1;
+             constant = -(cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI && WorldPanel.radSpin <= (3*Math.PI/2.0))
+        {
+            cornerX = x;
+            cornerY = y;
+            slope = -1;
+            constant = -(cornerY-(slope*cornerX));
+        }else{
+            cornerX = x;
+            cornerY = y;
+            slope = 1;
+            constant = cornerY-(slope*cornerX);
+        }
+       
+        return constant;
+        
+    }
+    /*public void draw(Graphics g)
     {   
        
         //drawTurnBounds(g);   
@@ -146,6 +179,102 @@ public class Player extends Toolbox implements Runnable
         {
             playersChain.drawChain(g);
         }
+        if(inTransit)
+        {
+            followDirections();
+        }else if(!inTransit && playersChain != null){
+            
+            if(boundPath != null && boundPath.getBoundTile().getInTransit())
+            {
+                //NOT IT 
+                x = boundPath.getBoundTile().getRawX() + (boundPath.getBoundTile().getRawWidth() * boundPath.getVertex()[0]);
+                y = boundPath.getBoundTile().getRawY() + (boundPath.getBoundTile().getRawLength() * boundPath.getVertex()[1]);
+            }else{
+                if(playersChain.pathOnPoint((int)getX(), (int)getY()) != null)
+                {
+                    boundPath = playersChain.pathOnPoint((int)getX(), (int)getY());
+                }
+                if(boundPath != null)
+                {
+                    boundTile = boundPath.getBoundTile();
+                }
+            }
+        }
+        
+        if(getIntersectingTile() != null && getIntersectingTile().getClicked())
+        {
+            freezePlayer = false;
+        }
+        if(!inTransit && !freezePlayer && !boundPath.getBoundTile().getClicked())
+        {
+            travelToClosestPath();
+            
+           
+        }else if(boundPath.getBoundTile().getInTransit())
+        {
+            travelToClosestPath();
+        }
+        
+        if(getBoundPath() == null && !inTransit && !freezePlayer)
+        {
+            travelToClosestPath();
+        }
+        if(!playerOnPathPoint() && !inTransit && !freezePlayer)
+        {
+            travelToClosestPath();
+        }
+        //System.out.println(freezePlayer);
+        
+    }*/
+    
+    public void draw(Graphics g)
+    {   
+        
+        //drawTurnBounds(g);   
+        if(isClicked)
+        {
+            g.setColor(Color.RED);
+        }else{
+            g.setColor(Color.GREEN);
+        }
+        followPath();
+        g.setColor(Color.BLACK);
+        //g.fillOval((int)(getX())-playerRadius, (int)(getY() - getDistortedHeight())-playerRadius, playerRadius * 2, playerRadius * 2);
+        drawPlayer(g);
+        if(playersChain != null && MouseInput.clicked && playersChain.getChain().size() > 1)
+        {
+            
+            //System.out.println(playersChain.getIndex());
+            //System.out.println("hit");
+            //if(pathChains.chainOnPoint(MouseInput.x, MouseInput.y) != null)
+            {
+                //System.out.println(pathChains.chainOnPoint(MouseInput.x, MouseInput.y).getIndex());
+                //System.out.println();
+                if(playersChain.pointOnChain(MouseInput.x, MouseInput.y))
+                {
+                    directionsX = convertPointsToXCoords(playersChain.getDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y)));
+                    directionsY = convertPointsToYCoords(playersChain.getDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y)));
+                    directionsHeight = playersChain.getHeightDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y));
+                    x = directionsX.get(0);
+                    y = directionsY.get(0);
+                    //NOT IT
+                    inTransit = true;
+                    if(followMovingPlayer)
+                    {
+                        tempWorldX = WorldPanel.worldX;
+                        tempWorldY = WorldPanel.worldY;
+                        WorldPanel.worldX = (int)(WorldPanel.worldX + ((WorldPanel.screenWidth/2.0) - getX()));//tempWorldX +(int)(tempWorldX-getX() );
+                        WorldPanel.worldY = (int)(WorldPanel.worldY + ((WorldPanel.screenHeight/2.0)-getY()));
+                        //System.out.println("clicked navigable path");
+                    }
+                    
+                }
+            }
+        }
+        /*if(playersChain != null)
+        {
+            playersChain.drawChain(g);
+        }*/
         if(inTransit)
         {
             followDirections();
@@ -345,7 +474,7 @@ public class Player extends Toolbox implements Runnable
             xPoint = (int)getX();
             yPoint = (int)getY();
             
-            WorldPanel.scale/=1.5;
+            //WorldPanel.scale/=1.5;
             
             
             
@@ -362,7 +491,7 @@ public class Player extends Toolbox implements Runnable
             
 
 
-            double shrinkMultiplier = .33;
+            double shrinkMultiplier = 0.22;
             Image tempImage = flameArray[(int)fireAnimationCount].getScaledInstance((int)(WorldPanel.scale*26), (int)(WorldPanel.scale*distortedHeight(16)), Image.SCALE_AREA_AVERAGING);
             //g.drawImage(tempImage, (int)getX()-(int)(13*WorldPanel.scale), (int)(getY()+(WorldPanel.scale * (hoverAmount*shrinkMultiplier - distortedHeight(5)))), null);//flameArray[(int)fireAnimationCount], 10, 10, null);
             //Graphics2D g2 = (Graphics2D)g;
@@ -432,9 +561,9 @@ public class Player extends Toolbox implements Runnable
             }
             
             
-            int[] xPoints1 = {armRotate1x, armRotate1x, armRotate1x - 4, armRotate1x - 4};
-            int[] yPoints1 = {armRotatey, armRotatey + 15, armRotatey+15, armRotatey};
-            int[] xPoints2 = {armRotate2x, armRotate2x + 4, armRotate2x+4, armRotate2x};
+            int[] xPoints1 = {armRotate1x, armRotate1x, armRotate1x - 3, armRotate1x - 3};
+            int[] yPoints1 = {armRotatey, armRotatey + 10, armRotatey+10, armRotatey};
+            int[] xPoints2 = {armRotate2x, armRotate2x + 3, armRotate2x+3, armRotate2x};
             
             Polygon arm1 = new Polygon();
             Polygon arm2 = new Polygon();
@@ -491,19 +620,188 @@ public class Player extends Toolbox implements Runnable
                 g.drawString(boundPath.toString(), 100, 100);
                 g.drawString(boundTile.toString(), 100, 120);
             }*/
-               WorldPanel.scale*=1.5;
+               //WorldPanel.scale*=1.5;
         }
         
-        for(int i = 0; i < pathChains.getChains().size(); i++)
+        /*for(int i = 0; i < pathChains.getChains().size(); i++)
         {
             pathChains.getChains().get(i).drawChain(g);
-        }
+        }*/
         
     }
     
-    public static void drawPlayerOntoTile(Graphics g)
+    
+    public void drawTransparentPlayer(Graphics g)
     {
+        if(!inSpaceship)
+        {
+            int alphaAmount = 70;
+            //shadowExpand = 1.0+(-scaledDistortedHeight(hoverAmount + 15)/30);
+            //g.fillOval((int)(getX() - (10*WorldPanel.scale) - (shadowExpand/2)), (int)(getY()-((10)*WorldPanel.getShrink*WorldPanel.scale)-(shadowExpand/2)), (int)((20+(shadowExpand/2))*WorldPanel.scale), (int)((20+(shadowExpand/2))*WorldPanel.getShrink*WorldPanel.scale));
+            //xPoint = (int)getX();
+            //yPoint = (int)getY();
+            
+            //WorldPanel.scale/=1.5;
+            
+            
+            
+            Graphics2D g2 = (Graphics2D)g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            //hoverCount += Math.PI/40.0;
+            //fireAnimationCount += .25;
+            if(fireAnimationCount >= flameArray.length)
+            {
+                fireAnimationCount = 0;
+            }
+            hoverAmount = (int)(15*Math.sin(hoverCount))-15;
+            
+
+
+            double shrinkMultiplier = 0.22;
+            Image tempImage = flameArray[(int)fireAnimationCount].getScaledInstance((int)(WorldPanel.scale*26), (int)(WorldPanel.scale*distortedHeight(16)), Image.SCALE_AREA_AVERAGING);
+            //g.drawImage(tempImage, (int)getX()-(int)(13*WorldPanel.scale), (int)(getY()+(WorldPanel.scale * (hoverAmount*shrinkMultiplier - distortedHeight(5)))), null);//flameArray[(int)fireAnimationCount], 10, 10, null);
+            //Graphics2D g2 = (Graphics2D)g;
+            g2.setStroke(new BasicStroke(1));
+
+
+            
+            g.setColor(new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), alphaAmount));
+
+            g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*21)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(17-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*42), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(8)));
+            g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*28)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*56), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(62)));
+            g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*22)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(112-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*44), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(30)));
+            g.fillRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*34)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
+            g.fillRect((int)(getX() + (shrinkMultiplier*WorldPanel.scale*28)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
+
+            //int[]xPoints1 = {(int)(getX() -(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            //int[]yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(78-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(23-hoverAmount)))};
+            /*int[] xPoints1 ={(int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*48)),(int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*48))};
+            int[] yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount))), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22-hoverAmount)))};
+            
+            int[]xPoints2 = {(int)(getX() +(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            */
+            
+            
+            
+            
+            //Polygon arm1 = new Polygon(xPoints1, yPoints1, xPoints1.length);
+            //Polygon arm2 = new Polygon(xPoints2, yPoints1, xPoints2.length);
+
+            
+
+            g.setColor(new Color(255, 255, 255, alphaAmount));
+
+            g.fillOval((int)(getX()-(shrinkMultiplier*WorldPanel.scale*13)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale * distortedHeight(107-hoverAmount))), (int)(9*shrinkMultiplier*WorldPanel.scale), (int)(9*shrinkMultiplier*WorldPanel.scale));
+            g.fillOval((int)(getX()+(shrinkMultiplier*WorldPanel.scale*6)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale * distortedHeight(107-hoverAmount))), (int)(9*shrinkMultiplier*WorldPanel.scale), (int)(9*shrinkMultiplier*WorldPanel.scale));
+
+            g.setColor(new Color(0,0,0,alphaAmount));
+            g.fillOval((int)(getX()-(shrinkMultiplier*WorldPanel.scale*11)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale * distortedHeight(106-hoverAmount))), (int)(6*shrinkMultiplier*WorldPanel.scale), (int)(6*shrinkMultiplier*WorldPanel.scale));
+            g.fillOval((int)(getX()+(shrinkMultiplier*WorldPanel.scale*6)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale * distortedHeight(106-hoverAmount))), (int)(6*shrinkMultiplier*WorldPanel.scale), (int)(6*shrinkMultiplier*WorldPanel.scale));
+
+
+            g.setColor(new Color(0,0,0,alphaAmount));
+
+            g.drawRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*21)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(17-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*42), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(8)));
+            g.drawRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*28)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*56), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(62)));
+            g.drawRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*22)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(112-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*44), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(30)));
+            g.drawRect((int)(getX() - (shrinkMultiplier*WorldPanel.scale*34)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
+            g.drawRect((int)(getX() + (shrinkMultiplier*WorldPanel.scale*28)), (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount))), (int)(shrinkMultiplier*WorldPanel.scale*6), (int)(shrinkMultiplier*WorldPanel.scale*distortedHeight(16)));
+
+            //int[]xPoints1 = {(int)(getX() -(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() - (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            //int[]yPoints1 = {(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(79))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(78))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(22))),(int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(23)))};
+            int armRotate1x = (int)(getX() - (shrinkMultiplier*WorldPanel.scale*34));
+            int armRotate2x = (int)(getX() + (shrinkMultiplier*WorldPanel.scale*34));
+            int armRotatey = (int)(getY() - (shrinkMultiplier*WorldPanel.scale*distortedHeight(75-hoverAmount)));
+            
+            
+            
+            //armTheta += armDirection*Math.toRadians(0.4);
+            
+            /*if(armTheta > Math.toRadians(20))
+            {
+                
+                armDirection = -1;
+            }else if(armTheta < 0)
+            {
+                armDirection = 1;
+            }*/
+            
+            
+            int[] xPoints1 = {armRotate1x, armRotate1x, armRotate1x - 3, armRotate1x - 3};
+            int[] yPoints1 = {armRotatey, armRotatey + 10, armRotatey+10, armRotatey};
+            int[] xPoints2 = {armRotate2x, armRotate2x + 3, armRotate2x+3, armRotate2x};
+            
+            Polygon arm1 = new Polygon();
+            Polygon arm2 = new Polygon();
+            for(int i = 0; i < xPoints1.length;i++)
+            {
+                double dy = yPoints1[i]-armRotatey;
+                double dx = xPoints1[i]-armRotate1x;
+                double thetaIn = Math.atan2(dy,dx);
+                double xyz=Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2));
+                
+                /*if(i != 2 && i!= 0)
+                {
+                    xyz = 15.0;
+                }else if (i == 2){
+                    xyz = 15.0*Math.sqrt(2);
+                }else{
+                    xyz=0;
+                }*/
+                //double radius = Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2));
+                //double r = Math.sqrt(Math.pow(dy,2) + Math.pow(dx,2));
+                
+                //g.drawString(Double.toString(r), 200, 500);
+               
+                
+                
+                arm1.addPoint(armRotate1x + (int)(WorldPanel.scale*xyz*Math.cos(thetaIn+armTheta)), armRotatey + (int)(scaledDistortedHeight(xyz*Math.sin(thetaIn+armTheta))));
+                arm2.addPoint(armRotate2x - (int)(WorldPanel.scale*xyz*Math.cos(thetaIn+armTheta)), armRotatey + (int)(scaledDistortedHeight(xyz*Math.sin(thetaIn+armTheta))));
+                //xPoints1[i] +=(int)(xyz*Math.cos(thetaIn+theta));
+                //yPoints1[i] +=(int)(xyz*Math.sin(thetaIn+theta));
+                
+               
+            }
+            g.setColor(new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), alphaAmount));
+            g.fillPolygon(arm1);
+            //g.fillPolygon(xPoints1, yPoints1, 4);
+            g.setColor(new Color(0,0,0,alphaAmount));
+            g.drawPolygon(arm1);
+            //g.drawPolygon(xPoints1, yPoints1, 4);
+
+            //int[]xPoints2 = {(int)(getX() +(int)(shrinkMultiplier*WorldPanel.scale*43)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*32)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*36)), (int)(getX() + (int)(shrinkMultiplier*WorldPanel.scale*47))};
+            g.setColor(new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), alphaAmount));
+            g.fillPolygon(arm2);
+            //g.fillPolygon(xPoints2, yPoints1, 4);
+            g.setColor(new Color(0,0,0,alphaAmount));
+            g.drawPolygon(arm2);
+            //g.drawPolygon(xPoints2, yPoints1, 4);
+
+            
+
+            g2.setStroke(Toolbox.worldStroke);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            /*if(boundPath != null && boundTile != null)
+            {
+                g.drawString(boundPath.toString(), 100, 100);
+                g.drawString(boundTile.toString(), 100, 120);
+            }*/
+               //WorldPanel.scale*=1.5;
+        }
         
+        /*for(int i = 0; i < pathChains.getChains().size(); i++)
+        {
+            pathChains.getChains().get(i).drawChain(g);
+        }*/
+    }
+    
+    public void drawPlayersChain(Graphics g)
+    {
+        if(playersChain != null)
+        {
+            playersChain.drawChain(g);
+        }
     }
     
     private ArrayList<Double> convertPointsToXCoords(ArrayList<Point> points)
@@ -578,6 +876,18 @@ public class Player extends Toolbox implements Runnable
                     WorldPanel.worldY -= (dy*WorldPanel.straightUnit*Math.sin(WorldPanel.radSpin)/numTicks);
                     WorldPanel.worldX -= (dy*WorldPanel.straightUnit*Math.cos(WorldPanel.radSpin)/numTicks);
 
+                }
+                if(boundPath != null && playersChain.pathOnPoint(x, y) != null && playersChain.pathOnPoint(x, y) != boundPath)
+                {
+                    if(playersChain.pathOnPoint(x, y)!=null)
+                    {
+                        boundPath = playersChain.pathOnPoint(x, y);
+                        boundTile = boundPath.getBoundTile();
+                    }
+                    /*if(boundPath != null)
+                    {
+                        
+                    }*/
                 }
                 //NOT IT
                 x += dx/numTicks;

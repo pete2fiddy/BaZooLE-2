@@ -48,7 +48,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     private int walkedOn = 0;
     private boolean heightChangeable = false;
     private double movingX = 0, movingY = 0;
-    
+    private Player player;
     //private double transitX = 0, transitY = 0;
     
     
@@ -73,9 +73,13 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         TileDrawer2.tileList.add(this);
         
         thread.start();
-        addRandomFlowers(5, 15);
+        player = getPlayer();
+        //addRandomFlowers(5, 15);
+        addRandomScenery();
+        //Mushroom testMushroom = new Mushroom(this, .5, .5, 1);
     }
     
+    public void setPlayer(Player p){player = p;}
     public void setSpinnable(boolean b){spinnable = b;}
     
     public void removePath(int index)
@@ -100,12 +104,40 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public void drawAssortedScenery(Graphics g)
     {
-        drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
         
+        boolean playerDrawn = false;
+        if(player.getSortDistanceConstant() <= assortedScenery.get(0).getSortDistanceConstant())
+        {
+            //playerDrawn = true;
+            //drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        }
         for(int i = 0; i < assortedScenery.size(); i++)
         {
             assortedScenery.get(i).draw(g);
+            /*if(Player.boundTile == this)
+            {
+                System.out.println(assortedScenery.get(i).getMiddleSortDistanceConstant());
+            }*/
+            if(i < assortedScenery.size() - 1 && player.getSortDistanceConstant() <= assortedScenery.get(i).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(i+1).getMiddleSortDistanceConstant() && !playerDrawn)
+            {
+                /*if(Player.boundTile == this)
+                {
+                    System.out.println("PLAYER: " + player.getSortDistanceConstant());
+                }*/
+                //System.out.println("called");
+                playerDrawn = true;
+                drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+            }
+            //System.out.println();
+            
         }
+        if(!playerDrawn)
+        {
+            playerDrawn = true;
+            drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        }
+        
+        //System.out.println();
         /*for(Scenery s : assortedScenery)
         {
             s.draw(g);
@@ -123,6 +155,19 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             double randomY = 0.05*(int)(Math.random()/radiusApart);
             int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
             Flower f = new Flower(this,randomX,randomY,randomHeight, 1.0);
+        }
+    }
+    private void addRandomScenery()
+    {
+        addRandomFlowers(5,15);
+        int numShrooms = (int)(Math.round(Math.random()));
+        double radiusApart = 0.05;
+        for(int i = 0; i < numShrooms; i++)
+        {
+            double randomX = 0.05*(int)(Math.random()/radiusApart);
+            double randomY = 0.05*(int)(Math.random()/radiusApart);
+            //int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
+            Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
         }
     }
     public ArrayList<Scenery> getSceneryList(){return sceneryList;}
@@ -459,18 +504,15 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         }
     }
     
-    public void drawPlayer(Graphics g)
-    {
-        
-    }
     
-    public void drawPlayerShadow(Graphics g, int xIn, int yIn, double shadowExpand)
+    public void drawPlayer(Graphics g, int xIn, int yIn, double shadowExpand)
     {
-        if(Player.boundTile != null && Player.boundTile == this)
+        if((player != null && player.getIntersectingTile() != null && player.getIntersectingTile() == this))// || (Player.inTransit && Player.boundTile != null && Player.boundTile == this))
         {
             g.setColor(new Color(0,0,0,50));
             int expandPixels = 2;
             g.fillOval((int)Math.round(xIn - ((6 + (expandPixels*shadowExpand))*WorldPanel.scale)), (int)Math.round(yIn-((6 + (expandPixels*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale)), (int)Math.round((12 + (expandPixels*2*shadowExpand))*WorldPanel.scale), (int)Math.round((12+(expandPixels*2*shadowExpand))*WorldPanel.getShrink*WorldPanel.scale));
+            player.draw(g);
         }
     }
     
@@ -501,6 +543,16 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             assortedScenery.set(smallestIndex, tempScenery);
         }
     }
+    
+    public void drawHitPolygon(Graphics g)
+    {
+        if(inTransit)
+        {
+            g.setColor(new Color(255, 0, 0, 80));
+            g.fillPolygon(hitPolygon);
+        }
+    }
+    
     private void sortTrees()
     {
         for(int i = 0; i < trees.size(); i++)
@@ -841,6 +893,40 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
            
     }
     
+    private Polygon getUpdatedHitPolygon()
+    {
+        /*int[]xPoints = { (int)convertToPoint(oldPos[0] + 0.25, oldPos[1])[0], (int)(convertToPoint(oldPos[0] + width - 0.25, oldPos[1]))[0], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[0]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[0])};
+        int[]yPoints = { (int)convertToPoint(oldPos[0] + 0.25, oldPos[1])[1], (int)(convertToPoint(oldPos[0]+ width - 0.25, oldPos[1]))[1], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[1]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[1])};*/
+        //int[]xPoints = { (int)convertToPoint(movingX + 0.25, movingY)[0], (int)(convertToPoint(movingX + width - 0.25, movingY))[0], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[0]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[0])};
+        //int[]yPoints = { (int)convertToPoint(movingX + 0.25, movingY)[1], (int)(convertToPoint(movingX + width - 0.25, movingY))[1], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[1]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[1])};
+        //return new Polygon(xPoints, yPoints, 4);
+        if(oldPos[0] == transitPos[0])//y is moving
+        {
+            if(transitPos[1] < oldPos[1])
+            {
+                int[]xPoints = { (int)convertToPoint(movingX + 0.25, movingY)[0], (int)(convertToPoint(movingX + width - 0.25, movingY))[0], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[0]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[0])};
+                int[]yPoints = { (int)convertToPoint(movingX + 0.25, movingY)[1], (int)(convertToPoint(movingX + width - 0.25, movingY))[1], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[1]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[1])};
+                return new Polygon(xPoints, yPoints, 4);
+            }else{
+                int[]xPoints = { (int)convertToPoint(movingX + 0.25, movingY + length)[0], (int)(convertToPoint(movingX + width - 0.25, movingY + length))[0], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] - 0.25 + length)[0]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] - 0.25 + length)[0])};
+                int[]yPoints = { (int)convertToPoint(movingX + 0.25, movingY + length)[1], (int)(convertToPoint(movingX + width - 0.25, movingY + length))[1], (int)(convertToPoint(transitPos[0] + width - 0.25, transitPos[1] - 0.25 + length)[1]), (int)(convertToPoint(transitPos[0] + 0.25, transitPos[1] - 0.25 + length)[1])};
+                return new Polygon(xPoints, yPoints, 4);
+            }
+        }else//x is moving
+        {
+            if(transitPos[0] < oldPos[0])
+            {
+                int[] xPoints = {(int)convertToPoint(movingX, movingY + 0.25)[0], (int)convertToPoint(movingX, movingY + length - 0.25)[0], (int)convertToPoint(transitPos[0] + 0.25, transitPos[1] + length - 0.25)[0], (int)convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[0]};
+                int[] yPoints = {(int)convertToPoint(movingX, movingY + 0.25)[1], (int)convertToPoint(movingX, movingY + length - 0.25)[1], (int)convertToPoint(transitPos[0] + 0.25, transitPos[1] + length - 0.25)[1], (int)convertToPoint(transitPos[0] + 0.25, transitPos[1] + 0.25)[1]};
+                return new Polygon(xPoints, yPoints, 4);
+            }else{
+                int[] xPoints = {(int)convertToPoint(movingX + width, movingY + 0.25)[0], (int)convertToPoint(movingX + width, movingY + length - 0.25)[0], (int)convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + length - 0.25)[0], (int)convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[0]};
+                int[] yPoints = {(int)convertToPoint(movingX + width, movingY + 0.25)[1], (int)convertToPoint(movingX + width, movingY + length - 0.25)[1], (int)convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + length - 0.25)[1], (int)convertToPoint(transitPos[0] + width - 0.25, transitPos[1] + 0.25)[1]};
+                return new Polygon(xPoints, yPoints, 4);
+            }
+        }
+    }
+    
     private void transitMovement()
     {
         if(inTransit)
@@ -1167,7 +1253,8 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         }else{
             color = Toolbox.grassColor;
         }
-        if(tileContainsPoint(MouseInput.x, MouseInput.y)&& MouseInput.clicked && !thisClicked && !inTransit && !Player.pathIsClicked && Player.boundTile != this)
+        
+        if(tileContainsPoint(MouseInput.x, MouseInput.y)&& MouseInput.clicked && !thisClicked && !inTransit && !Player.pathIsClicked && Player.boundTile != this && !Player.inTransit)
         {
             thisClicked = true;
             
@@ -1183,7 +1270,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             MouseInput.clicked = false;
             MouseInput.rightClicked = false;
             //System.out.println("Was clicked");
-        }else if(tileContainsPoint(MouseInput.x, MouseInput.y) && MouseInput.rightClicked && !thisClicked && !inTransit && Player.boundTile != this)
+        }else if(tileContainsPoint(MouseInput.x, MouseInput.y) && MouseInput.rightClicked && !thisClicked && !inTransit && Player.boundTile != this && !Player.inTransit)
         {
             
             if(heightChangeable)
@@ -1358,6 +1445,10 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         if(numClickedTiles() > 1)
         {
             selectClosestOfClickedTiles();
+        }
+        if(inTransit)
+        {
+            hitPolygon = getUpdatedHitPolygon();
         }
         sortAssortedScenery();
         //sortTrees();

@@ -67,6 +67,7 @@ public class BreakShiftTile extends Tile
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
+        drawHitPolygon(g);
         //drawWaterReflectionCover(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for(Waterfall wf : getWaterfalls())

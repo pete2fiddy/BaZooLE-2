@@ -171,12 +171,13 @@ public class LevelLoader
             }
             sortTiles = true;
             player.setFreezePlayer(false);
+            
         }catch(Exception e)
         {
             System.out.println(e);
         }
         isLoading = false;
-        
+        //setTileInfo();
         
     }
     
@@ -260,6 +261,14 @@ public class LevelLoader
             //here
         }
         return thisTile;
+    }
+    
+    private void setTileInfo()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            TileDrawer2.tileList.get(i).setPlayer(player);
+        }
     }
     
     private static SpinTile spawnSpinTile(String line)

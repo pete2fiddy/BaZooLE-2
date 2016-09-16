@@ -73,7 +73,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     Player player = new Player(0, 0, 5);
     private LevelLoader levelLoader = new LevelLoader(player, this);
     private WaterRipple[] waterRipples = new WaterRipple[8];
-    
+    private Toolbox toolbox = new Toolbox(this, player);
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -224,7 +224,9 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        player.draw(g);
+        //player.draw(g);
+        player.drawPlayersChain(g);
+        player.drawTransparentPlayer(g);
         ui.draw(g);
         renderTextures();
         

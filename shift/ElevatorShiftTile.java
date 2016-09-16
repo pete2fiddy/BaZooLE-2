@@ -44,6 +44,7 @@ public class ElevatorShiftTile extends Tile
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
+        drawHitPolygon(g);
         //drawWaterReflectionCover(g);
         //heightRound += MouseInput.dHeight;
         if(MouseInput.dHeight < 0 && getHeight() > 5)

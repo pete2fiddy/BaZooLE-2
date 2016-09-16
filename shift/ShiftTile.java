@@ -42,6 +42,7 @@ public class ShiftTile extends Tile
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
+        drawHitPolygon(g);
         //drawWaterReflectionCover(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for(Waterfall wf : getWaterfalls())
@@ -91,11 +92,11 @@ public class ShiftTile extends Tile
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //setHeight(getHeight()+1);
         //ld.draw(g);
-        if(getHitPolygon() != null)
+        /*if(getHitPolygon() != null)
         {
             g.setColor(Color.BLUE);
             g.fillPolygon(getHitPolygon());
-        }
+        }*/
         
         //f.draw(g);
         //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);

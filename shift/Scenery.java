@@ -63,6 +63,41 @@ public abstract class Scenery extends Toolbox implements Runnable
         return constant;
         
     }
+    
+    public double getMiddleSortDistanceConstant()
+    {
+        double cornerX, cornerY;
+        int slope;
+        double constant;
+        if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= (Math.PI/2.0))
+        {
+            cornerX = getCoordX();
+            cornerY = getCoordY();
+            slope = -1;
+            constant = (cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI/2.0 && WorldPanel.radSpin <= (Math.PI))
+        {
+            cornerX = getCoordX();
+            cornerY = getCoordY();
+            slope = 1;
+             constant = -(cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI && WorldPanel.radSpin <= (3*Math.PI/2.0))
+        {
+            cornerX = getCoordX();
+            cornerY = getCoordY();
+            slope = -1;
+            constant = -(cornerY-(slope*cornerX));
+        }else{
+            cornerX = getCoordX();
+            cornerY = getCoordY();
+            slope = 1;
+            constant = cornerY-(slope*cornerX);
+        }
+       
+        return constant;
+        
+    
+    }
     public double getCoordX(){return boundTile.getRawX() + (offsetX * boundTile.getRawWidth());}
     public double getCoordY(){return boundTile.getRawY() + (offsetY * boundTile.getRawLength());}
     public double convertOffsetXToCoord(double offset){return boundTile.getRawX() + (offset * boundTile.getRawWidth());}

@@ -84,7 +84,10 @@ public class LevelEndTile extends Tile
                 wf.draw(g);
             }
         }
-        spaceship.draw(g);
+        
+        
+        drawAssortedScenery(g);//see if I need to draw all the scenery individually when calling this.
+        //spaceship.draw(g);
         //drawWaterReflectionsWithColor(g, Color.MAGENTA);
         //spaceship.initShapes();
     }

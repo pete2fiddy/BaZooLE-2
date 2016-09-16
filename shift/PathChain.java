@@ -40,7 +40,7 @@ public class PathChain
         return index;
     }
     
-    public Path pathOnPoint(int x, int y)
+    public Path pathOnPoint(double x, double y)
     {
         for(int i = 0; i < chain.size(); i++)
         {

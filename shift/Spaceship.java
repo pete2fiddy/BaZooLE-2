@@ -78,6 +78,7 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
         initShapes();
         //initShapes();
         thread.start();
+        tileIn.addAssortedScenery(this);
     }
 
     public void initShapes()

@@ -87,7 +87,7 @@ public class SpinTile extends Tile implements Runnable
         }
         
         
-        drawPlayerShadow(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
         cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons());
         //cylinder.draw(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
