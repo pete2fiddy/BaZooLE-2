@@ -86,8 +86,23 @@ public class Mushroom extends Scenery
     @Override
     public void draw(Graphics g) 
     {
-        shapes[1].fillDropShadow(g, getBoundTile().getHeight());
+        /*stemPrism.setCenterCoordX(getCoordX());
+        stemPrism.setCenterCoordY(getCoordY());
+        petalPrism.setCenterCoordX(getCoordX());
+        petalPrism.setCenterCoordY(getCoordY());*/
+        
+        shapes[0].setCenterCoordX(getCoordX());
+        shapes[1].setCenterCoordX(getCoordX());
+        shapes[0].setCenterCoordY(getCoordY());
+        shapes[1].setCenterCoordY(getCoordY());
+        
         shapes[0].updateShapePolygons();
+        shapes[1].updateShapePolygons();
+        LayeredSolidShape s = (LayeredSolidShape)shapes[1];
+        s.updateFlatShapes(getCoordX(), getCoordY());
+        
+        shapes[1].fillDropShadow(g, getBoundTile().getHeight());
+        //shapes[0].updateShapePolygons();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         g.setColor(Color.WHITE);
         shapes[0].fill(g);

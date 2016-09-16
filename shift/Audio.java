@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.io.BufferedInputStream;
@@ -20,6 +15,7 @@ http://freemusicarchive.org/music/Poor_Alexei_1268/Music_For_Headphones/
 */
 public class Audio implements LineListener
 {
+    private boolean mute = true;
     private Clip musicClip1, musicClip2;
     private AudioInputStream musicStream1, musicStream2;
     private int backgroundClipNumber = 1;
@@ -41,15 +37,15 @@ public class Audio implements LineListener
             InputStream in2 = new BufferedInputStream(inClone2);
             musicStream2 = AudioSystem.getAudioInputStream(in2);
             musicClip2.open(musicStream2);
-            //musicClip2.addLineListener(this);
             
             currentClip = musicClip1;
             musicClip1.drain();
             //musicClip1.setMicrosecondPosition(musicClip1.getMicrosecondLength() - 30000000);
             musicVolume = (FloatControl)musicClip1.getControl(FloatControl.Type.MASTER_GAIN);
-            //musicVolume.setValue(-10.0f);
-            musicClip1.start();//starts the music.
-            
+            if(!mute)
+            {
+                musicClip1.start();//starts the music. 
+            }
         }catch(Exception e)
         {
             System.out.println(e);
@@ -64,7 +60,6 @@ public class Audio implements LineListener
     @Override
     public void update(LineEvent event) 
     {
-        
         if(event.getType() == LineEvent.Type.STOP)
         {
             backgroundClipNumber++;

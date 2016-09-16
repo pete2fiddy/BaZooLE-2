@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 /*
 Lake is a scenery extension. Holds lakes in tiles.
 */
-
 public class Lake extends Scenery implements Runnable
 {
     private final Color dirtBrown = new Color(87, 59, 12), lakeBlue = new Color(30, 144, 255) ;//instance finals for lake color and dirt color 
