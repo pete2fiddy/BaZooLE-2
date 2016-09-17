@@ -19,14 +19,27 @@ public class Toolbox
     
     public static BasicStroke worldStroke = new BasicStroke((float)(1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
     public static Color grassColor = new Color(14, 155, 14);
+    public static WorldPanel worldPanel;
+    public static Player player;
+    public Toolbox(WorldPanel wpIn, Player playerIn)
+    {
+        worldPanel = wpIn;
+        player = playerIn;
+    }
+    public Toolbox()
+    {
+        
+    }
+    public Player getPlayer()
+    {
+        return player;
+    }
     
-    
-    
-    public double distortedHeight(int heightIn)//one of the distortedHeights is redundant...
+    public double distortedHeight(double heightIn)//one of the distortedHeights is redundant...
     {
         return Math.sin(WorldPanel.rotation)*heightIn;
     }  
-    public double scaledDistortedHeight(int heightIn)
+    public double scaledDistortedHeight(double heightIn)
     {
         return WorldPanel.scale * distortedHeight(heightIn);
     }

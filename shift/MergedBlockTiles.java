@@ -91,6 +91,12 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         {
             g.fillPolygon(p);
         }
+        for(Tile t : getFrontTiles())
+        {
+            t.shadeSides(g);
+            //t.drawWaterReflectionCover(g);
+            //t.drawWaterReflections(g);
+        }
         g.setColor(Color.BLACK);
         
         //g2.draw(getFrontArea());
@@ -102,7 +108,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
            frontSideArea.add(new Area(p));
            
         }
-        g2.draw(frontSideArea);
+        //g2.draw(frontSideArea);
         //g2.draw(getFrontArea());
         //g2.draw(getArea());
         
@@ -140,9 +146,15 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         g2.setPaint(WorldPanel.grassTexture);
         g2.fill(getArea());
         g.setColor(Color.BLACK);
-        for(Polygon p:getBackPolygons())
+        /*for(Polygon p:getBackPolygons())
         {
             g.drawPolygon(p);
+        }*/
+        for(Tile t : getBackTiles())
+        {
+            t.reverseShadeSides(g);
+            //t.drawWaterReflectionCover(g);
+            t.drawWaterReflections(g);
         }
     }
     
@@ -261,6 +273,66 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         return giveReturn;    
     }
     
+    private ArrayList<Tile> getFrontTiles()
+    {
+        ArrayList<Tile> giveReturn = new ArrayList<Tile>();
+        for(int i = 0; i < blockTiles.size(); i++)
+        {
+            switch(WorldPanel.spinQuadrant())
+            {
+                case 1:
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+                case 2:
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+                case 3:
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+
+                    }
+                    break;
+                case 4: 
+                    if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == (-WorldPanel.worldTilesHeight/2))
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+            
+            }
+        }
+        return giveReturn;    
+    }
+    
     private ArrayList<Polygon> getBackPolygons()
     {
         ArrayList<Polygon> giveReturn = new ArrayList<Polygon>();
@@ -312,6 +384,66 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         }
         return giveReturn;  
     }
+    
+    private ArrayList<Tile> getBackTiles()
+    {
+        ArrayList<Tile> giveReturn = new ArrayList<Tile>();
+        for(int i = 0; i < blockTiles.size(); i++)
+        {
+            switch(WorldPanel.spinQuadrant())
+            {
+                case 1:
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                case 2:
+                    if(blockTiles.get(i).getRawX() == (WorldPanel.worldTilesWidth/2)-blockTiles.get(i).getRawWidth() && blockTiles.get(i).getRawY() == (-WorldPanel.worldTilesHeight/2))
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+                case 3:
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+                case 4: 
+                    if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2 && blockTiles.get(i).getRawLength() > blockTiles.get(i).getRawWidth())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }else if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength())
+                    {
+                        giveReturn.add(blockTiles.get(i));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4));
+                        //giveReturn.add(new Polygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4));
+                    }
+                    break;
+            
+            }
+        }
+        return giveReturn;  
+    }
+    
     
     private Area getBackArea()
     {

@@ -25,12 +25,14 @@ public class TileDrawer2 implements Runnable
     private MergedBlockTiles mbt = new MergedBlockTiles();
     private MergedPaths mp = new MergedPaths();
     private Thread thread;
+    private WaterRipple[] waterRipples=new WaterRipple[8];
     public TileDrawer2()
     {
         ll= new LevelLoader();   
         ll.spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
+        fillWaterRipples();
     }
     
     public Thread getThread()
@@ -43,13 +45,21 @@ public class TileDrawer2 implements Runnable
         thread = t;
     }
     
+    private void fillWaterRipples()
+    {
+        for(int i = 0; i < waterRipples.length; i++)
+        {
+            double scale = Math.random()*2;
+            double rippleX = (int)((WorldPanel.worldTilesWidth-scale)*Math.random())-((WorldPanel.worldTilesWidth-scale)/2);
+            double rippleY=(int)((WorldPanel.worldTilesHeight-scale)*Math.random())-((WorldPanel.worldTilesHeight-scale)/2);
+            
+            waterRipples[i]=new WaterRipple(rippleX, rippleY, Math.random()*2);
+        }
+    }
     public void draw(Graphics g)
     {
         //tileList = TileSorter2.sortByDistance(tileList);
-        mbt.getThread().interrupt();
-        mbt.setThread(new Thread(mbt));
-        mbt.getThread().start();
-        mbt.draw(g);
+        
         mp.getThread().interrupt();
         mp.setThread(new Thread(mp));
         mp.getThread().start();
@@ -72,6 +82,27 @@ public class TileDrawer2 implements Runnable
         {
             if(tileList.get(i).getClass() != BlockTile.class)
             {
+                tileList.get(i).drawReflections(g);
+            }else{
+                BlockTile bt = (BlockTile)tileList.get(i);
+                if(!bt.getIsEdgeBlock())
+                {
+                    tileList.get(i).drawReflections(g);
+                }
+            }
+        }
+        for(WaterRipple wr : waterRipples)
+        {
+            wr.draw(g);
+        }
+        mbt.getThread().interrupt();
+        mbt.setThread(new Thread(mbt));
+        mbt.getThread().start();
+        mbt.draw(g);
+        for(int i = 0; i < tileList.size(); i++)
+        {
+            if(tileList.get(i).getClass() != BlockTile.class)
+            {
                 tileList.get(i).draw(g);
             }else{
                 BlockTile bt = (BlockTile)tileList.get(i);
@@ -81,6 +112,7 @@ public class TileDrawer2 implements Runnable
                 }
             }
         }
+        
         for(WaterDroplet wd : waterDroplets)
         {
             wd.draw(g);

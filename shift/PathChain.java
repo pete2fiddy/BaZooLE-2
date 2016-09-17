@@ -40,7 +40,7 @@ public class PathChain
         return index;
     }
     
-    public Path pathOnPoint(int x, int y)
+    public Path pathOnPoint(double x, double y)
     {
         for(int i = 0; i < chain.size(); i++)
         {
@@ -59,18 +59,43 @@ public class PathChain
     
     private void buildChain()
     {
+        //System.out.println("Is called");
         chain.add(startingPath);//adds the starting path
         if(startingPath.numPathConnections() != 0)
         {
             chain.add(startingPath.getNeighboringPaths().get(0));//adds the path directly after it if there is one to add. Chains list is currently size 2.
+            //System.out.println("numPaths: " + chain.size());
             Path currentPath = chain.get(chain.size()-1);//makes the current path the last one in the list.
-            try{
+            //try{
                 while(currentPath.numPathConnections() > 1)//iterates until it reaches the end.
                 {
-                    chain.add(currentPath.getNeighboringPathsExcluding(chain.get(chain.size()-2)).get(0));//adds the next path in the chain -- excludes the one already found. Note this will not work for paths that fork out. Can only be one continuous line. 
-                    currentPath = chain.get(chain.size()-1);
+                    if(currentPath != chain.get(0))
+                    {
+                        chain.add(currentPath.getNeighboringPathsExcluding(chain.get(chain.size()-2)).get(0));//adds the next path in the chain -- excludes the one already found. Note this will not work for paths that fork out. Can only be one continuous line. 
+                        currentPath = chain.get(chain.size()-1);
+                    }else{
+                        return;
+                    }
+                    if(chain.size() > 10)
+                    {
+                        System.out.println("is big chain");
+                    }
+                    /*if(chain.size() > 1)
+                    {
+                        if(currentPath != chain.get(0))
+                        {
+                            chain.add(currentPath.getNeighboringPathsExcluding(chain.get(chain.size()-2)).get(0));//adds the next path in the chain -- excludes the one already found. Note this will not work for paths that fork out. Can only be one continuous line. 
+                            currentPath = chain.get(chain.size()-1);
+                        }else{
+                            System.out.println("Looped");
+                            //return;
+                        }
+                    }else{
+                        chain.add(currentPath.getNeighboringPathsExcluding(chain.get(chain.size()-2)).get(0));//adds the next path in the chain -- excludes the one already found. Note this will not work for paths that fork out. Can only be one continuous line. 
+                        currentPath = chain.get(chain.size()-1);
+                    }*/
                 }
-            }catch(Exception e){}
+           // }catch(Exception e){}
         }
     }
     

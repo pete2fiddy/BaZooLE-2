@@ -48,7 +48,7 @@ public class MouseInput extends MouseAdapter implements ActionListener
         if (notches > 0) {
             if(scrollType.equals("Zoom"))
             {
-                dScale = .03;//smoother scroll??? find a way to make it not speed up scaling as it shrinks -- perhaps a way to set dScale compared to the amount it is shrunk already?
+                dScale = .03*WorldPanel.scale;//smoother scroll??? find a way to make it not speed up scaling as it shrinks -- perhaps a way to set dScale compared to the amount it is shrunk already?
             }else if(scrollType.equals("Height"))
             {
                 dHeight = 1.25;
@@ -56,7 +56,7 @@ public class MouseInput extends MouseAdapter implements ActionListener
         } else if (notches < 0) {
             if(scrollType.equals("Zoom"))
             {
-                dScale = -.03;
+                dScale = -.03*WorldPanel.scale;
             }
             else if(scrollType.equals("Height"))
             {

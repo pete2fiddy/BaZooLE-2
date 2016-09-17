@@ -118,7 +118,7 @@ public class LevelLoader
                             addSceneryToTile(st, line);
                             if(line.contains("Start"))
                             {
-                                System.out.println("Player start tile set to shift!");
+                                //System.out.println("Player start tile set to shift!");
                                 startTile = st;
                             }
                         }else if(line.contains("Spin:"))
@@ -126,7 +126,7 @@ public class LevelLoader
                             SpinTile st = spawnSpinTile(line);
                             if(line.contains("Start"))
                             {
-                                System.out.println("Player start tile set to spin!");
+                                //System.out.println("Player start tile set to spin!");
                                 startTile = st;
                             }
                         }
@@ -176,11 +176,13 @@ public class LevelLoader
             }
             sortTiles = true;
             player.setFreezePlayer(false);
+            
         }catch(Exception e)
         {
             System.out.println(e);
         }
         isLoading = false;
+        //setTileInfo();
         
     }
     
@@ -250,7 +252,7 @@ public class LevelLoader
             
             double[] pathValues = getPathValues(line.substring(line.indexOf("Path: ", lastPathIndex+1) + "Path: ".length(), line.indexOf(" |", lastPathIndex+1)));
             String curLine = line.substring(lastPathIndex, line.indexOf(" |", lastPathIndex + 1));
-            System.out.println(curLine);
+            //System.out.println(curLine);
             lastPathIndex = line.indexOf(" |", lastPathIndex)+1;//line.indexOf(" |", lastPathIndex);//line.indexOf(" |", line.indexOf("Path: ", lastPathIndex));//line.indexOf("Path: ", lastPathIndex)+ "Path: ".length();
             //System.out.println(lastPathIndex);
             if(!curLine.contains("Straight"))
@@ -264,6 +266,14 @@ public class LevelLoader
             //here
         }
         return thisTile;
+    }
+    
+    private void setTileInfo()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            TileDrawer2.tileList.get(i).setPlayer(player);
+        }
     }
     
     private static SpinTile spawnSpinTile(String line)

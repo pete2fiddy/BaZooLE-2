@@ -39,7 +39,7 @@ public class Input extends KeyAdapter
         }
         if(keyCode == e.VK_A)
         {
-            dSpin = (Math.PI/200.0);//used to be /200.0
+            dSpin = (Math.PI/200.0);
         }
         if(keyCode == e.VK_D)
         {

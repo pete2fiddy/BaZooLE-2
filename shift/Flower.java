@@ -1,20 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
-/**
- *
- * @author phusisian
- */
 public class Flower extends Scenery implements Runnable
 {
-
     private RectPrism stemPrism;
     private RectPrism[] leafPrisms;
     private RectPrism petalPrism;
@@ -41,11 +31,8 @@ public class Flower extends Scenery implements Runnable
             }else{
                 leafPrisms[leafNumber] = new RectPrism(getCoordX()+(stemSize/2.0)+(leafWidth/2.0), getCoordY(), getBoundTile().getHeight() + i, leafWidth, 0.02*flowerScaleIn, 3);
             }
-            
             leafNumber++;
         }
-        //tileIn.addScenery(this);
-        //petalColor = (new Color(176,23,31));
         setRandomPetalColor();
         setBoundingBoxDimensions(stemPrism.getWidth(), stemPrism.getLength());
         tileIn.addAssortedScenery(this);
@@ -66,7 +53,7 @@ public class Flower extends Scenery implements Runnable
         petalPrism.setCenterCoordY(getCoordY());
         stemPrism.updateShapePolygons();
         petalPrism.updateShapePolygons();
-        
+        petalPrism.fillDropShadow(g, getBoundTile().getHeight());
         for(RectPrism rp : leafPrisms)
         {
             g.setColor(Toolbox.grassColor);
@@ -77,25 +64,20 @@ public class Flower extends Scenery implements Runnable
                     rp.updateShapePolygons();
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
-                    rp.draw(g);
+                    rp.fill(g);
                 }
-                
             }else{
                 if(rp.getCenterCoordX() < getCoordX())
                 {
                     rp.setCenterCoordX(getCoordX()-(stemSize/2.0)-(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
-                    rp.draw(g);
+                    rp.fill(g);
                 }
             }
-            //rp.setCenterCoordX(getCoordX());
-            //rp.setCenterCoordY(getCoordY());
-            
-            
         }
         g.setColor(Toolbox.grassColor);
-        stemPrism.draw(g);
+        stemPrism.fill(g);
         for(RectPrism rp : leafPrisms)//done this way to sort leaves by draw order.
         {
             g.setColor(Toolbox.grassColor);
@@ -106,25 +88,20 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordX(getCoordX()-(stemSize/2.0)-(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
-                    
-                    rp.draw(g);
+                    rp.fill(g);
                 }
-                
             }else{
                 if(rp.getCenterCoordX() > getCoordX())
                 {
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
-                    rp.draw(g);
+                    rp.fill(g);
                 }
             }
         }
         g.setColor(petalColor);
-        petalPrism.draw(g);
-        //g.setColor(Color.WHITE);
-        //g.drawString(Double.toString((int)(100.0*getSortDistanceConstant())/100.0), (int)getX(), (int)getY());
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        petalPrism.fill(g);
     }
     
     @Override public void run()
@@ -143,18 +120,14 @@ public class Flower extends Scenery implements Runnable
             petalPrism.updateShapePolygons();
             for(int i = 0; i < leafPrisms.length; i++)
             {
-
                 if(i%2 == 0)
                 {
                     leafPrisms[i].setCenterCoordX(getCoordX()-(stemSize/2.0));
                     leafPrisms[i].setCenterCoordY(getCoordY());
-                    //leafPrisms[leafNumber] = new RectPrism(getCoordX()-(stemSize/2.0)-(leafWidth/2.0), getCoordY(), getBoundTile().getHeight() + i, leafWidth, 0.02*flowerScaleIn, 3);
                 }else{
                     leafPrisms[i].setCenterCoordX(getCoordX()+(stemSize/2.0));
                     leafPrisms[i].setCenterCoordY(getCoordY());
-                    //leafPrisms[leafNumber] = new RectPrism(getCoordX()+(stemSize/2.0)+(leafWidth/2.0), getCoordY(), getBoundTile().getHeight() + i, leafWidth, 0.02*flowerScaleIn, 3);
                 }
-
                 leafPrisms[i].setZPos(getBoundTile().getHeight() + heightCount);
                 leafPrisms[i].updateShapePolygons();
                 heightCount += heightAdd;
@@ -164,5 +137,4 @@ public class Flower extends Scenery implements Runnable
             
         }
     }
-    
 }

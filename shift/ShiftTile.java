@@ -10,7 +10,7 @@ public class ShiftTile extends Tile
 {
     public static final Color redAlpha = new Color(255, 0, 0, 100);
     Ladder ld;
-    private Flower f;
+    //private Flower f;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
@@ -24,13 +24,26 @@ public class ShiftTile extends Tile
         Waterfall wf = new Waterfall(this, 1, .5);
         ld = new Ladder(this, dp, .5, 1, .1);*/
         //Lake lake = new Lake(this, .5, .5, .8, .8);
-        f = new Flower(this,0.2,0.5,10, 1.0);
+        //f = new Flower(this,0.2,0.5,10, 1.0);
+    }
+    
+    @Override
+    public void drawReflections(Graphics g)
+    {
+        drawWaterReflectionCover(g);
+        if(!getClicked())
+        {
+            drawWaterReflections(g);
+        }else{
+            drawWaterReflectionsWithColor(g, redAlpha);
+        }
     }
     @Override
     public void draw(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        drawWaterReflectionCover(g);
+        drawHitPolygon(g);
+        //drawWaterReflectionCover(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         for(Waterfall wf : getWaterfalls())
         {
@@ -56,10 +69,10 @@ public class ShiftTile extends Tile
             lake.draw(g);
         }*/
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        drawSidePolygons(g);//draws the sides of the tile.
+        //drawSidePolygons(g);//draws the sides of the tile.
         g.setColor(Color.BLACK);
         
-        g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+        //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         for(Path path : getPathList())
         {
             path.draw(g);
@@ -79,18 +92,13 @@ public class ShiftTile extends Tile
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //setHeight(getHeight()+1);
         //ld.draw(g);
-        if(getHitPolygon() != null)
+        /*if(getHitPolygon() != null)
         {
             g.setColor(Color.BLUE);
             g.fillPolygon(getHitPolygon());
-        }
-        if(!getClicked())
-        {
-            drawWaterReflections(g);
-        }else{
-            drawWaterReflectionsWithColor(g, redAlpha);
-        }
-        f.draw(g);
+        }*/
+        
+        //f.draw(g);
         //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);
     }
     

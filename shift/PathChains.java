@@ -29,44 +29,63 @@ public class PathChains implements Runnable
         return giveReturn;
     }
     
+    public ArrayList<PathChain> getChains(){return chains;}
+    
     public void rebuildChains()
     {
-        chains.clear();
-        int chainsMade = 0;
-        for(int i = 0; i < paths.size(); i++)
-        {
-            
-            if(paths.get(i).numPathConnections() == 0)
+        try{
+            chains.clear();
+            int chainsMade = 0;
+            for(int i = 0; i < paths.size(); i++)
             {
-                chains.add(new PathChain(paths.get(i), chainsMade, true));
-                chainsMade ++;
-            }else if(paths.get(i).numPathConnections() == 1)
-            {
-                boolean dupeFound = false;
-                for(PathChain pc : chains)
+
+                if(paths.get(i).numPathConnections() == 0)
                 {
-                    if(pc.getChain().get(pc.chainSize()-1)==paths.get(i))
+                    chains.add(new PathChain(paths.get(i), chainsMade, true));
+                    chainsMade ++;
+                }else if(paths.get(i).numPathConnections() >= 1)
+                {
+                    boolean dupeFound = false;
+                    for(PathChain pc : chains)
                     {
-                        dupeFound = true;
+                        if(pc.getChain().get(pc.chainSize()-1)==paths.get(i))
+                        {
+                            dupeFound = true;
+                        }
+                    }
+                    if(!dupeFound)
+                    {
+                        chains.add(new PathChain(paths.get(i), chainsMade, false));
+                        chainsMade ++;
                     }
                 }
-                if(!dupeFound)
-                {
-                    chains.add(new PathChain(paths.get(i), chainsMade, false));
-                    chainsMade ++;
-                }
             }
+        }catch(Exception e){}
+    }
+    
+    private int getNumPathsInChains()
+    {
+        int count = 0;
+        for(int i = 0; i < chains.size(); i++)
+        {
+            count += chains.get(i).getChain().size();
         }
+        return count;
     }
     
     public PathChain chainOnPoint(double x, double y)
     {
+        try{
         for(int i = 0; i < chains.size(); i++)
         {
             if(chains.get(i).pointOnChain(x, y))
             {
                 return chains.get(i);
             }
+        }
+        }catch(Exception e)
+        {
+            
         }
         return null;
     }

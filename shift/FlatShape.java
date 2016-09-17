@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.awt.Color;
@@ -10,15 +5,12 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 
-/**
- *
- * @author phusisian
- */
 public class FlatShape
 {
     private double xCoord, yCoord, width, length, spin;
     private double centerCoordX, centerCoordY;
     private int zPos, numSides;
+    
     public FlatShape(double inX, double inY, int inZPos, double radius, int sideNumberIn)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
     {
         centerCoordX = inX;
@@ -29,7 +21,6 @@ public class FlatShape
         width = radius*(Math.sqrt(2))*2.0;//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
         length = radius*(Math.sqrt(2))*2.0;//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
         spin = Math.PI/4.0;//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
-        
         numSides = sideNumberIn;
     }
     
@@ -43,7 +34,6 @@ public class FlatShape
         width = widthIn*(Math.sqrt(2));//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
         length = lengthIn*(Math.sqrt(2));//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
         spin = Math.PI/4.0;//made so that the edges of the shape are pallel to world lines. by default spawns in so that corners are parralel
-        
         numSides = sideNumberIn;
     }
     
@@ -51,11 +41,16 @@ public class FlatShape
     public double getCenterCoordY(){return centerCoordY;}
     public double getWidth(){return width;}
     public double getLength(){return length;}
+    public double getSpin(){return spin;}
+    public int getZPos(){return zPos;}
+    public int getNumSides(){return numSides;}
+    
     public void setCenterCoordX(double newX)
     {
         centerCoordX = newX;
         xCoord = newX - (double)(width/2.0);
     }
+    
     public void setCenterCoordY(double newY)
     {
         centerCoordY = newY;
@@ -66,10 +61,6 @@ public class FlatShape
     {
         zPos = newZPos;
     }
-    
-    public double getSpin(){return spin;}
-    public int getZPos(){return zPos;}
-    public int getNumSides(){return numSides;}
     
     public int[][] getShapePolyPoints()//bottom left, bottom right, top right, top left.
     {
@@ -114,7 +105,6 @@ public class FlatShape
         double radius = Math.sqrt( Math.pow((WorldPanel.worldX + x) - WorldPanel.worldX, 2) + Math.pow((WorldPanel.worldY + y) - WorldPanel.worldY,2));
         double offsetTheta = Math.atan2(y, x);
         return WorldPanel.worldY - (WorldPanel.getShrink * radius * WorldPanel.straightUnit * Math.sin(WorldPanel.radSpin + offsetTheta));
-        
     }
     
     public double[] convertToPoint(double x, double y)
@@ -128,7 +118,6 @@ public class FlatShape
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons)
     {
         int numSides = sidePolygons.length;
-        //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         int shadeAlpha = 80;
         for(Polygon p : sidePolygons)
         {
@@ -136,7 +125,6 @@ public class FlatShape
             g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
         }
-        
     }
     
     public Point[] getVisibleSidePoints()
@@ -152,10 +140,22 @@ public class FlatShape
             {
                 pointStartNumber = 0;
             }
-            //System.out.println("PointStartNumber: " + pointStartNumber);
         }
         return sidePoints;
     }
+    
+    public void fillDropShadow(Graphics g, int lowerHeight)
+    {
+        int[][] points = getShapePolyPoints().clone();
+        for(int i = 0; i < points[1].length; i++)
+        {
+            points[1][i] += getScaledDistortedHeight(zPos-lowerHeight);
+        }
+        
+        g.setColor(new Color(0, 0, 0, 70));
+        g.fillPolygon(points[0], points[1], points[0].length);
+    }
+    
     public int getPointSideStartNumber()
     {
         int polyStartNumber = ((int)((WorldPanel.radSpin+spin+(Math.PI*2.0/(double)(numSides*2.0)))/((Math.PI*2.0)/(double)numSides))%numSides);

@@ -26,7 +26,7 @@ public class ShapeGroup
     {
         for(SolidShape ss : shapeList)
         {
-            ss.setSpin(newSpin);
+            //ss.setSpin(newSpin);
         }
     }
 }

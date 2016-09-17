@@ -3,6 +3,7 @@ package shift;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -21,14 +22,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
 public class WorldPanel extends JPanel implements ActionListener, Runnable, ChangeListener
 {
+    private Timer tickTimer;
     private boolean drawWater = true;
     private int tempQuadrant, frameCount;
     private long startTime;
@@ -51,7 +55,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     private UI ui;
     private double colorRotation = 0;
     public static BufferedImage grassImage, leavesImage;
-    public static TexturePaint grassTexture, leavesTexture;
+    public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
     private Thread thread;
     private JButton turnLeft, turnRight, resetLevel;
@@ -68,7 +72,8 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     MouseInput mouseInput = new MouseInput(this);
     Player player = new Player(0, 0, 5);
     private LevelLoader levelLoader = new LevelLoader(player, this);
-    
+    private WaterRipple[] waterRipples = new WaterRipple[8];
+    private Toolbox toolbox = new Toolbox(this, player);
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -104,7 +109,15 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         
         prism = new RectPrism(0, 0, 50, 1.0, 2.0, 100);
         tick();
+        thread = new Thread(this);
+        
+        thread.start();
+        tickTimer = new Timer(5, this);
+        tickTimer.setActionCommand("tick");
+        tickTimer.setRepeats(true);
+        tickTimer.start();
     }
+    
     private void initVariables()
     {
         worldX = screenWidth/2; worldY=3*screenHeight/5; rotation = Math.toRadians(75); spin = 0; spinCalc = spin+Math.PI + (Math.PI/4); radSpin = spinCalc - (Math.PI/2); tempQuadrant = spinQuadrant();
@@ -112,9 +125,8 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         frameCount = 0;
         scale = 2.0;
         ui = new UI(this);
-        thread = new Thread(this);
+        //fillWaterRipples();
         
-        //thread.start();
     }
     private void initButtons()
     {
@@ -146,7 +158,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         resetLevel = new JButton("Reset Level");
         resetLevel.addActionListener(this);
         resetLevel.setActionCommand("resetLevel");
-        resetLevel.setBounds(0, 150, 100, 50);
+        resetLevel.setBounds(10, 120, 100, 50);
         add(resetLevel);
         resetLevel.setVisible(false);
         //add(randomShapes);
@@ -175,50 +187,68 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     {
         super.paintComponent(g);
         
+        frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
+        startTime = System.nanoTime();
         
-        tick();
+        //thread.interrupt();
+        //thread = new Thread(this);
+        //thread.start();
+        //tick();
+        
         
         colorRotation += Math.PI/5000.0;
         setBackground(new Color(0, 65 + (int)(Math.abs(100*Math.sin(colorRotation))), 198));
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        //g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        //g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         
-        startTime = System.nanoTime();
-        //tick();
-        frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
-        drawMap(g);
-        ArrayList<Tile> tempTile = ts.holdList;//create a temp list of held tiles to be drawn. Maybe is clunky for no reason, but was originally made to skirt the list being modified while it was drawn.
-        //td.draw(g, tempTile);//passes the tempTile list to the tileDrawer. See if I need to "clone" the holdlist for it to be faster... or something
-        //td.draw(g, TileDrawer.tileList);
+        
+        //drawMap(g);
+        //ArrayList<Tile> tempTile = ts.holdList;//create a temp list of held tiles to be drawn. Maybe is clunky for no reason, but was originally made to skirt the list being modified while it was drawn.
+        
+        stripeMap(g, spin); 
+        drawWater(g);
         
         td2.draw(g);
+        
         fillBelowMap(g);
         if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//limit FPS. sometimes gets a negative timeout thrown. FIX
         {
             try {
+                //System.out.println("HI");
                 Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
-            } catch (InterruptedException ex) {
+                
+            } catch (Exception ex) {
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
-        getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
-        //System.out.println(getFPS);
-        player.draw(g);
-        //g.setColor(Color.RED);
-        //g.fillOval(worldX -5 , worldY - 5, 10, 10);
+        //player.draw(g);
+        player.drawPlayersChain(g);
+        player.drawTransparentPlayer(g);
         ui.draw(g);
-        try{
-            //Thread.sleep(100);
-        }catch(Exception e)
+        renderTextures();
+        
+        
+        getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
+       
+        //drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
+        if(frameCount > 20)
         {
-            
+            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
+            frameCount = 0;
         }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setFont(new Font("Futura", Font.PLAIN, 16));
+        g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        
+        repaint();
+    }
+    
+    private void renderTextures()
+    {
         try{
             
             double rotationRequired = radSpin;
@@ -227,7 +257,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
             AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
             AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-            grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*256), (int)(scale*256*getShrink)));
+            grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
             
             leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
             
@@ -283,11 +313,6 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         {
             System.out.println(e);
         }
-        //g.drawString(Boolean.toString(Tile.tileCurrentlyMoving), 300, 300);
-        //g.setColor(Color.GREEN);
-        //prism.updateShapePolygons();
-        //prism.draw(g);
-        repaint();
     }
     public static int[] getMouseUnitPos()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
     {
@@ -347,14 +372,14 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
                 g.drawPolygon(xPoints, yPoints, 4);
             }
         }
-        drawRotationLine(g);
-        stripeMap(g, spin); 
-        drawWater(g);
+        //drawRotationLine(g);
+        
         
     }
     private void drawDebugInfo(Graphics g)//draws important dev info.
     {
         g.setColor(Color.BLACK);
+        g.setFont(new Font("Futura", Font.PLAIN, 12));
         for(int i = 0; i<4; i++)
         {
             g.drawString(i+"",mapPoints[0][i], mapPoints[1][i]);
@@ -583,10 +608,11 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         radSpin += Input.dSpin;
         rotation+=Input.dRotation;
         /*resets the spins if they go over or under a full revolution*/
-        if(rotation > Math.PI/2.0){
-            rotation = Math.PI/2.0;
-        }else if(rotation<.1){
-            rotation = .1;
+        
+        if(rotation > Math.PI/2.3){
+            rotation = Math.PI/2.3;
+        }else if(rotation<0.5){
+            rotation = .5;
         }if(radSpin > (2*Math.PI)){
             radSpin -= 2*Math.PI;
         }else if(radSpin < 0){
@@ -658,7 +684,10 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public void actionPerformed(ActionEvent e) 
     {
         String command = e.getActionCommand();
-        if(command.equals("randomShapes"))
+        if(command.equals("tick"))
+        {
+            tick();
+        }else if(command.equals("randomShapes"))
         {
             
 
@@ -722,21 +751,13 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     @Override
     public void run() 
     {
+        
         //tick();
-        while(true)
-        {
-            try {
-                synchronized(loopNotify)
-                {
-                    loopNotify.wait(); 
-                    tick();
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
-        }
+        
     }
+    
+    
 
     @Override
     public void stateChanged(ChangeEvent e) 

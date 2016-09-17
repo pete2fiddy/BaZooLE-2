@@ -1,41 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- *
- * @author phusisian
- */
 public class GameSaver 
 {
     private String jarPath;
     public static File saveFile;
     private static BufferedWriter bufferedWriter;
-    
 
     public GameSaver(boolean newGame)
     {
         try{
             jarPath = GameSaver.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
             saveFile = new File(new File(jarPath).getParentFile().getPath() + "/saves");
-            System.out.println("SAVE PATH: " + saveFile.getPath());
-            System.out.println("saved level was: " + getSavedLevel());
-            //System.out.println(saveFile);
         }catch(Exception e)
         {
-            System.out.println(e);
+            System.err.println(e);
         }
         try{
             if(!saveFile.exists())
@@ -51,10 +37,9 @@ public class GameSaver
                 ll.spawnLevel(UI.level);
             }
             bufferedWriter = new BufferedWriter(new FileWriter(saveFile.getAbsoluteFile()));
-            //bufferedWriter.close();
         }catch(Exception e)
         {
-            System.out.println(e);
+            System.err.println(e);
         }
         Runtime.getRuntime().addShutdownHook(new Thread()
         {
@@ -69,7 +54,6 @@ public class GameSaver
                 }
             }
         });
-        
     }
     
     public int getSavedLevel()
@@ -84,7 +68,7 @@ public class GameSaver
             }
         }catch(Exception e)
         {
-            
+            System.err.println(e);
         }
         return 1;
     }
@@ -93,11 +77,9 @@ public class GameSaver
     {
         try{
             bufferedWriter.write(" "+Integer.toString(level));
-            
         }catch(Exception e)
         {
-            
+            System.err.println(e);
         }
     }
 }
-
