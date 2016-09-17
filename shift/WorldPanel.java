@@ -1,12 +1,9 @@
 package shift;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
@@ -16,21 +13,17 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
-public class WorldPanel extends JPanel implements ActionListener, Runnable, ChangeListener
+public class WorldPanel extends JPanel implements ActionListener, ChangeListener
 {
     private Timer tickTimer;
     private boolean drawWater = true;
@@ -57,9 +50,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     public static BufferedImage grassImage, leavesImage;
     public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
-    private Thread thread;
     private JButton turnLeft, turnRight, resetLevel;
-    RectPrism prism;
     Audio a = new Audio();
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
     
@@ -74,6 +65,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
     private LevelLoader levelLoader = new LevelLoader(player, this);
     private WaterRipple[] waterRipples = new WaterRipple[8];
     private Toolbox toolbox = new Toolbox(this, player);
+    
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -94,28 +86,7 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         ts = new TileSorter();
         td = new TileDrawer();
         
-        try{
-            grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
-    
-            grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
-            
-            leavesImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Leaves3.png"));
-            
-            leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, leavesImage.getWidth(), leavesImage.getHeight()));
-        }catch(Exception e)
-        {
-            System.out.println(e);
-        }
-        
-        prism = new RectPrism(0, 0, 50, 1.0, 2.0, 100);
-        tick();
-        thread = new Thread(this);
-        
-        thread.start();
-        tickTimer = new Timer(5, this);
-        tickTimer.setActionCommand("tick");
-        tickTimer.setRepeats(true);
-        tickTimer.start();
+        tickTimer.start();//started here so that everything is initialized by the time the timer calls them
     }
     
     private void initVariables()
@@ -125,9 +96,22 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         frameCount = 0;
         scale = 2.0;
         ui = new UI(this);
-        //fillWaterRipples();
+        try{
+            grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+            
+            leavesImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Leaves3.png"));
+            leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, leavesImage.getWidth(), leavesImage.getHeight()));
+        }catch(Exception e)
+        {
+            System.err.println(e);
+        }
+        tickTimer = new Timer(5, this);
+        tickTimer.setActionCommand("tick");
+        tickTimer.setRepeats(true);
         
     }
+    
     private void initButtons()
     {
         volumeSlider.addChangeListener(this);
@@ -746,15 +730,6 @@ public class WorldPanel extends JPanel implements ActionListener, Runnable, Chan
         }else{
             return worldTilesHeight/2;
         }
-    }
-    
-    @Override
-    public void run() 
-    {
-        
-        //tick();
-            
-        
     }
     
     
