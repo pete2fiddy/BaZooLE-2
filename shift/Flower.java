@@ -54,16 +54,20 @@ public class Flower extends Scenery implements Runnable
         stemPrism.updateShapePolygons();
         petalPrism.updateShapePolygons();
         petalPrism.fillDropShadow(g, getBoundTile().getHeight());
+        g.setColor(Toolbox.grassColor);
+                    stemPrism.fill(g);
         for(RectPrism rp : leafPrisms)
         {
             g.setColor(Toolbox.grassColor);
             if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= Math.PI)
             {
-                if(rp.getCenterCoordX() > getCoordX())
+                if(rp.getCenterCoordX() >= getCoordX())
                 {
+                    
                     rp.updateShapePolygons();
                     rp.setCenterCoordX(getCoordX()+(stemSize/2.0)+(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
+                    //g.setColor(Color.RED);
                     rp.fill(g);
                 }
             }else{
@@ -72,12 +76,14 @@ public class Flower extends Scenery implements Runnable
                     rp.setCenterCoordX(getCoordX()-(stemSize/2.0)-(leafWidth/2.0));
                     rp.setCenterCoordY(getCoordY());
                     rp.updateShapePolygons();
+                    //g.setColor(Color.BLUE);
                     rp.fill(g);
+                    //g.setColor(Toolbox.grassColor);
+                    //stemPrism.fill(g);
                 }
             }
         }
-        g.setColor(Toolbox.grassColor);
-        stemPrism.fill(g);
+        
         for(RectPrism rp : leafPrisms)//done this way to sort leaves by draw order.
         {
             g.setColor(Toolbox.grassColor);
