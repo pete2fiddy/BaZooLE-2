@@ -43,12 +43,12 @@ public class PathChains implements Runnable
                 {
                     chains.add(new PathChain(paths.get(i), chainsMade, true));
                     chainsMade ++;
-                }else if(paths.get(i).numPathConnections() >= 1)
+                }else if(paths.get(i).numPathConnections() == 1)
                 {
                     boolean dupeFound = false;
                     for(PathChain pc : chains)
                     {
-                        if(pc.getChain().get(pc.chainSize()-1)==paths.get(i))
+                        if(!pc.getIsIsolated() && pc.getChain().get(pc.chainSize()-1)==paths.get(i))
                         {
                             dupeFound = true;
                         }

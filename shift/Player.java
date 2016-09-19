@@ -250,8 +250,9 @@ public class Player extends Toolbox implements Runnable
             {
                 //System.out.println(pathChains.chainOnPoint(MouseInput.x, MouseInput.y).getIndex());
                 //System.out.println();
-                if(playersChain.pointOnChain(MouseInput.x, MouseInput.y))
+                if(playerCanTravelToPath(MouseInput.x, MouseInput.y))//if(playersChain.pointOnChain(MouseInput.x, MouseInput.y))
                 {
+                    playersChain = getPlayersChain(MouseInput.x, MouseInput.y);
                     directionsX = convertPointsToXCoords(playersChain.getDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y)));
                     directionsY = convertPointsToYCoords(playersChain.getDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y)));
                     directionsHeight = playersChain.getHeightDirections(playersChain.pathOnPoint((int)getX(), (int)getY()), playersChain.pathOnPoint(MouseInput.x, MouseInput.y));
@@ -301,28 +302,53 @@ public class Player extends Toolbox implements Runnable
         {
             freezePlayer = false;
         }
-        if(!inTransit && !freezePlayer && !boundPath.getBoundTile().getClicked())
-        {
-            travelToClosestPath();
-            
-           
-        }else if(boundPath.getBoundTile().getInTransit())
-        {
-            travelToClosestPath();
+        try {
+            if(!inTransit && !freezePlayer && !boundPath.getBoundTile().getClicked())
+            {
+                travelToClosestPath(); 
+            }else if(boundPath.getBoundTile().getInTransit())
+            {
+                travelToClosestPath();
+            }
+
+            if(getBoundPath() == null && !inTransit && !freezePlayer)
+            {
+                travelToClosestPath();
+            }
+            if(!playerOnPathPoint() && !inTransit && !freezePlayer)
+            {
+                travelToClosestPath();
+            }
+        } catch (Exception e) {
         }
         
-        if(getBoundPath() == null && !inTransit && !freezePlayer)
-        {
-            travelToClosestPath();
-        }
-        if(!playerOnPathPoint() && !inTransit && !freezePlayer)
-        {
-            travelToClosestPath();
-        }
         //System.out.println(freezePlayer);
         
     }
     
+    public boolean playerCanTravelToPath(int xPos, int yPos)
+    {
+        for(int i = 0; i < pathChains.getChains().size(); i++)
+        {
+            if(pathChains.getChains().get(i).pointOnChain(getX(), getY()) && pathChains.getChains().get(i).pointOnChain(xPos, yPos) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public PathChain getPlayersChain(int xPos, int yPos)
+    {
+        for(int i = 0; i < pathChains.getChains().size(); i++)
+        {
+            if(pathChains.getChains().get(i).pointOnChain(xPos, yPos) )
+            {
+               return pathChains.getChains().get(i);
+            }
+        }
+        return null;
+    }
     
     public boolean playerOnPathPoint()
     {
@@ -342,82 +368,12 @@ public class Player extends Toolbox implements Runnable
     private void travelToClosestPath()//used if player becomes off-center, making path chains difficult to make and determining what path the player is on is difficult. Sets the player to the nearest path point to him. Can't see any way that this could stick him on the wrong path.
     {
         Path p = getBoundPath();
-        
-        if(p != null)
-        {
-            try{
-                Tile t = p.getBoundTile();
-
-                int smallestDistIndex = 0;
-                double smallestDist = 10000;
-                for(int i = 0; i < t.getPathList().size(); i++)
-                {
-
-                    double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
-                    double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
-                    double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
-                    if(i == 0)
-                    {
-                        smallestDist = dist;
-                    }
-                    if(dist < smallestDist)
-                    {
-                        smallestDist = dist;
-                        smallestDistIndex = i;
-                    }
-                }
-                //IS IT
-                if(smallestDist < 10000)
-                {
-                    x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
-                    y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
-                }
-                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
-                unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
-                //System.out.println(height);
-            }catch(Exception e)
+        try {
+            if(p != null)
             {
+                try{
+                    Tile t = p.getBoundTile();
 
-                //System.out.println("travelToClosestPath() failed!");
-            }
-        }else{
-            
-            
-            if(getBoundPath() != null)
-            {
-                Tile t = getBoundTile();
-                int smallestDistIndex = 0;
-                double smallestDist = 10000;
-                for(int i = 0; i < t.getPathList().size(); i++)
-                {
-
-                    double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
-                    double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
-                    double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
-                    if(i == 0)
-                    {
-                        smallestDist = dist;
-                    }
-                    if(dist < smallestDist)
-                    {
-                        smallestDist = dist;
-                        smallestDistIndex = i;
-                    }
-                }
-                //IS IT
-                if(smallestDist < 10000)
-                {
-                    x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
-                    y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
-                    
-
-                }
-                unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
-                //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
-            }else{
-                Tile t = getIntersectingTile();
-                if(t != null)
-                {
                     int smallestDistIndex = 0;
                     double smallestDist = 10000;
                     for(int i = 0; i < t.getPathList().size(); i++)
@@ -444,9 +400,82 @@ public class Player extends Toolbox implements Runnable
                     }
                     //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
                     unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                    //System.out.println(height);
+                }catch(Exception e)
+                {
+
+                    //System.out.println("travelToClosestPath() failed!");
+                }
+            }else{
+
+
+                if(getBoundPath() != null)
+                {
+                    Tile t = getBoundTile();
+                    int smallestDistIndex = 0;
+                    double smallestDist = 10000;
+                    for(int i = 0; i < t.getPathList().size(); i++)
+                    {
+
+                        double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
+                        double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
+                        double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
+                        if(i == 0)
+                        {
+                            smallestDist = dist;
+                        }
+                        if(dist < smallestDist)
+                        {
+                            smallestDist = dist;
+                            smallestDistIndex = i;
+                        }
+                    }
+                    //IS IT
+                    if(smallestDist < 10000)
+                    {
+                        x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
+                        y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+
+
+                    }
+                    unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                    //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+                }else{
+                    Tile t = getIntersectingTile();
+                    if(t != null)
+                    {
+                        int smallestDistIndex = 0;
+                        double smallestDist = 10000;
+                        for(int i = 0; i < t.getPathList().size(); i++)
+                        {
+
+                            double x1 = t.getPathList().get(i).getVertexCoord()[0];//t.getPathList().get(i).getBoundTile().getRawX() + ((t.getPathList().get(i).getBoundTile().getRawWidth()) * t.getPathList().get(i).getVertexCoord()[0]);
+                            double y1 = t.getPathList().get(i).getVertexCoord()[1];//t.getPathList().get(i).getBoundTile().getRawY() + ((t.getPathList().get(i).getBoundTile().getRawLength()) * t.getPathList().get(i).getVertexCoord()[1]);
+                            double dist = Math.sqrt(Math.pow(y-y1, 2) + Math.pow(x-x1, 2));
+                            if(i == 0)
+                            {
+                                smallestDist = dist;
+                            }
+                            if(dist < smallestDist)
+                            {
+                                smallestDist = dist;
+                                smallestDistIndex = i;
+                            }
+                        }
+                        //IS IT
+                        if(smallestDist < 10000)
+                        {
+                            x = t.getPathList().get(smallestDistIndex).getVertexCoord()[0];
+                            y = t.getPathList().get(smallestDistIndex).getVertexCoord()[1];
+                        }
+                        //System.out.println(t.getPathList().get(smallestDistIndex).getBoundTile().getHeight());
+                        unscaledHeight = t.getPathList().get(smallestDistIndex).getBoundTile().getHeight();
+                    }
                 }
             }
+        } catch (Exception e) {
         }
+        
         
     }
     
@@ -635,6 +664,11 @@ public class Player extends Toolbox implements Runnable
     {
         if(!inSpaceship)
         {
+            try {
+                drawPlayersChain(g);
+            } catch (Exception e) {
+            }
+            
             int alphaAmount = 70;
             //shadowExpand = 1.0+(-scaledDistortedHeight(hoverAmount + 15)/30);
             //g.fillOval((int)(getX() - (10*WorldPanel.scale) - (shadowExpand/2)), (int)(getY()-((10)*WorldPanel.getShrink*WorldPanel.scale)-(shadowExpand/2)), (int)((20+(shadowExpand/2))*WorldPanel.scale), (int)((20+(shadowExpand/2))*WorldPanel.getShrink*WorldPanel.scale));
@@ -779,7 +813,7 @@ public class Player extends Toolbox implements Runnable
             //g.drawPolygon(xPoints2, yPoints1, 4);
 
             
-
+            
             g2.setStroke(Toolbox.worldStroke);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             /*if(boundPath != null && boundTile != null)
@@ -788,20 +822,39 @@ public class Player extends Toolbox implements Runnable
                 g.drawString(boundTile.toString(), 100, 120);
             }*/
                //WorldPanel.scale*=1.5;
+            
         }
         
         /*for(int i = 0; i < pathChains.getChains().size(); i++)
         {
             pathChains.getChains().get(i).drawChain(g);
         }*/
+        /*for(int i = 0; i < pathChains.getChains().size(); i++)
+        {
+            if(pathChains.getChains().get(i) != playersChain)
+            {
+                pathChains.getChains().get(i).drawChain(g);
+            }
+        }*/
     }
     
     public void drawPlayersChain(Graphics g)
     {
-        if(playersChain != null)
+        try {
+           for(int i = 0; i < pathChains.getChains().size(); i++)
+            {
+                if(pathChains.getChains().get(i).pointOnChain(getX(), getY()))
+                {
+                    pathChains.getChains().get(i).drawChain(g);
+                }
+            } 
+        } catch (Exception e) {
+        }
+        /*if(playersChain != null)
         {
             playersChain.drawChain(g);
-        }
+        }*/
+        
     }
     
     private ArrayList<Double> convertPointsToXCoords(ArrayList<Point> points)
@@ -856,100 +909,107 @@ public class Player extends Toolbox implements Runnable
     {
         ticksMoved++;
         int numDirectionsFollowed = 0;
-        if(directionsX.size() > 1)
-        {
-            
-            //WorldPanel.worldY = tempWorldY + (int)(getY() - tempWorldY);
-            double dx = directionsX.get(1)-directionsX.get(0);
-            double dy = directionsY.get(1)-directionsY.get(0);
-            double dHeight = directionsHeight.get(1)-directionsHeight.get(0);
-            double numTicks = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))*50;
-            if(ticksMoved < numTicks)
+        try{
+            if(directionsX.size() > 1)
             {
-                //WorldPanel.worldX = (int)(tempWorldX + (dx*WorldPanel.straightUnit * WorldPanel.scale/numTicks));
-                //WorldPanel.worldY = (int)(tempWorldY + (dy*WorldPanel.straightUnit * WorldPanel.scale/numTicks));
-                if(followMovingPlayer)
-                {
-                    WorldPanel.worldX -= (dx*WorldPanel.straightUnit*Math.cos(WorldPanel.radSpin)/numTicks);
-                    WorldPanel.worldY += (dx*WorldPanel.straightUnit*Math.sin(WorldPanel.radSpin)/numTicks);
 
-                    WorldPanel.worldY -= (dy*WorldPanel.straightUnit*Math.sin(WorldPanel.radSpin)/numTicks);
-                    WorldPanel.worldX -= (dy*WorldPanel.straightUnit*Math.cos(WorldPanel.radSpin)/numTicks);
-
-                }
-                if(boundPath != null && playersChain.pathOnPoint(x, y) != null && playersChain.pathOnPoint(x, y) != boundPath)
+                //WorldPanel.worldY = tempWorldY + (int)(getY() - tempWorldY);
+                double dx = directionsX.get(1)-directionsX.get(0);
+                double dy = directionsY.get(1)-directionsY.get(0);
+                double dHeight = directionsHeight.get(1)-directionsHeight.get(0);
+                double numTicks = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))*50;
+                if(ticksMoved < numTicks)
                 {
-                    if(playersChain.pathOnPoint(x, y)!=null)
+                    //WorldPanel.worldX = (int)(tempWorldX + (dx*WorldPanel.straightUnit * WorldPanel.scale/numTicks));
+                    //WorldPanel.worldY = (int)(tempWorldY + (dy*WorldPanel.straightUnit * WorldPanel.scale/numTicks));
+                    if(followMovingPlayer)
                     {
-                        boundPath = playersChain.pathOnPoint(x, y);
-                        boundTile = boundPath.getBoundTile();
+                        WorldPanel.worldX -= (dx*WorldPanel.straightUnit*Math.cos(WorldPanel.radSpin)/numTicks);
+                        WorldPanel.worldY += (dx*WorldPanel.straightUnit*Math.sin(WorldPanel.radSpin)/numTicks);
+
+                        WorldPanel.worldY -= (dy*WorldPanel.straightUnit*Math.sin(WorldPanel.radSpin)/numTicks);
+                        WorldPanel.worldX -= (dy*WorldPanel.straightUnit*Math.cos(WorldPanel.radSpin)/numTicks);
+
                     }
-                    /*if(boundPath != null)
+                    if(boundPath != null && playersChain.pathOnPoint(x, y) != null && playersChain.pathOnPoint(x, y) != boundPath)
                     {
-                        
-                    }*/
+                        if(playersChain.pathOnPoint(x, y)!=null)
+                        {
+                            boundPath = playersChain.pathOnPoint(x, y);
+                            boundTile = boundPath.getBoundTile();
+                        }
+                        /*if(boundPath != null)
+                        {
+
+                        }*/
+                    }
+                    //NOT IT
+                    x += dx/numTicks;
+                    y += dy/numTicks;
+                    unscaledHeight += dHeight/numTicks;
+
+                }else{
+                    numDirectionsFollowed++;
+                    ticksMoved = 0;
+                    directionsX.remove(0);
+                    directionsY.remove(0);
+                    directionsHeight.remove(0);
+                    //NOT IT
+                    x = directionsX.get(0);
+                    y = directionsY.get(0);
+                    unscaledHeight = directionsHeight.get(0);
+                    Path p = getBoundPath();//playersChain.pathOnPoint((int)getX(), (int)getY());
+                    if(p != null)
+                    {
+                        boundTile = p.getBoundTile();
+                        boundPath = p;
+                        p.getBoundTile().addTimeWalkedOn();
+                    }
                 }
-                //NOT IT
-                x += dx/numTicks;
-                y += dy/numTicks;
-                unscaledHeight += dHeight/numTicks;
-                
             }else{
-                numDirectionsFollowed++;
                 ticksMoved = 0;
-                directionsX.remove(0);
-                directionsY.remove(0);
-                directionsHeight.remove(0);
-                //NOT IT
-                x = directionsX.get(0);
-                y = directionsY.get(0);
-                unscaledHeight = directionsHeight.get(0);
-                Path p = getBoundPath();//playersChain.pathOnPoint((int)getX(), (int)getY());
-                if(p != null)
+
+                //unscaledHeight = (int)(directionsHeight.get(directionsHeight.size()-1)/WorldPanel.scale);
+
+                directionsX.clear();
+                directionsY.clear();
+                //unscaledHeight = directionsHeight.get(directionsHeight.size()-1);
+                directionsHeight.clear();
+                //directionsHeight.clear();
+                //boundTile = getBoundTile();
+                //unscaledHeight = boundTile.getHeight();
+                inTransit = false;
+                //playersChain = pathChains.chainOnPoint(getX(), getY());
+                if(playersChain != null)
                 {
-                    boundTile = p.getBoundTile();
-                    boundPath = p;
-                    p.getBoundTile().addTimeWalkedOn();
+                    boundPath = playersChain.pathOnPoint((int)getX(), (int)getY());
+                    boundTile = boundPath.getBoundTile();
+                    //boundTile.addTimeWalkedOn();
                 }
+
+
+                if(boundPath.getClass() == LevelEndPath.class && addLevelDebounce == false)
+                {
+                    freezePlayer = true;
+                    addLevelDebounce = true;
+                    //System.out.println("level ended!");
+                    UI.addLevel();
+                    LevelEndTile t = (LevelEndTile)boundPath.getBoundTile();
+                    t.getSpaceship().setTakeoff(true);
+                    inSpaceship = true;
+
+
+                }
+
+
+
             }
-        }else{
-            ticksMoved = 0;
-            
-            //unscaledHeight = (int)(directionsHeight.get(directionsHeight.size()-1)/WorldPanel.scale);
-          
-            directionsX.clear();
-            directionsY.clear();
-            //unscaledHeight = directionsHeight.get(directionsHeight.size()-1);
-            directionsHeight.clear();
-            //directionsHeight.clear();
-            //boundTile = getBoundTile();
-            //unscaledHeight = boundTile.getHeight();
-            inTransit = false;
-            //playersChain = pathChains.chainOnPoint(getX(), getY());
-            if(playersChain != null)
-            {
-                boundPath = playersChain.pathOnPoint((int)getX(), (int)getY());
-                boundTile = boundPath.getBoundTile();
-                //boundTile.addTimeWalkedOn();
-            }
-            
-            
-            if(boundPath.getClass() == LevelEndPath.class && addLevelDebounce == false)
-            {
-                freezePlayer = true;
-                addLevelDebounce = true;
-                //System.out.println("level ended!");
-                UI.addLevel();
-                LevelEndTile t = (LevelEndTile)boundPath.getBoundTile();
-                t.getSpaceship().setTakeoff(true);
-                inSpaceship = true;
-                
-                
-            }
-            
-            
-            
+        }catch(Exception e)
+        {
+            //System.err.println(e);
         }
+        
+        
     }
     
     

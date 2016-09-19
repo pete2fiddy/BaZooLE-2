@@ -21,18 +21,24 @@ public class PathChain
     private ArrayList<Path> chain = new ArrayList<Path>();
     private Path startingPath;
     private int index;
-    
-    public PathChain(Path startingPathIn, int indexIn, boolean isIsolated)
+    private boolean isIsolated;
+    public PathChain(Path startingPathIn, int indexIn, boolean isIsolatedIn)
     {
         
         startingPath = startingPathIn;
         index = indexIn;
-        if(isIsolated)
+        isIsolated = isIsolatedIn;
+        if(isIsolatedIn)
         {
             chain.add(startingPath);
         }else{
             buildChain();
         }
+    }
+    
+    public boolean getIsIsolated()
+    {
+        return isIsolated;
     }
     
     public int getIndex()
@@ -95,6 +101,8 @@ public class PathChain
                         currentPath = chain.get(chain.size()-1);
                     }*/
                 }
+                
+                
            // }catch(Exception e){}
         }
     }
@@ -129,8 +137,11 @@ public class PathChain
     {
         for(int i = 0; i < chain.size(); i++)
         {
+            
             g.setColor(Color.RED);
             g.fillOval((int)(chain.get(i).getX() - 5), (int)(chain.get(i).getY() - 5), 10, 10);
+            g.setColor(Color.BLACK);
+            g.drawOval((int)(chain.get(i).getX() - 5), (int)(chain.get(i).getY() - 5), 10, 10);
         }
     }
     public ArrayList<Point> getDirections(Path start, Path end)

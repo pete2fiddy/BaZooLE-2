@@ -2,6 +2,7 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class LevelEndTile extends Tile
 {
@@ -15,8 +16,9 @@ public class LevelEndTile extends Tile
         double[] vertexPos = {.5, .5};
         LevelEndPath lep = new LevelEndPath(this, vertexPos, 0, 0);//sort of janky way to make a path the same size as the tile so the tile can be treated like a walkable path.
         lep.setPathWidth(.5);
+        ArrayList<Scenery> s = new ArrayList<Scenery>();
+        setAssortedScenery(s);
         spaceship = new Spaceship(this, .5, .5);
-        
         setColor(Color.GRAY);
     }
 

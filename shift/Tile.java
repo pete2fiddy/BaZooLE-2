@@ -94,6 +94,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         pathList.remove(index);
     }
     
+    public void setAssortedScenery(ArrayList<Scenery> s){assortedScenery = s;}
     public void setMoveable(boolean b){moveable = b;}
     public void addScenery(Scenery s){sceneryList.add(s);}
     public void addLake(Lake l){lakes.add(l);}
@@ -106,42 +107,45 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     {
         
         boolean playerDrawn = false;
-        if(player.getSortDistanceConstant() <= assortedScenery.get(0).getSortDistanceConstant())
+        if(assortedScenery.size() > 0)
         {
-            //playerDrawn = true;
-            //drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
-        }
-        for(int i = 0; i < assortedScenery.size(); i++)
-        {
-            assortedScenery.get(i).draw(g);
-            /*if(Player.boundTile == this)
+            if(player.getSortDistanceConstant() <= assortedScenery.get(0).getSortDistanceConstant())
             {
-                System.out.println(assortedScenery.get(i).getMiddleSortDistanceConstant());
-            }*/
-            if(i < assortedScenery.size() - 1 && player.getSortDistanceConstant() <= assortedScenery.get(i).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(i+1).getMiddleSortDistanceConstant() && !playerDrawn)
+                //playerDrawn = true;
+                //drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+            }
+            for(int i = 0; i < assortedScenery.size(); i++)
             {
+                assortedScenery.get(i).draw(g);
                 /*if(Player.boundTile == this)
                 {
-                    System.out.println("PLAYER: " + player.getSortDistanceConstant());
+                    System.out.println(assortedScenery.get(i).getMiddleSortDistanceConstant());
                 }*/
-                //System.out.println("called");
+                if(i < assortedScenery.size() - 1 && player.getSortDistanceConstant() <= assortedScenery.get(i).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(i+1).getMiddleSortDistanceConstant() && !playerDrawn)
+                {
+                    /*if(Player.boundTile == this)
+                    {
+                        System.out.println("PLAYER: " + player.getSortDistanceConstant());
+                    }*/
+                    //System.out.println("called");
+                    playerDrawn = true;
+                    drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+                }
+                //System.out.println();
+
+            }
+            if(!playerDrawn)
+            {
                 playerDrawn = true;
                 drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
             }
+
             //System.out.println();
-            
+            /*for(Scenery s : assortedScenery)
+            {
+                s.draw(g);
+            }*/
         }
-        if(!playerDrawn)
-        {
-            playerDrawn = true;
-            drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
-        }
-        
-        //System.out.println();
-        /*for(Scenery s : assortedScenery)
-        {
-            s.draw(g);
-        }*/
     }
     private void addRandomFlowers(int heightMin, int heightMax)
     {
