@@ -57,7 +57,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     
     TileSorter ts;
     TileDrawer td;
-    private TileDrawer2 td2 = new TileDrawer2();
+    private TileDrawer2 td2 = new TileDrawer2(this);
     Input input = new Input();
     MouseInput mouseInput = new MouseInput(this);
     Player player = new Player(0, 0, 5);
@@ -169,6 +169,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g2.setStroke(Toolbox.worldStroke);
         
         drawMapFloor(g);
+        
         td2.draw(g);
         fillBelowMap(g);
         
@@ -180,6 +181,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.setFont(new Font("Futura", Font.PLAIN, 16));
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        
         
         if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//sleeps the game if FPS is above cap until a time passes that would satisfy it being below the fps
         {
@@ -397,10 +399,16 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         }
     }
     
+    /*
+    CLEANUP: Make all debug info and drawing the grid under a boolean "devMode" instead of toggling water and debug mode separately.
+    MINOR PROBLEM: gridding the map is weird. But works.
+    paints the floor of the map--whether it is a grid for debugging or just the water. toggles with the drawWater boolean. 
+    */
     private void drawMapFloor(Graphics g)
     {
         if(!drawWater)
         {
+            
             g.setColor(Color.BLACK);
             for(int i =0; i < 4; i++)
             {
@@ -410,6 +418,11 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             int iterations = mapWidth/unit;
             int[][] points = mapPoints;
 
+            double dxOne = points[0][3]-points[0][0];
+            double dyOne = points[1][3] - points[1][0];
+            double dxTwo = mapPoints[0][0]-mapPoints[0][1];
+            double dyTwo = mapPoints[1][0]-mapPoints[1][1];
+            
             for(int i = 0; i < (mapWidth/unit); i++)
             {
                 if(i == (mapWidth/unit)/2)
@@ -419,68 +432,28 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                     g.setColor(Color.BLACK);
                 }
 
-                g.drawLine((int)(points[0][0] + i*(getdx(points)/iterations)), (int)(points[1][0]+(i*getdy(points)/iterations)), (int)(points[0][1]+(i*getdx(points)/iterations)), (int)(points[1][1]+(i*getdy(points)/iterations)));
+                g.drawLine((int)(points[0][0] + i*(dxOne/iterations)), (int)(points[1][0]+(i*dyOne/iterations)), (int)(points[0][1]+(i*dxOne/iterations)), (int)(points[1][1]+(i*dyOne/iterations)));
             }
             for(int i = 0; i < (mapWidth/unit); i++)
             {
                 if(i == (mapWidth/unit)/2)
                 {
                     g.setColor(Color.BLUE);//x axis
-                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
-                    g.fillOval((int)(points[0][2] + i*(getOtherdx()/iterations))-10, (int)(points[1][2]+(i*getOtherdy()/iterations))-10, 20,  20);
+                    g.drawLine((int)(points[0][1] + i*(dxTwo/iterations)), (int)(points[1][1]+(i*dyTwo/iterations)),(int)(points[0][2] + i*(dxTwo/iterations)), (int)(points[1][2]+(i*dyTwo/iterations)));
+                    g.fillOval((int)(points[0][2] + i*(dxTwo/iterations))-10, (int)(points[1][2]+(i*dyTwo/iterations))-10, 20,  20);
                 }else{
                     g.setColor(Color.BLACK);
-                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
+                    g.drawLine((int)(points[0][1] + i*(dxTwo/iterations)), (int)(points[1][1]+(i*dyTwo/iterations)),(int)(points[0][2] + i*(dxTwo/iterations)), (int)(points[1][2]+(i*dyTwo/iterations)));
                 }
             }
             drawMap(g);
         }else
         {
-            //Graphics2D g2 = (Graphics2D)g;
             g.setColor(new Color(30, 144, 255));
-            //g2.setPaint(grassTexture);
             g.fillPolygon(mapPoints[0], mapPoints[1],4);
         }
     }
     
-    /*private void stripeMap(Graphics g, double spinIn)//this is incredibly clunky with methods that don't always do what they should
-    {
-        if(!drawWater)
-        {
-            g.setColor(Color.BLACK);
-            for(int i =0; i < 4; i++)
-            {
-                g.drawString("x" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[0][i]),50, 75+(i*25));
-                g.drawString("y" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[1][i]), 130, 75+(i*25));
-            }
-            int iterations = mapWidth/unit;
-            int[][] points = mapPoints;
-
-            for(int i = 0; i < (mapWidth/unit); i++)
-            {
-                if(i == (mapWidth/unit)/2)
-                {
-                    g.setColor(Color.YELLOW);//y axis
-                }else{
-                    g.setColor(Color.BLACK);
-                }
-
-                g.drawLine((int)(points[0][0] + i*(getdx(points)/iterations)), (int)(points[1][0]+(i*getdy(points)/iterations)), (int)(points[0][1]+(i*getdx(points)/iterations)), (int)(points[1][1]+(i*getdy(points)/iterations)));
-            }
-            for(int i = 0; i < (mapWidth/unit); i++)
-            {
-                if(i == (mapWidth/unit)/2)
-                {
-                    g.setColor(Color.BLUE);//x axis
-                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
-                    g.fillOval((int)(points[0][2] + i*(getOtherdx()/iterations))-10, (int)(points[1][2]+(i*getOtherdy()/iterations))-10, 20,  20);
-                }else{
-                    g.setColor(Color.BLACK);
-                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
-                }
-            }
-        }
-    }*/
     /* Poorly named and (I think) only used
     within the context of having to draw
     lines on the map */
@@ -546,11 +519,57 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         return Math.sin(rotationIn)*heightIn;
     }  
     
-    /*Updated every time paintComponent() is called. Handles primarily positioning and 
+    /*
+    draws transparent gridded lines over the world.
+    */
+    public void drawTransparentGridLines(Graphics g)
+    {
+        if(drawWater)
+        {
+            g.setColor(new Color(0, 51, 204, 50));
+            /*for(int i =0; i < 4; i++)
+            {
+                g.drawString("x" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[0][i]),50, 75+(i*25));
+                g.drawString("y" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[1][i]), 130, 75+(i*25));
+            }*/
+            int iterations = mapWidth/unit;
+            int[][] points = mapPoints;
+
+            double dxOne = points[0][3]-points[0][0];
+            double dyOne = points[1][3] - points[1][0];
+            double dxTwo = mapPoints[0][0]-mapPoints[0][1];
+            double dyTwo = mapPoints[1][0]-mapPoints[1][1];
+            
+            for(int i = 0; i < (mapWidth/unit); i++)
+            {
+                /*if(i == (mapWidth/unit)/2)
+                {
+                    g.setColor(Color.YELLOW);//y axis
+                }else{
+                    g.setColor(Color.BLACK);
+                }*/
+
+                g.drawLine((int)(points[0][0] + i*(dxOne/iterations)), (int)(points[1][0]+(i*dyOne/iterations)), (int)(points[0][1]+(i*dxOne/iterations)), (int)(points[1][1]+(i*dyOne/iterations)));
+            }
+            for(int i = 0; i < (mapWidth/unit); i++)
+            {
+                if(i == (mapWidth/unit)/2)
+                {
+                    //g.setColor(Color.BLUE);//x axis
+                    g.drawLine((int)(points[0][1] + i*(dxTwo/iterations)), (int)(points[1][1]+(i*dyTwo/iterations)),(int)(points[0][2] + i*(dxTwo/iterations)), (int)(points[1][2]+(i*dyTwo/iterations)));
+                    g.fillOval((int)(points[0][2] + i*(dxTwo/iterations))-10, (int)(points[1][2]+(i*dyTwo/iterations))-10, 20,  20);
+                }else{
+                    //g.setColor(Color.BLACK);
+                    g.drawLine((int)(points[0][1] + i*(dxTwo/iterations)), (int)(points[1][1]+(i*dyTwo/iterations)),(int)(points[0][2] + i*(dxTwo/iterations)), (int)(points[1][2]+(i*dyTwo/iterations)));
+                }
+            }
+        }
+    }
+    
+    /*Updated every time timer fires it. Handles primarily positioning and 
     dimensions of the world, and starts threads when necessary for objects such as tiles.*/
     private void tick()
     {
-        
         if(scale < 6.0 && MouseInput.dScale > 0)
         {
             scale += MouseInput.dScale;
@@ -559,7 +578,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         {
             scale += MouseInput.dScale;
         }
-        //scale = 10.0;
         unit = (int)(baseUnit * scale);
         straightUnit = (double)unit/Math.sqrt(2);
         mapWidth = (int)(baseMapWidth * scale);
@@ -570,7 +588,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         MouseInput.updatePos();//updates the mouse's position.
         getShrink = shrink(rotation);//static getShrink is used so that other classes can get it easily.
         mapPoints = mapTopPoints(spin, mapRadius);//more efficient to have an instance variable that updates position rather than having to calculated it every time it is called. 
-        
         for(int i = 0; i < 4; i++)//places the map in relation to its position, as the method that gets its array only gives its position compared to nothing else. May be a little slower to do them separately, but shouldn't really matter much.
         {
             mapPoints[0][i] = (int)worldX + mapTopPoints(spin, mapRadius)[0][i];
@@ -587,8 +604,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         spinCalc += Input.dSpin;//spinCalc can spin on indefinitely. Could add another if/else if clause along with rotation and radspin.
         radSpin += Input.dSpin;
         rotation+=Input.dRotation;
-        /*resets the spins if they go over or under a full revolution*/
         
+        /*resets the spins if they go over or under a full revolution*/
         if(rotation > Math.PI/2.3){
             rotation = Math.PI/2.3;
         }else if(rotation<0.5){
@@ -600,19 +617,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         }
         if(tempQuadrant != spinQuadrant() || MouseInput.clickJustReleased() || MouseInput.clicked || LevelLoader.sortTiles || Tile.resortTiles)//needs to run last
         {
-            //Thread t = new Thread(ts);
-            //ts.setThread(t);
-            //t.start();
             td2.getThread().interrupt();
             td2.setThread(new Thread(td2));
             td2.getThread().start();
-            //td2.run();
-            
             tempQuadrant = spinQuadrant();
-            
-            //ts.getThread().interrupt();
-            //ts.setThread(new Thread(ts));
-            //ts.getThread().start();
             LevelLoader.sortTiles = false; 
         }
         
@@ -626,30 +634,26 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             Thread t = new Thread(TileSorter.tileList.get(i));
             t.start();
             TileSorter.tileList.get(i).setThread(t);//shouldn't be working with spinTile but does?
+        
         }
-        //if(Input.givedx != 0 || Input.givedy != 0 || Input.dSpin != 0 || Input.dRotation != 0)//used to fire threads that only need to update when the map moves.
-        //{
-            for(int i = 0; i < TileSorter.tileList.size(); i++)
+        for(int i = 0; i < TileSorter.tileList.size(); i++)
+        {
+            for(int j = 0; j < TileSorter.tileList.get(i).getSceneryList().size(); j++)
             {
-                for(int j = 0; j < TileSorter.tileList.get(i).getSceneryList().size(); j++)
-                {
-                    TileSorter.tileList.get(i).getSceneryList().get(j).getThread().interrupt();
-                    TileSorter.tileList.get(i).getSceneryList().get(j).setThread(new Thread(TileSorter.tileList.get(i).getSceneryList().get(j)));
-                    TileSorter.tileList.get(i).getSceneryList().get(j).getThread().start();
-                }
+                TileSorter.tileList.get(i).getSceneryList().get(j).getThread().interrupt();
+                TileSorter.tileList.get(i).getSceneryList().get(j).setThread(new Thread(TileSorter.tileList.get(i).getSceneryList().get(j)));
+                TileSorter.tileList.get(i).getSceneryList().get(j).getThread().start();
             }
-        //}
+        }
+
         player.getThread().interrupt();
         player.setThread(new Thread(player));
         player.getThread().start();
-        
-        /*synchronized(loopNotify)
-        {
-            loopNotify.notify();
-        }*/
-        //System.out.println(TileDrawer2.tileList.size());
     }
     
+    /*
+    when game is in menu, this is called to set false so that you can't see buttons you don't want in the menu. Set to true when the game is visible.
+    */
     public void setGameVisible(boolean b)
     {
         volumeSlider.setVisible(b);
@@ -658,8 +662,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         resetLevel.setVisible(b);
     }
     
-    
-    /*What happens when the random shapes button is clicked.*/
+    /*
+    handles buttons being pressed, timers being fired, etc. 
+    */
     @Override
     public void actionPerformed(ActionEvent e) 
     {
@@ -669,8 +674,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             tick();
         }else if(command.equals("randomShapes"))
         {
-            
-
             baseMapWidth = 525;
             baseMapHeight = 525;
             baseUnit = 37;
@@ -685,7 +688,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             mapRadius = (int)(baseMapRadius*scale);
             mapHeight = (int)(baseMapHeight * scale);
             mapThickness = (int)(baseMapThickness * scale);
-            //td.populateBoardFixedProportions(2,2,10);
         }else if(command.equals("turnLeft"))
         {
             spin += Math.PI/2.0;
@@ -698,38 +700,15 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             spinCalc -= Math.PI/2.0;
         }else if(command.equals("resetLevel"))
         {
-            
             LevelLoader ll = new LevelLoader(player, this);
             ll.spawnLevel(UI.level);
             MouseInput.scrollType = "Zoom";
-            
-        }
-    }
-
-    public static int getSortSlope()
-    {
-        int quad = spinQuadrant();
-        if(quad == 1 || quad == 3)
-        {
-            return -1;
-        }else{
-            return 1;
         }
     }
     
-    public static int getBottomCornerConstant()
-    {
-        int quad = spinQuadrant();
-        if(quad == 1 || quad == 4)
-        {
-            return -worldTilesHeight/2;
-        }else{
-            return worldTilesHeight/2;
-        }
-    }
-    
-    
-
+    /*
+    controls only the volume slider, as of now.
+    */
     @Override
     public void stateChanged(ChangeEvent e) 
     {
@@ -737,6 +716,4 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         a.setVolume((float)numIn.getValue());
     }
-
-    
 }

@@ -1336,8 +1336,14 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     
     public int getBottomCornerConstant()//y = mx + b ... b = y-mx
     {
+        int quad = WorldPanel.spinQuadrant();
         int[] coords = getBottomCornerCoordinates();
-        return coords[1] - (WorldPanel.getSortSlope() * coords[0]);
+        if(quad == 1 || quad == 3)
+        {
+            return coords[1] - (-1* coords[0]);
+        }else{
+            return coords[1] - (coords[0]);
+        }
     }
     
     public int getBottomCornerOrderPos()

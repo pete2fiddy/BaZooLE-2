@@ -26,13 +26,15 @@ public class TileDrawer2 implements Runnable
     private MergedPaths mp = new MergedPaths();
     private Thread thread;
     private WaterRipple[] waterRipples=new WaterRipple[8];
-    public TileDrawer2()
+    private WorldPanel worldPanel;
+    public TileDrawer2(WorldPanel wp)
     {
         ll= new LevelLoader();   
         ll.spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
         fillWaterRipples();
+        worldPanel= wp;
     }
     
     public Thread getThread()
@@ -78,6 +80,7 @@ public class TileDrawer2 implements Runnable
         
         g2.setComposite(originalComposite);*/
         //drawReflectionOutlines(g);
+        
         for(int i = 0; i < tileList.size(); i++)
         {
             if(tileList.get(i).getClass() != BlockTile.class)
@@ -91,6 +94,7 @@ public class TileDrawer2 implements Runnable
                 }
             }
         }
+        worldPanel.drawTransparentGridLines(g);
         for(WaterRipple wr : waterRipples)
         {
             wr.draw(g);
@@ -118,6 +122,7 @@ public class TileDrawer2 implements Runnable
             wd.draw(g);
         }
         mp.draw(g);
+        //worldPanel.drawTransparentGridLines(g);
         mbt.drawFrontArea(g);
     }
 
