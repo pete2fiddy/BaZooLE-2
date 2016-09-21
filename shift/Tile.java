@@ -7,11 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Area;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import javafx.scene.shape.Line;
 
-public abstract class Tile extends Toolbox implements Runnable //make a constructor that takes unit inputs or pixel inputs so objects don't have to be placed on a tile?
+public abstract class Tile extends Toolbox implements Runnable
 {
     private boolean rightClicked= false;
     private boolean moveable = true;
@@ -19,11 +17,9 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     private boolean spinnable = false;
     private Polygon threadedTilePolygon;
     private Thread thread;
-    private Color firstColor;
     private double thisdx, thisdy;
     private int[][] myThreadedUpperPoints, myThreadedLowerPoints, polyPoints1, polyPoints2;
     private double x, y;
-    private double initialClickSpin = 0;
     private int baseHeight, width, length;
     private double height;
     private Color color;
@@ -49,10 +45,10 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
     private boolean heightChangeable = false;
     private double movingX = 0, movingY = 0;
     private Player player;
-    //private double transitX = 0, transitY = 0;
-    
-    
-            
+          
+    /*
+    Params: Takes a coordinate x(from bottom left corner), coordinate y(from bottom left corner), a units width, a units length, a PIXELS height (pixels it takes up on screen at 1 scale with fully rotated world to see the full side of it)
+    */
     public Tile(int inX, int inY, int inWidth, int inLength, int inHeight)//not sure why position isi given as a double. Can't see myself using half a unit or something.
     {
         x=inX;y=inY;width=inWidth;length=inLength; baseHeight = inHeight; height = baseHeight;
@@ -60,7 +56,6 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         polyPoints1 = new int[2][4];
         polyPoints2 = new int[2][4];
         color = new Color(14, 155, 14);
-        firstColor = color;
         myThreadedUpperPoints = getUpperPoints();
         myThreadedLowerPoints = getPoints();
         thread = new Thread(this);
@@ -74,9 +69,7 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
         
         thread.start();
         player = getPlayer();
-        //addRandomFlowers(5, 15);
         addRandomScenery();
-        //Mushroom testMushroom = new Mushroom(this, .5, .5, 1);
     }
     
     public void setPlayer(Player p){player = p;}
@@ -1253,7 +1246,6 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             color = Color.RED;
             double x1 = (WorldPanel.getMouseUnitPosDouble()[0])-(x + (width/2.0));
             double y1 = (WorldPanel.getMouseUnitPosDouble()[1])-(y + (length/2.0));
-            //spin = (Math.atan2(y1, x1))-initialClickSpin;// + ;//(Math.atan2(y1, x1))-initialClickSpin;
         }else{
             color = Toolbox.grassColor;
         }
@@ -1264,7 +1256,6 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
             
             
             rightClicked = false;
-            initialClickSpin = spin;//Math.atan2(convertToUnit(x + (width/2), y + (length/2))[1] - convertToUnit(MouseInput.x, MouseInput.y)[1], convertToUnit(x + (width/2), y + (length/2))[0] - convertToUnit(MouseInput.x, MouseInput.y)[0])-spin;
             inTransit = true;
             
             if(heightChangeable)
@@ -1292,7 +1283,6 @@ public abstract class Tile extends Toolbox implements Runnable //make a construc
                 MouseInput.scrollType = "Zoom";
             }
             rightClicked = true;
-            initialClickSpin = spin;//Math.atan2(convertToUnit(x + (width/2), y + (length/2))[1] - convertToUnit(MouseInput.x, MouseInput.y)[1], convertToUnit(x + (width/2), y + (length/2))[0] - convertToUnit(MouseInput.x, MouseInput.y)[0])-spin;
             inTransit = true;
             thisClicked = true;
             if(heightChangeable)
