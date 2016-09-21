@@ -88,6 +88,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         tickTimer.start();//started here so that everything is initialized by the time the timer calls them
     }
     
+    /*
+    initializes variables
+    */
     private void initVariables()
     {
         worldX = screenWidth/2; worldY=3*screenHeight/5; rotation = Math.toRadians(75); spin = 0; spinCalc = spin+Math.PI + (Math.PI/4); radSpin = spinCalc - (Math.PI/2); tempQuadrant = spinQuadrant();
@@ -110,6 +113,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         tickTimer.setRepeats(true);
     }
     
+    /*
+    initializes buttons
+    */
     private void initButtons()
     {
         volumeSlider.addChangeListener(this);
@@ -144,6 +150,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         resetLevel.setVisible(false);
     }
     
+    /*
+    the MAIN paint method for the project. Everything painted from here, or from instances called from here.
+    */
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -166,7 +175,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
         ui.draw(g);//draws UI elements like level, etc.
-        
         
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setFont(new Font("Futura", Font.PLAIN, 16));
@@ -194,7 +202,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     }
     
     /*
-    Stretches and distorts the world textures so that they properly fit the rotation, scaling, y distortion of the world.
+    Stretches and distorts the world textures so that they properly fit the rotation, scaling, y distortion of the world. Leaves aren't textured, so it is doing extra work by texturing them. Kept it for sake of wanting to texture leaves at some point
     */
     private void renderTextures()
     {
@@ -207,6 +215,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             System.err.println(e);
         }
     }
+    
+    /*
+    Consider moving to the Toolbox class. returns the current x and y coords of the position of the mouse on screen, rounded down.
+    */
     public static int[] getMouseUnitPos()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
     {
         double dx = (MouseInput.x-worldX)*shrink(rotation);//calculates unsquashed distance from the center of the world to the mouse ("unsquashing" it in the process so the calculation is what it would be on a flat world)
@@ -223,6 +235,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         int[] giveReturn = {(int)(Math.ceil(unturneddx/straightUnit)),(int)(Math.ceil(unturneddy/(straightUnit*shrink(rotation))))};
         return giveReturn;
     }
+    
+    /*
+    Consider moving to the Toolbox class. returns the current x and y coords of the position of the mouse on screen, unrounded.
+    */
     public static double[] getMouseUnitPosDouble()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
     {
         double dx = (MouseInput.x-worldX)*shrink(rotation);//calculates unsquashed distance from the center of the world to the mouse ("unsquashing" it in the process so the calculation is what it would be on a flat world)
@@ -239,6 +255,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         double[] giveReturn = {unturneddx/straightUnit,unturneddy/(straightUnit*shrink(rotation))};
         return giveReturn;
     }
+    
+    /*
+    Draws the physical map. Not used in normal gameplay, but when drawWater is false, will draw for sake of debugging
+    */
     private void drawMap(Graphics g)
     {
         g.setColor(Color.BLACK);
@@ -265,10 +285,11 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 g.drawPolygon(xPoints, yPoints, 4);
             }
         }
-        //drawRotationLine(g);
-        
-        
     }
+    
+    /*
+    outputs useful variables values about the world for sake of bug-fixing or finding cases that occur only in certain world orientations.
+    */
     private void drawDebugInfo(Graphics g)//draws important dev info.
     {
         g.setColor(Color.BLACK);
@@ -284,35 +305,27 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             frameCount = 0;
         }
         g.drawString("FPS: " + Integer.toString((int)fps), 50, 50);
-        //g.drawString("X: " + Double.toString(getMouseUnitPosDouble()[0]), MouseInput.x, MouseInput.y - 15);
-        //g.drawString("Y: " + Double.toString(getMouseUnitPosDouble()[1]), MouseInput.x, MouseInput.y);
         g.drawString("Spin: "+Double.toString(radSpin), 100, 800);
         g.drawString("Scale: " + Double.toString(scale), 100, 775);
     }
-    /*private void drawWater(Graphics g)
-    {
-        if(drawWater)
-        {
-            //Graphics2D g2 = (Graphics2D)g;
-            g.setColor(new Color(30, 144, 255));
-            //g2.setPaint(grassTexture);
-            g.fillPolygon(mapPoints[0], mapPoints[1],4);
-        }
-    }*/
     
+    /*
+    AREA FOR IMPROVEMENT.
+    Fills the area beneath the map with the background color on top of any shadows or other protrusions from tiles, shapes, shadows, reflections, etc. that poke outside of the world. Ideally these would simply not draw beneath the bounds of the map.
+    */
     private void fillBelowMap(Graphics g)
     {
         int tempLowerPoints[][] = new int[2][4];
         for(int i = 0; i < 4; i++)
         {
             tempLowerPoints[0][i] = mapPoints[0][i];
-            tempLowerPoints[1][i] = mapPoints[1][i];//(int)(mapPoints[1][i]+distortedHeight(rotation, mapThickness));
+            tempLowerPoints[1][i] = mapPoints[1][i];
         }
-        int[] xPoints1 = {tempLowerPoints[0][getMapLeftCornerIndex()], tempLowerPoints[0][getMapMiddleCornerIndex()], tempLowerPoints[0][getMapMiddleCornerIndex()],tempLowerPoints[0][getMapLeftCornerIndex()]};
-        int[] yPoints1 = {tempLowerPoints[1][getMapLeftCornerIndex()], tempLowerPoints[1][getMapMiddleCornerIndex()], screenHeight, screenHeight};
+        int[] xPoints1 = {tempLowerPoints[0][getMapCornerIndexAt("left")], tempLowerPoints[0][getMapCornerIndexAt("middle")], tempLowerPoints[0][getMapCornerIndexAt("middle")],tempLowerPoints[0][getMapCornerIndexAt("left")]};
+        int[] yPoints1 = {tempLowerPoints[1][getMapCornerIndexAt("left")], tempLowerPoints[1][getMapCornerIndexAt("middle")], screenHeight, screenHeight};
         
-        int[] xPoints2 = {tempLowerPoints[0][getMapMiddleCornerIndex()], tempLowerPoints[0][getMapRightCornerIndex()], tempLowerPoints[0][getMapRightCornerIndex()], tempLowerPoints[0][getMapMiddleCornerIndex()]};
-        int[] yPoints2 = {tempLowerPoints[1][getMapMiddleCornerIndex()], tempLowerPoints[1][getMapRightCornerIndex()], screenHeight, screenHeight};
+        int[] xPoints2 = {tempLowerPoints[0][getMapCornerIndexAt("middle")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("middle")]};
+        int[] yPoints2 = {tempLowerPoints[1][getMapCornerIndexAt("middle")], tempLowerPoints[1][getMapCornerIndexAt("right")], screenHeight, screenHeight};
         
         g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//g.setColor(new Color(30, 144, 255));
         
@@ -320,39 +333,67 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.fillPolygon(xPoints2, yPoints2, 4);
     }
     
-    private int getMapLeftCornerIndex()
+    /*
+    returns the index of the integer points that make up the map's polygon in terms of which is on the left compared to the front of it being drawn, the middle, the right, and the back(back won't be used often, if at all).
+    */
+    private int getMapCornerIndexAt(String s)
     {
-        if(radSpin > 0 && radSpin <= Math.PI/2.0)
+        if(s.equals("left"))
         {
-            return 0;
-        }else if(radSpin > Math.PI/2.0 && radSpin < Math.PI)
+            if(radSpin > 0 && radSpin <= Math.PI/2.0)
+            {
+                return 0;
+            }else if(radSpin > Math.PI/2.0 && radSpin < Math.PI)
+            {
+                return 3;
+            }else if(radSpin > Math.PI && radSpin < 3.0*Math.PI/2.0)
+            {
+                return 2;
+            }else{
+                return 1;
+            }
+        }else if(s.equals("middle"))
         {
-            return 3;
-        }else if(radSpin > Math.PI && radSpin < 3.0*Math.PI/2.0)
+            if(radSpin > 0 && radSpin <= Math.PI/2.0)
+            {
+                return 1;
+            }else if(radSpin > Math.PI/2.0 && radSpin < Math.PI)
+            {
+                return 0;
+            }else if(radSpin > Math.PI && radSpin < 3.0*Math.PI/2.0)
+            {
+                return 3;
+            }else{
+                return 2;
+            }
+        }else if(s.equals("right"))
         {
-            return 2;
-        }else{
-            return 1;
-        }
-    }
-    
-    private int getMapMiddleCornerIndex()
-    {
-        if(getMapLeftCornerIndex() != 3)
+            if(radSpin > 0 && radSpin <= Math.PI/2.0)
+            {
+                return 2;
+            }else if(radSpin > Math.PI/2.0 && radSpin < Math.PI)
+            {
+                return 1;
+            }else if(radSpin > Math.PI && radSpin < 3.0*Math.PI/2.0)
+            {
+                return 0;
+            }else{
+                return 3;
+            }
+        }else
         {
-            return getMapLeftCornerIndex() + 1;
-        }else{
-            return 0;
-        }
-    }
-    
-    private int getMapRightCornerIndex()
-    {
-        if(getMapMiddleCornerIndex() != 3)
-        {
-            return getMapMiddleCornerIndex() + 1;
-        }else{
-            return 0;
+            if(radSpin > 0 && radSpin <= Math.PI/2.0)
+            {
+                return 3;
+            }else if(radSpin > Math.PI/2.0 && radSpin < Math.PI)
+            {
+                return 2;
+            }else if(radSpin > Math.PI && radSpin < 3.0*Math.PI/2.0)
+            {
+                return 1;
+            }else{
+                return 0;
+            }
         }
     }
     
@@ -392,6 +433,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                     g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
                 }
             }
+            drawMap(g);
         }else
         {
             //Graphics2D g2 = (Graphics2D)g;
