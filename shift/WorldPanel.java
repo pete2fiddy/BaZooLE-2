@@ -29,7 +29,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private boolean drawWater = true;
     private int tempQuadrant, frameCount;
     private long startTime;
-    public static double getFPS;
     public static int baseUnit = 75, baseMapWidth = 1050, baseMapHeight = 1050, baseMapRadius = baseMapWidth/2, baseMapThickness = 10;
     public static double baseStraightUnit = (double)baseUnit/Math.sqrt(2);
     
@@ -46,7 +45,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public static double rotation, rotationFraction, tempRotation, spin, spinCalc, radSpin;
     public static double getShrink;
     private UI ui;
-    private double colorRotation = 0;
+    private double backgroundColorRotation = 0;
     public static BufferedImage grassImage, leavesImage;
     public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
@@ -109,7 +108,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         tickTimer = new Timer(5, this);
         tickTimer.setActionCommand("tick");
         tickTimer.setRepeats(true);
-        
     }
     
     private void initButtons()
@@ -118,7 +116,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         volumeSlider.setBounds(0, 0, 100, 50);
         volumeSlider.setVisible(false);
         add(volumeSlider);
-        //setLayout(new FlowLayout());
         setLayout(null);
         randomShapes = new JButton("New Shapes");
         randomShapes.addActionListener(this);
@@ -145,157 +142,69 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         resetLevel.setBounds(10, 120, 100, 50);
         add(resetLevel);
         resetLevel.setVisible(false);
-        //add(randomShapes);
     }
-    
-   
-    private AffineTransform findTranslation(AffineTransform at, BufferedImage bi) {
-    Point2D p2din, p2dout;
-
-    p2din = new Point2D.Double(0.0, 0.0);
-    p2dout = at.transform(p2din, null);
-    double ytrans = p2dout.getY();
-
-    p2din = new Point2D.Double(0, bi.getHeight());
-    p2dout = at.transform(p2din, null);
-    double xtrans = p2dout.getX();
-
-    AffineTransform tat = new AffineTransform();
-    tat.translate(-xtrans, -ytrans);
-    return tat;
-  }
-    
-    public void addTile(Tile t){ts.addTile(t);}//necessary?
     
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
         
-        frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed.
-        startTime = System.nanoTime();
+        renderTextures();
         
-        //thread.interrupt();
-        //thread = new Thread(this);
-        //thread.start();
-        //tick();
+        frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed. Could easily move this to use a swing timer.
+        startTime = System.nanoTime();//keeps track of the start nanoTime so that it can get the FPS from it
         
+        backgroundColorRotation += Math.PI/5000.0;//is just an angle whose sin, cosine, etc. determines the backgorund color of the world in a cyclical pattern
+        setBackground(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//sets the color of the background based on the trig values of backgroundColorRotaion
         
-        colorRotation += Math.PI/5000.0;
-        setBackground(new Color(0, 65 + (int)(Math.abs(100*Math.sin(colorRotation))), 198));
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
         
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        
-        
-        //drawMap(g);
-        //ArrayList<Tile> tempTile = ts.holdList;//create a temp list of held tiles to be drawn. Maybe is clunky for no reason, but was originally made to skirt the list being modified while it was drawn.
-        
-        stripeMap(g, spin); 
-        drawWater(g);
-        
+        drawMapFloor(g);
         td2.draw(g);
-        
         fillBelowMap(g);
-        if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//limit FPS. sometimes gets a negative timeout thrown. FIX
-        {
-            try {
-                //System.out.println("HI");
-                Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
-                
-            } catch (Exception ex) {
-                Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        //player.draw(g);
-        player.drawPlayersChain(g);
-        player.drawTransparentPlayer(g);
-        ui.draw(g);
-        renderTextures();
+        
+        player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
+        player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
+        ui.draw(g);//draws UI elements like level, etc.
         
         
-        getFPS = (double)(1.0/((System.nanoTime() - startTime)/1000000000.0));
-       
-        //drawDebugInfo(g);//needs to go after sleeping since FPS is calculated here and it needs to happen last.
-        if(frameCount > 20)
-        {
-            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
-            frameCount = 0;
-        }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setFont(new Font("Futura", Font.PLAIN, 16));
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         
+        if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//sleeps the game if FPS is above cap until a time passes that would satisfy it being below the fps
+        {
+            try 
+            {
+                Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
+            }catch (Exception ex) 
+            {
+                Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if(frameCount > 20)//fps calculated at the end after all the painting has been done.
+        {
+            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
+            frameCount = 0;
+        }
+        
         repaint();
     }
     
+    /*
+    Stretches and distorts the world textures so that they properly fit the rotation, scaling, y distortion of the world.
+    */
     private void renderTextures()
     {
-        try{
-            
-            double rotationRequired = radSpin;
-            double locationX = grassImage.getWidth()/2;
-            double locationY = grassImage.getHeight()/2;
-            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-
+        try
+        {
             grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
-            
             leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
-            
-            
-            // Drawing the rotated image at the required drawing locations
-            //g.drawImage(newGrass, drawLocationX, drawLocationY, null);
-            
-            
-            
-            
-            
-            
-            
-            /*
-            //TexturePaint tempTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(straightUnit), (int)(straightUnit*getShrink)));
-            TexturePaint tempTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(straightUnit), (int)(straightUnit)));
-            BufferedImage tempImage = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
-
-
-
-            Graphics2D tg2 = tempImage.createGraphics();
-            tg2.setPaint(tempTexture);
-            tg2.fillRect(144,144,512,512);
-
-
-
-            double rotationRequired = -(spin + (Math.PI/4.0));
-            double locationX = 400;
-            double locationY = 400;
-            AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-            AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-
-            
-            
-            tempImage = op.filter(tempImage, null);
-            Graphics2D tg3 = tempImage.createGraphics();
-            tg3.drawRect(0, 0, tempImage.getWidth() - 1, tempImage.getHeight() - 1);
-            g.drawImage(tempImage.getScaledInstance(tempImage.getWidth(), (int)(tempImage.getHeight()*getShrink), Image.SCALE_AREA_AVERAGING), (int)worldX -tempImage.getWidth()/2, (int)(worldY - ((tempImage.getHeight()/2)*getShrink)), null);
-            g.fillOval((int)(locationX + worldX -tempImage.getWidth()/2), (int)(locationY + worldY - ((tempImage.getHeight()/2)*getShrink)), 10, 10);
-            //g.drawImage(tempImage.getScaledInstance(725, (int)(725*getShrink), Image.SCALE_AREA_AVERAGING), (int)(worldX - (362)), (int)(worldY - (getShrink*(362))), null);
-
-            //grassTexture = new TexturePaint(tempImage, new Rectangle(0,0, screenWidth, (int)(screenWidth*getShrink)));
-
-
-
-            //grassTexture = new TexturePaint(op.filter(tempImage, null), new Rectangle((int)worldX, (int)worldY, (int)screenWidth, (int)(screenHeight)));
-
-            //grassTexture = new TexturePaint(op.filter(grassImage,null), new Rectangle((int)(worldX-((unit - straightUnit)*Math.cos(radSpin%(Math.PI/2.0)))), (int)(worldY+((unit - straightUnit)*Math.sin(radSpin%(Math.PI/2.0)))), (int)((Math.cos(radSpin%(Math.PI/2.0))*straightUnit) + (Math.sin(radSpin%(Math.PI/2.0))*straightUnit)), (int)(((Math.cos(radSpin%(Math.PI/2.0))*straightUnit) + (Math.sin(radSpin%(Math.PI/2.0))*straightUnit)) * getShrink)));
-            //grassTexture = new TexturePaint(op.filter(grassImage,null), new Rectangle((int)(worldX-((unit - straightUnit)*Math.cos(radSpin%(Math.PI/2.0)))), (int)(worldY+((unit - straightUnit)*Math.sin(radSpin%(Math.PI/2.0)))), (int)straightUnit, (int)(straightUnit*getShrink)));
-            //g.drawString("textureWidth: " + Integer.toString((int)((Math.cos(radSpin%(Math.PI/2.0))*straightUnit) + (Math.sin(radSpin%(Math.PI/2.0))*straightUnit))), 200, 200);
-            */
         }catch(Exception e)
         {
-            System.out.println(e);
+            System.err.println(e);
         }
     }
     public static int[] getMouseUnitPos()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
@@ -380,7 +289,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.drawString("Spin: "+Double.toString(radSpin), 100, 800);
         g.drawString("Scale: " + Double.toString(scale), 100, 775);
     }
-    private void drawWater(Graphics g)
+    /*private void drawWater(Graphics g)
     {
         if(drawWater)
         {
@@ -389,7 +298,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             //g2.setPaint(grassTexture);
             g.fillPolygon(mapPoints[0], mapPoints[1],4);
         }
-    }
+    }*/
     
     private void fillBelowMap(Graphics g)
     {
@@ -405,7 +314,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         int[] xPoints2 = {tempLowerPoints[0][getMapMiddleCornerIndex()], tempLowerPoints[0][getMapRightCornerIndex()], tempLowerPoints[0][getMapRightCornerIndex()], tempLowerPoints[0][getMapMiddleCornerIndex()]};
         int[] yPoints2 = {tempLowerPoints[1][getMapMiddleCornerIndex()], tempLowerPoints[1][getMapRightCornerIndex()], screenHeight, screenHeight};
         
-        g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(colorRotation))), 198));//g.setColor(new Color(30, 144, 255));
+        g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//g.setColor(new Color(30, 144, 255));
         
         g.fillPolygon(xPoints1, yPoints1, 4);
         g.fillPolygon(xPoints2, yPoints2, 4);
@@ -447,7 +356,52 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         }
     }
     
-    private void stripeMap(Graphics g, double spinIn)//this is incredibly clunky with methods that don't always do what they should
+    private void drawMapFloor(Graphics g)
+    {
+        if(!drawWater)
+        {
+            g.setColor(Color.BLACK);
+            for(int i =0; i < 4; i++)
+            {
+                g.drawString("x" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[0][i]),50, 75+(i*25));
+                g.drawString("y" + Integer.toString(i) + ": "+ Integer.toString(mapPoints[1][i]), 130, 75+(i*25));
+            }
+            int iterations = mapWidth/unit;
+            int[][] points = mapPoints;
+
+            for(int i = 0; i < (mapWidth/unit); i++)
+            {
+                if(i == (mapWidth/unit)/2)
+                {
+                    g.setColor(Color.YELLOW);//y axis
+                }else{
+                    g.setColor(Color.BLACK);
+                }
+
+                g.drawLine((int)(points[0][0] + i*(getdx(points)/iterations)), (int)(points[1][0]+(i*getdy(points)/iterations)), (int)(points[0][1]+(i*getdx(points)/iterations)), (int)(points[1][1]+(i*getdy(points)/iterations)));
+            }
+            for(int i = 0; i < (mapWidth/unit); i++)
+            {
+                if(i == (mapWidth/unit)/2)
+                {
+                    g.setColor(Color.BLUE);//x axis
+                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
+                    g.fillOval((int)(points[0][2] + i*(getOtherdx()/iterations))-10, (int)(points[1][2]+(i*getOtherdy()/iterations))-10, 20,  20);
+                }else{
+                    g.setColor(Color.BLACK);
+                    g.drawLine((int)(points[0][1] + i*(getOtherdx()/iterations)), (int)(points[1][1]+(i*getOtherdy()/iterations)),(int)(points[0][2] + i*(getOtherdx()/iterations)), (int)(points[1][2]+(i*getOtherdy()/iterations)));
+                }
+            }
+        }else
+        {
+            //Graphics2D g2 = (Graphics2D)g;
+            g.setColor(new Color(30, 144, 255));
+            //g2.setPaint(grassTexture);
+            g.fillPolygon(mapPoints[0], mapPoints[1],4);
+        }
+    }
+    
+    /*private void stripeMap(Graphics g, double spinIn)//this is incredibly clunky with methods that don't always do what they should
     {
         if(!drawWater)
         {
@@ -484,7 +438,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 }
             }
         }
-    }
+    }*/
     /* Poorly named and (I think) only used
     within the context of having to draw
     lines on the map */
