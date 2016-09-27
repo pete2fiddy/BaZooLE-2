@@ -27,6 +27,7 @@ public class TileDrawer2 implements Runnable
     private Thread thread;
     private WaterRipple[] waterRipples=new WaterRipple[8];
     private WorldPanel worldPanel;
+    private static ArrayList<Cloud> cloudList = new ArrayList<Cloud>();
     public TileDrawer2(WorldPanel wp)
     {
         ll= new LevelLoader();   
@@ -35,6 +36,27 @@ public class TileDrawer2 implements Runnable
         thread.start();
         fillWaterRipples();
         worldPanel= wp;
+        populateCloudList();
+    }
+    
+    public static void populateCloudList()
+    {
+        System.out.println(WorldPanel.worldTilesHeight);
+        for(int i = 0; i < 7; i++)
+        {
+            double randX = WorldPanel.worldTilesWidth*Math.random()-(WorldPanel.worldTilesWidth/2);
+            double randY = (WorldPanel.worldTilesHeight*Math.random())-(WorldPanel.worldTilesHeight/2);
+            System.out.println("randY: " +randY);
+            double randWidth = 1+1.5*Math.random();
+            double randLength = 1+1.5*Math.random();
+            int randHeight = (int)(5+10*Math.random());
+            cloudList.add(new Cloud(randX, randY, 200, randWidth, randLength, randHeight));
+        }
+    }
+    
+    public static void clearCloudList()
+    {
+        cloudList.clear();
     }
     
     public Thread getThread()
@@ -124,6 +146,11 @@ public class TileDrawer2 implements Runnable
         mp.draw(g);
         //worldPanel.drawTransparentGridLines(g);
         mbt.drawFrontArea(g);
+        
+        for(Cloud c : cloudList)
+        {
+            c.fill(g);
+        }
     }
 
     private Area getTotalLeftReflectionArea()

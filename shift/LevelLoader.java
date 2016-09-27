@@ -44,7 +44,7 @@ public class LevelLoader
         MergedBlockTiles.blockTiles.clear();
         MergedPaths.pathList.clear();
         MergedPaths.pathLinks.clear();
-        
+        TileDrawer2.clearCloudList();
         TileDrawer.tileList.clear();
         TileDrawer.waterDroplets.clear();
         TileDrawer2.tileList.clear();
@@ -181,6 +181,7 @@ public class LevelLoader
         {
             System.out.println(e);
         }
+        TileDrawer2.populateCloudList();
         isLoading = false;
         //setTileInfo();
         

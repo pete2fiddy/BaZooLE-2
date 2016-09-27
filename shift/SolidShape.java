@@ -51,6 +51,22 @@ public abstract class SolidShape
         spin = spinIn;
     }
     
+    
+    public boolean isVisible()
+    {
+        int[][] points = getLowerBoundingShapePolyPoints();
+        for(int i = 0; i < points[0].length; i++)
+        {
+            if((points[0][i] > 0 && points[0][i] < WorldPanel.screenWidth) && (points[1][i] > 0 && points[1][i] < WorldPanel.screenHeight))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int getDrawX(){return (int)convertToPointX(centerCoordX, centerCoordY);}
+    public int getDrawY(){return (int)convertToPointY(centerCoordX, centerCoordY);}
     public double getCenterCoordX(){return centerCoordX;}
     public double getCenterCoordY(){return centerCoordY;}
     public int getZPos(){zPos+=(int)dz;return zPos;}
@@ -441,6 +457,10 @@ public abstract class SolidShape
         {
             shadeAlpha = 0;
         }
+        if(shadeAlpha < 35 + (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))
+        {
+            shadeAlpha = 35+ (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        }
         //int shadeAlpha = 80;
         for(Polygon p : sidePolygons)
         {
@@ -451,6 +471,16 @@ public abstract class SolidShape
             //g.drawString(Integer.toString(shadeAlpha), (int)p.getBounds().getX(), (int)p.getBounds().getY());
         }
         
+    }
+    
+    public boolean outsideOfMap()
+    {
+        if(xCoord < -(WorldPanel.worldTilesWidth/2) || xCoord + width > (WorldPanel.worldTilesWidth/2) || yCoord < -(WorldPanel.worldTilesHeight/2) || yCoord + length > (WorldPanel.worldTilesHeight/2))
+        {
+            return true;
+        }
+        return false;
+        //return (centerCoordX > WorldPanel.worldTilesWidth/2.0 || centerCoordX < -WorldPanel.worldTilesWidth/2.0 || centerCoordY > WorldPanel.worldTilesHeight/2.0 || centerCoordY < -WorldPanel.worldTilesHeight/2.0);
     }
     
     public void shadeWaterReflections(Graphics g, Polygon[] sidePolygons)

@@ -28,7 +28,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private long startTime;
     public static int baseUnit = 75, baseMapWidth = 1050, baseMapHeight = 1050, baseMapRadius = baseMapWidth/2, baseMapThickness = 10;
     public static double baseStraightUnit = (double)baseUnit/Math.sqrt(2);
-    
     public static double fps;
     public static double scale;
     public static int unit = 75, mapRadius = baseMapRadius, mapThickness = baseMapThickness;
@@ -42,12 +41,13 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public static double rotation, rotationFraction, tempRotation, spin, spinCalc, radSpin;
     public static double getShrink;
     private UI ui;
-    private double backgroundColorRotation = 0;
+    private static double backgroundColorRotation = 0;
     public static BufferedImage grassImage, leavesImage;
     public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
     private JButton turnLeft, turnRight, resetLevel;
     Audio a = new Audio();
+    public static Color backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
     
     private JButton randomShapes;
@@ -81,7 +81,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //"talk-to" instances created.
         ts = new TileSorter();
         td = new TileDrawer();
-        
         tickTimer.start();//started here so that everything is initialized by the time the timer calls them
     }
     
@@ -160,7 +159,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         startTime = System.nanoTime();//keeps track of the start nanoTime so that it can get the FPS from it
         
         backgroundColorRotation += Math.PI/5000.0;//is just an angle whose sin, cosine, etc. determines the backgorund color of the world in a cyclical pattern
-        setBackground(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//sets the color of the background based on the trig values of backgroundColorRotaion
+        backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
+        setBackground(backgroundColor);//sets the color of the background based on the trig values of backgroundColorRotaion
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);

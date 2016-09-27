@@ -11,6 +11,7 @@ import java.util.Random;
 public class TileDrawer
 {
     public static ArrayList<Tile> tileList = new ArrayList<Tile>();//needed?
+    
     public static ArrayList<WaterDroplet> waterDroplets = new ArrayList<WaterDroplet>();
     MergedBlockTiles mbt = new MergedBlockTiles();
     MergedPaths mp = new MergedPaths();
@@ -53,8 +54,12 @@ public class TileDrawer
         */
        
         LevelLoader ll = new LevelLoader();
+        
         ll.spawnLevel(UI.level);
     }
+    
+    
+    
     /*still don't know how to make it reset on click*/
     public void populateBoardFixedProportions(int width, int length, int height)
     {
@@ -132,6 +137,7 @@ public class TileDrawer
         {
             tileList.get(i).draw(g);
         }
+        
     }
     
     public void draw(Graphics g, ArrayList<Tile> listIn)//to do: Buffer draw order calculations
@@ -162,5 +168,6 @@ public class TileDrawer
         {
             System.out.println(t.getBottomCornerOrderPos());
         }*/
+        
     }
 }

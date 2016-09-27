@@ -71,22 +71,19 @@ public abstract class Tile extends Toolbox implements Runnable
         player = getPlayer();
         addRandomScenery();
     }
-    
+    /*
+    sets the player so that the tile can use it. Isn't passed through construc
+    */
     public void setPlayer(Player p){player = p;}
+    
+    /*
+    called by tiles that are able to be spun to signify that this tile can be rotated.
+    */
     public void setSpinnable(boolean b){spinnable = b;}
     
-    public void removePath(int index)
-    {
-        for(int i = 0; i < MergedPaths.pathList.size(); i++)
-        {
-            if(MergedPaths.pathList.get(i)==pathList.get(index))
-            {
-                MergedPaths.pathList.remove(i);
-            }
-        }
-        pathList.remove(index);
-    }
-    
+    /*
+    setters
+    */
     public void setAssortedScenery(ArrayList<Scenery> s){assortedScenery = s;}
     public void setMoveable(boolean b){moveable = b;}
     public void addScenery(Scenery s){sceneryList.add(s);}
@@ -95,51 +92,52 @@ public abstract class Tile extends Toolbox implements Runnable
     public void addWaterfall(Waterfall wf){waterfalls.add(wf);}
     public void addPath(Path p){pathList.add(p);}
     public void addAssortedScenery(Scenery s){assortedScenery.add(s);}
+    public void setSpin(double spinIn){spin = spinIn;}
+    public void setColor(Color c){color = c;}
     
+    /*
+    getters
+    */
+    public ArrayList<Scenery> getSceneryList(){return sceneryList;}
+    public ArrayList<Lake> getLakes(){return lakes;}
+    public ArrayList<Tree> getTrees(){return trees;}
+    public ArrayList<Waterfall> getWaterfalls(){return waterfalls;}
+    public ArrayList<Path> getPathList(){return pathList;}
+    public double getSpin(){return spin;}
+    public Polygon getLowerPolygon(){return threadedTilePolygon;}//returns the lower polygon of the bounding box of this tile. Normally used for collision detection.
+    public Polygon getUpperPolygon(){return new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], 4);}//returns the upper polygon of the bounding box of this tile. Normally used for point collision detection.
+    public Polygon getHitPolygon(){return hitPolygon;}    
+    public Color getColor(){return color;}
+    
+    /*
+    PROBLEM: change name to something more specific to what it does -- no longer just draws assorted scenery, but other tile-related graphics that all tiles can easily call
+    Draws assorted scenery, player if on the tile, its drop shadow, etc.
+    */
     public void drawAssortedScenery(Graphics g)
     {
-        
         boolean playerDrawn = false;
         if(assortedScenery.size() > 0)
         {
-            if(player.getSortDistanceConstant() <= assortedScenery.get(0).getSortDistanceConstant())
-            {
-                //playerDrawn = true;
-                //drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
-            }
             for(int i = 0; i < assortedScenery.size(); i++)
             {
                 assortedScenery.get(i).draw(g);
-                /*if(Player.boundTile == this)
-                {
-                    System.out.println(assortedScenery.get(i).getMiddleSortDistanceConstant());
-                }*/
                 if(i < assortedScenery.size() - 1 && player.getSortDistanceConstant() <= assortedScenery.get(i).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(i+1).getMiddleSortDistanceConstant() && !playerDrawn)
                 {
-                    /*if(Player.boundTile == this)
-                    {
-                        System.out.println("PLAYER: " + player.getSortDistanceConstant());
-                    }*/
-                    //System.out.println("called");
                     playerDrawn = true;
                     drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
                 }
-                //System.out.println();
-
             }
             if(!playerDrawn)
             {
                 playerDrawn = true;
                 drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
             }
-
-            //System.out.println();
-            /*for(Scenery s : assortedScenery)
-            {
-                s.draw(g);
-            }*/
         }
     }
+    
+    /*
+    adds randomly placed flowers and scenery
+    */
     private void addRandomFlowers(int heightMin, int heightMax)
     {
         int min = getArea()*2;
@@ -154,6 +152,10 @@ public abstract class Tile extends Toolbox implements Runnable
             Flower f = new Flower(this,randomX,randomY,randomHeight, 1.0);
         }
     }
+    
+    /*
+    Adds randomly spawned scenery to the tile.
+    */
     private void addRandomScenery()
     {
         addRandomFlowers(5,15);
@@ -167,12 +169,10 @@ public abstract class Tile extends Toolbox implements Runnable
             Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
         }
     }
-    public ArrayList<Scenery> getSceneryList(){return sceneryList;}
-    public ArrayList<Lake> getLakes(){return lakes;}
-    public ArrayList<Tree> getTrees(){return trees;}
-    public ArrayList<Waterfall> getWaterfalls(){return waterfalls;}
-    public ArrayList<Path> getPathList(){return pathList;}
     
+    /*
+    returns the points that make up the polygon of the left side of the bounding box of the tile.
+    */
     public int[][] getLeftSidePoints()
     {
         if((WorldPanel.radSpin > (Math.PI/2.0) && WorldPanel.radSpin < (Math.PI)) || (WorldPanel.radSpin > (3*Math.PI/2.0) && WorldPanel.radSpin < (2*Math.PI)))
@@ -183,6 +183,9 @@ public abstract class Tile extends Toolbox implements Runnable
         }
     }
     
+    /*
+    returns the points that make up the polygon of the right side of the bounding box of the tile.
+    */
     public int[][] getRightSidePoints()
     {
         if((WorldPanel.radSpin > (Math.PI/2.0) && WorldPanel.radSpin < (Math.PI)) || (WorldPanel.radSpin > (3*Math.PI/2.0) && WorldPanel.radSpin < (2*Math.PI)))
@@ -193,17 +196,10 @@ public abstract class Tile extends Toolbox implements Runnable
         }
     }
     
-    public double getSpin(){return spin;}
-    public void setSpin(double spinIn){spin = spinIn;}
-    
-    public Polygon getLowerPolygon(){return threadedTilePolygon;}
-    
-    public Polygon getUpperPolygon(){return new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], 4);}
-    
-    //public void setPlayersTile(boolean b){isPlayersTile = b;}
-    public Polygon getHitPolygon(){return hitPolygon;}    
-    public Color getColor(){return color;}
-    public void setColor(Color c){color = c;}
+    /*
+    PROBLEM: Consider renaming to getCoordX();
+    returns the coordinate x of the tile. (bottom left). Returns movingX if not in transit for sake of the paint order algorithm being able to sort it ahead of its actual paint position, as its draw position is dictated by the x coord, but it can be sorted based off of its rawX
+    */
     public double getRawX()
     {
         if(!inTransit)
@@ -212,6 +208,11 @@ public abstract class Tile extends Toolbox implements Runnable
         }
         return movingX;
     }
+    
+    /*
+    PROBLEM: Consider renaming to getCoordY();
+    returns the coordinate y of the tile. (bottom left). Returns movingY if not in transit for sake of the paint order algorithm being able to sort it ahead of its actual paint position, as its draw position is dictated by the x coord, but it can be sorted based off of its rawX
+    */
     public double getRawY()
     {   
         if(!inTransit)
@@ -219,9 +220,9 @@ public abstract class Tile extends Toolbox implements Runnable
             return y;
         }
         return movingY;
-    
     }
-    public double getMiddleCoordX(){return x + ((double)width/2.0);}
+    
+    public double getMiddleCoordX(){return x + ((double)width/2.0);}//returns the coordinate of the middle of the tile
     public double getMiddleCoordY(){return y + ((double)length/2.0);}
     public int getRawWidth(){return width;}
     public int getRawLength(){return length;}

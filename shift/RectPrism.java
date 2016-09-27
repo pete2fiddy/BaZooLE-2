@@ -84,7 +84,8 @@ public class RectPrism extends SolidShape
     }
     public void paintShading(Graphics g) 
     {
-        
+        Polygon[] poly = threadedVisibleSidePolygons;
+        shadeSidePolygons(g, poly);
         //shadeBoundingBoxSides(g);
     }
 
@@ -114,8 +115,7 @@ public class RectPrism extends SolidShape
         g.fillPolygon(threadedVisibleSidePolygons[1]);
         
         
-        Polygon[] poly = threadedVisibleSidePolygons;
-        shadeSidePolygons(g, poly);
+        
         //dotSortCorner(g);
     }
 
