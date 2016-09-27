@@ -49,7 +49,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     Audio a = new Audio();
     public static Color backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
-    
+    private DayNight dayNight = new DayNight();
     private JButton randomShapes;
     
     TileSorter ts;
@@ -158,13 +158,13 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed. Could easily move this to use a swing timer.
         startTime = System.nanoTime();//keeps track of the start nanoTime so that it can get the FPS from it
         
-        backgroundColorRotation += Math.PI/5000.0;//is just an angle whose sin, cosine, etc. determines the backgorund color of the world in a cyclical pattern
-        backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
-        setBackground(backgroundColor);//sets the color of the background based on the trig values of backgroundColorRotaion
+        //backgroundColorRotation += Math.PI/5000.0;//is just an angle whose sin, cosine, etc. determines the backgorund color of the world in a cyclical pattern
+        //backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
+        setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
-        
+        dayNight.drawStars(g);
         drawMapFloor(g);
         
         td2.draw(g);
@@ -196,7 +196,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
             frameCount = 0;
         }
-        
+        dayNight.nightShade(g);
         repaint();
     }
     
@@ -326,8 +326,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         int[] xPoints2 = {tempLowerPoints[0][getMapCornerIndexAt("middle")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("middle")]};
         int[] yPoints2 = {tempLowerPoints[1][getMapCornerIndexAt("middle")], tempLowerPoints[1][getMapCornerIndexAt("right")], screenHeight, screenHeight};
         
-        g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//g.setColor(new Color(30, 144, 255));
-        
+        //g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//g.setColor(new Color(30, 144, 255));
+        g.setColor(dayNight.getColor());
         g.fillPolygon(xPoints1, yPoints1, 4);
         g.fillPolygon(xPoints2, yPoints2, 4);
     }
