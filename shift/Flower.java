@@ -56,7 +56,7 @@ public class Flower extends Scenery implements Runnable
         petalPrism.fillDropShadow(g, getBoundTile().getHeight());
         for(RectPrism rp : leafPrisms)
         {
-            g.setColor(Toolbox.grassColor);
+            g.setColor(Toolbox.defaultGrassColor);
             if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= Math.PI)
             {
                 if(rp.getCenterCoordX() > getCoordX())

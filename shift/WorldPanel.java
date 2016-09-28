@@ -49,7 +49,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     Audio a = new Audio();
     public static Color backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
-    private DayNight dayNight = new DayNight();
+    public static DayNight dayNight = new DayNight();
     private JButton randomShapes;
     
     TileSorter ts;
@@ -95,7 +95,12 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         scale = 2.0;
         ui = new UI(this);
         try{
-            grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = snow.getGraphics();
+            g.setColor(new Color(251, 251, 251));
+            g.fillRect(0,0, 256, 256);
+            grassImage = snow;
+            //grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
             grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
             
             leavesImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Leaves3.png"));
@@ -196,6 +201,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
             frameCount = 0;
         }
+        try {
+            //Thread.sleep(50);
+        } catch (Exception e) {
+        }
         dayNight.nightShade(g);
         repaint();
     }
@@ -205,6 +214,21 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     */
     private void renderTextures()
     {
+        /*if(dayNight.getSeason().equals("summer"))
+        {
+            try {
+                grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+                grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+            } catch (Exception e) {
+            }
+        }else if(dayNight.getSeason().equals("winter"))
+        {
+            BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = snow.getGraphics();
+            g.setColor(new Color(251, 251, 251));
+            g.fillRect(0,0, 256, 256);
+            grassImage = snow;
+        }*/
         try
         {
             grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
@@ -331,6 +355,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.fillPolygon(xPoints1, yPoints1, 4);
         g.fillPolygon(xPoints2, yPoints2, 4);
     }
+    
+    //public DayNight getDayNight(){return dayNight;}
     
     /*
     returns the index of the integer points that make up the map's polygon in terms of which is on the left compared to the front of it being drawn, the middle, the right, and the back(back won't be used often, if at all).

@@ -65,6 +65,8 @@ public abstract class SolidShape
         return false;
     }
     
+    public double getCornerX(){return xCoord;}
+    public double getCornerY(){return yCoord;}
     public int getDrawX(){return (int)convertToPointX(centerCoordX, centerCoordY);}
     public int getDrawY(){return (int)convertToPointY(centerCoordX, centerCoordY);}
     public double getCenterCoordX(){return centerCoordX;}

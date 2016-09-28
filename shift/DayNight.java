@@ -18,8 +18,9 @@ import javax.swing.Timer;
  */
 public class DayNight implements ActionListener
 {
-    private static final int daySeconds = 5;
-    private static final int transitSeconds = 10;
+    private final double starSpeed = .05;
+    private static final int daySeconds = 20;
+    private static final int transitSeconds = 5;
     private String timeDescriber = "day";
     private static final Color nightColor = new Color(42, 57, 86);
     private static final Color dayColor = new Color(38, 94, 172);
@@ -28,6 +29,11 @@ public class DayNight implements ActionListener
     private double secondsTicked = 0;
     private Timer dayTimer = new Timer(timerIncrement, this);
     Point[] starPoints = new Point[75];
+    private int daysPassed = 0;
+    private int daysSinceSeasonChange=0;
+    private String season = "winter";
+    private int starMoveCount = 0;
+    private int starMove = 0;
     public DayNight()
     {
         dayTimer.setActionCommand("tick");
@@ -53,6 +59,13 @@ public class DayNight implements ActionListener
             //g.setColor(Color.WHITE);
             for(Point p : starPoints)
             {
+                
+                //p.setLocation((double)(p.getX() + starMove), (double)p.getY());
+                
+                if(p.getX() > WorldPanel.screenWidth)
+                {
+                    p.setLocation(0, p.getY());
+                }
                 //g.setColor(Color.YELLOW);
                 //g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 8, 8);
                 g.setColor(Color.WHITE);
@@ -64,6 +77,12 @@ public class DayNight implements ActionListener
             g.setColor(new Color(255,255,255,alpha));
             for(Point p : starPoints)
             {
+                //p.setLocation((double)(p.getX() + starMove), (double)p.getY());
+                
+                if(p.getX() > WorldPanel.screenWidth)
+                {
+                    p.setLocation(0, p.getY());
+                }
                 g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 6, 6);
             }
         }else if(timeDescriber.equals("morning"))
@@ -71,8 +90,18 @@ public class DayNight implements ActionListener
             g.setColor(new Color(255,255,255,(int)(255*((double)(transitSeconds-secondsTicked)/(double)transitSeconds))));
             for(Point p : starPoints)
             {
+                //p.setLocation((double)(p.getX() + starMove), (double)p.getY());
+                
+                if(p.getX() > WorldPanel.screenWidth)
+                {
+                    p.setLocation(0, p.getY());
+                }
                 g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 6, 6);
             }
+        }
+        if(starMove > 1)
+        {
+            starMove = 0;
         }
     }
     
@@ -85,10 +114,35 @@ public class DayNight implements ActionListener
         }*/
     }
     
+    public String getSeason(){return season;}
+    
+    public void toggleSeason()
+    {
+        if(season.equals("summer"))
+        {
+            season = "winter";
+            Toolbox.grassColor = Toolbox.defaultSnowColor;
+            WorldPanel.grassImage = Toolbox.defaultSnowImage;
+        }else if(season.equals("winter"))
+        {
+            season = "summer";
+            Toolbox.grassColor = Toolbox.defaultGrassColor;
+            WorldPanel.grassImage = Toolbox.defaultGrassImage;
+        }
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        System.out.println(timeDescriber);
+        starMoveCount++;
+        if(starMoveCount > 3 && (timeDescriber.equals("night") || timeDescriber.equals("morning") || timeDescriber.equals("evening")))
+        {
+            for(Point p : starPoints)
+            {
+                p.setLocation((double)(p.getX() + 1), (double)p.getY());
+            }
+            starMoveCount = 0;
+        }
         secondsTicked += (double)timerIncrement/1000.0;
         if(timeDescriber.equals("evening"))
         {
@@ -118,6 +172,13 @@ public class DayNight implements ActionListener
         {
             timeDescriber = "day";
             secondsTicked = 0;
+            daysPassed++;
+            daysSinceSeasonChange++;
+            if(Math.random() > 1.0/(double)daysSinceSeasonChange)
+            {
+                toggleSeason();
+                daysSinceSeasonChange = 0;
+            }
         }
         
     }

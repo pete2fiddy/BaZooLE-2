@@ -7,8 +7,17 @@ package shift;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import static shift.WorldPanel.grassImage;
+import static shift.WorldPanel.grassTexture;
+import static shift.WorldPanel.leavesImage;
+import static shift.WorldPanel.leavesTexture;
+import static shift.WorldPanel.worldX;
+import static shift.WorldPanel.worldY;
 
 /**
  *
@@ -18,13 +27,29 @@ public class Toolbox
 {   
     
     public static BasicStroke worldStroke = new BasicStroke((float)(1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
-    public static Color grassColor = new Color(14, 155, 14);
+    
+    public static final Color defaultSnowColor = new Color(251, 251, 251);
+    public static Color grassColor = defaultSnowColor;//new Color(14, 155, 14);
+    public static final Color defaultGrassColor = new Color(14, 155, 14);
+    public static BufferedImage defaultGrassImage, defaultSnowImage;
     public static WorldPanel worldPanel;
     public static Player player;
     public Toolbox(WorldPanel wpIn, Player playerIn)
     {
         worldPanel = wpIn;
         player = playerIn;
+        try{
+            BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+            Graphics g = snow.getGraphics();
+            g.setColor(new Color(251, 251, 251));
+            g.fillRect(0,0, 256, 256);
+            defaultGrassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            defaultSnowImage = snow;//ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+        }catch(Exception e)
+        {
+            System.err.println(e);
+        }
     }
     public Toolbox()
     {

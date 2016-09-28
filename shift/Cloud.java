@@ -25,16 +25,78 @@ public class Cloud
     private int zPos, height;
     private int waitTime = 10;
     private long endTime = 0;
-    public Cloud(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)
+    private DayNight dayNight;
+    private SnowFlake[] flakeList;
+    public Cloud(DayNight dayNightIn, double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)
     {
         cloudShape = new RectPrism(inX, inY, inZPos, inWidth, inLength, inHeight);
         x=inX; y=inY; length=inLength; width=inWidth;
         zPos=inZPos; height=inHeight;
         cloudSpeed = .01 + .015* Math.random();
+        //s = new SnowFlake(this, x, y);
+        dayNight = dayNightIn;
+        fillFlakeList();
     }
+    
+    
+    private void fillFlakeList()
+    {
+        if(dayNight.getSeason().equals("winter"))
+        {
+            double flakeUnit = .25;
+            int flakeWaves = (int)((zPos - 150)/30) + 3;
+            flakeList = new SnowFlake[(int)(width/flakeUnit)*(int)(length/flakeUnit)*flakeWaves];
+            int flakeCount = 0;
+            for(int i = 0; i < (int)(width/flakeUnit); i++)
+            {
+                for(int j = 0; j < (int)(length/flakeUnit); j++)
+                {
+                    flakeList[flakeCount] = new SnowFlake(this, cloudShape.getCornerX() + (i*flakeUnit), cloudShape.getCornerY()+(j*flakeUnit));
+                    flakeCount++;
+                    for(int z = 1; z < flakeWaves; z++)
+                    {
+                        flakeList[flakeCount] = new SnowFlake(this, cloudShape.getCornerX() + (i*flakeUnit), cloudShape.getCornerY()+(j*flakeUnit), 800*z);
+                        flakeCount++;
+                    }
+                }
+            }
+        }else{
+            flakeList = new SnowFlake[0];
+        }
+    }
+    
+    public double getCoordX(){
+        return x;
+    }
+    public double getCoordY(){
+        return y;
+    }
+    public double getAlphaPercent(){return (double)alpha/(double)defaultAlpha;}
+    public boolean outsideOfMap()
+    {
+        return cloudShape.outsideOfMap();
+    }
+    
+    public double getCloudSpeed()
+    {
+        if(alpha != 0)
+        {
+            return cloudSpeed;
+        }
+        return 0;
+    }
+    public int getZPos(){return zPos;}
     
     public void fill(Graphics g)
     {
+        if(flakeList != null)
+        {
+            for(SnowFlake sf : flakeList)
+            {
+                sf.paint(g);
+            }
+        }
+        //s.paint(g);
         cloudShape.updateShapePolygons();
         x+=cloudSpeed;
         //y+=cloudSpeed;
@@ -84,10 +146,12 @@ public class Cloud
         endTime = 0;
             //y = -y;
             //alpha = defaultAlpha;
-        width = 1.0+1.0*Math.random();
-        length = 1.0+1.0*Math.random();
+        width = 1.5+1.0*Math.random();
+        length = 1.5+1.0*Math.random();
         y = ((Math.random()*WorldPanel.worldTilesHeight)-(WorldPanel.worldTilesHeight/2));
         x = -x;
+        cloudShape.setCenterCoordX(x);
+        cloudShape.setCenterCoordY(y);
         //y-= length/2.0;
         //x-= width/2.0;
         cloudShape.setLength(length);
@@ -98,5 +162,6 @@ public class Cloud
         cloudShape.updateShapePolygons();
         
         cloudShape.setZPos(zPos);
+        fillFlakeList();
     }
 }   

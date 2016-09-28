@@ -41,7 +41,6 @@ public class TileDrawer2 implements Runnable
     
     public static void populateCloudList()
     {
-        System.out.println(WorldPanel.worldTilesHeight);
         for(int i = 0; i < 7; i++)
         {
             double randX = WorldPanel.worldTilesWidth*Math.random()-(WorldPanel.worldTilesWidth/2);
@@ -50,7 +49,7 @@ public class TileDrawer2 implements Runnable
             double randWidth = 1+1.5*Math.random();
             double randLength = 1+1.5*Math.random();
             int randHeight = (int)(5+10*Math.random());
-            cloudList.add(new Cloud(randX, randY, 200, randWidth, randLength, randHeight));
+            cloudList.add(new Cloud(WorldPanel.dayNight, randX, randY, 200, randWidth, randLength, randHeight));
         }
     }
     

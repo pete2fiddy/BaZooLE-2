@@ -250,6 +250,7 @@ public class Tree extends Scenery implements Runnable
         for(int i = 1; i < treeShapes.length; i++)
         {
             g.setColor(Toolbox.grassColor);
+            //g.setColor(new Color(251, 251, 251));
             //g2.setPaint(WorldPanel.leavesTexture);
             
             if(i < treeShapes.length -1)
