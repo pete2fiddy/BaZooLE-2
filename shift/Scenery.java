@@ -21,7 +21,6 @@ public abstract class Scenery extends Toolbox implements Runnable
         threadedRadius = getRadius();
         thread = new Thread(this);
         thread.start();
-        tileIn.addScenery(this);
         
     }
     

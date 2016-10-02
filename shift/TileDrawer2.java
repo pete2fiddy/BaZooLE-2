@@ -81,8 +81,7 @@ public class TileDrawer2 implements Runnable
     }
     public void draw(Graphics g)
     {
-        //tileList = TileSorter2.sortByDistance(tileList);
-        
+        Grass.setGrassPoints();
         mp.getThread().interrupt();
         mp.setThread(new Thread(mp));
         mp.getThread().start();

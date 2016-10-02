@@ -7,7 +7,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Area;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Tile extends Toolbox implements Runnable
 {
@@ -33,6 +36,7 @@ public abstract class Tile extends Toolbox implements Runnable
     private ArrayList<Waterfall> waterfalls = new ArrayList<Waterfall>();
     private ArrayList<Path> pathList = new ArrayList<Path>();
     private ArrayList<Scenery> assortedScenery = new ArrayList<Scenery>();
+    private Grass[] grassList = new Grass[0];
     private int[] transitPos;
     private boolean clickBuffer = false;
     private Polygon hitPolygon;
@@ -43,8 +47,10 @@ public abstract class Tile extends Toolbox implements Runnable
     private boolean tileCurrentlyMovingDebounce = false;
     private int walkedOn = 0;
     private boolean heightChangeable = false;
+    private ArrayList<Scenery> earlyDrawScenery = new ArrayList<Scenery>();
     private double movingX = 0, movingY = 0;
     private Player player;
+    private BufferedImage grassImage;
           
     /*
     Params: Takes a coordinate x(from bottom left corner), coordinate y(from bottom left corner), a units width, a units length, a PIXELS height (pixels it takes up on screen at 1 scale with fully rotated world to see the full side of it)
@@ -64,9 +70,8 @@ public abstract class Tile extends Toolbox implements Runnable
         movingX = x; 
         movingY = y;
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);
-        
+        grassImage = new BufferedImage((int)threadedTilePolygon.getBounds().getWidth(), (int)threadedTilePolygon.getBounds().getHeight(), BufferedImage.TYPE_INT_ARGB);
         TileDrawer2.tileList.add(this);
-        
         thread.start();
         player = getPlayer();
         addRandomScenery();
@@ -92,8 +97,37 @@ public abstract class Tile extends Toolbox implements Runnable
     public void addWaterfall(Waterfall wf){waterfalls.add(wf);}
     public void addPath(Path p){pathList.add(p);}
     public void addAssortedScenery(Scenery s){assortedScenery.add(s);}
+    public void addGrass(Grass g)
+    {
+        //System.out.println("Grass called");
+        Grass[] copy = new Grass[grassList.length + 1];
+        for(int i = 0; i < grassList.length; i++)
+        {
+            copy[i]=grassList[i];
+        }
+        copy[copy.length - 1] = g;
+        grassList = copy;
+        /*grassList = Arrays.copyOf(grassList, grassList.length + 1);
+        grassList[grassList.length - 1] = g;*/
+    }
+    public void removeGrass(int index)
+    {
+        Grass[] copy = new Grass[grassList.length - 1];
+        for(int i = 0; i < grassList.length; i++)
+        {
+            if(i < index)
+            {
+                copy[i]=grassList[i];
+            }else if(i > index)
+            {
+                copy[i-1]=grassList[i];
+            }
+        }
+        grassList = copy;
+    }
     public void setSpin(double spinIn){spin = spinIn;}
     public void setColor(Color c){color = c;}
+    public void addEarlyDrawScenery(Scenery s){earlyDrawScenery.add(s);}
     
     /*
     getters
@@ -109,6 +143,17 @@ public abstract class Tile extends Toolbox implements Runnable
     public Polygon getHitPolygon(){return hitPolygon;}    
     public Color getColor(){return color;}
     
+    public void drawEarlyScenery(Graphics g)
+    {
+        for(Scenery s : earlyDrawScenery)
+        {
+            s.draw(g);
+        }
+        for(Path p : pathList)
+        {
+            p.draw(g);
+        }
+    }
     /*
     PROBLEM: change name to something more specific to what it does -- no longer just draws assorted scenery, but other tile-related graphics that all tiles can easily call
     Draws assorted scenery, player if on the tile, its drop shadow, etc.
@@ -116,7 +161,32 @@ public abstract class Tile extends Toolbox implements Runnable
     public void drawAssortedScenery(Graphics g)
     {
         boolean playerDrawn = false;
-        if(assortedScenery.size() > 0)
+        
+        int sceneryCount = 0;
+        for(int i = 0; i < grassList.length; i++)
+        {
+            if(assortedScenery.size() > 0 && assortedScenery.get(sceneryCount).getSortDistanceConstant()>grassList[i].getSortDistanceConstant() && sceneryCount < assortedScenery.size()-1)
+            {
+                assortedScenery.get(sceneryCount).draw(g);
+                if(player.getSortDistanceConstant() <= assortedScenery.get(sceneryCount).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(sceneryCount+1).getMiddleSortDistanceConstant() && !playerDrawn)
+                {
+                    playerDrawn = true;
+                    drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+                }
+                sceneryCount++;
+            }
+            grassList[i].drawTufts(g);
+        }
+        for(int i = sceneryCount; i < assortedScenery.size(); i++)
+        {
+            assortedScenery.get(i).draw(g);
+        }
+        if(!playerDrawn)
+        {
+            playerDrawn = true;
+            drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+        }
+        /*if(assortedScenery.size() > 0)
         {
             for(int i = 0; i < assortedScenery.size(); i++)
             {
@@ -132,7 +202,8 @@ public abstract class Tile extends Toolbox implements Runnable
                 playerDrawn = true;
                 drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
             }
-        }
+        }*/
+        
     }
     
     /*
@@ -167,6 +238,63 @@ public abstract class Tile extends Toolbox implements Runnable
             double randomY = 0.05*(int)(Math.random()/radiusApart);
             //int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
             Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
+        }
+        for(int i = 0; i < width*10; i++)
+        {
+            for(int j = 0; j < length*10; j++)
+            {
+                double grassX = (double)i/((double)width*10);
+                double grassY = (double)j/(double)(length*10);
+                Grass g = new Grass(this, (double)i/((double)width*10), (double)j/(double)(length*10));
+            }
+            
+        }
+        /*
+        double placeX = 0;
+        double placeY = 0;
+        for(double startX = 0.05; startX < .95; startX+= 0.05)
+        {
+            placeX = startX;
+            placeY = 0.05;
+            for(int i = 0; i < startX/0.1; i++)
+            {
+                Grass g = new Grass(this, placeX, placeY);
+                placeX -= 0.1;
+                placeY += 0.1;
+            }
+        }
+        for(double startY = 0.05; startY < .95; startY+= 0.05)
+        {
+            placeY = startY;
+            placeX = .95;
+            for(int i = 0; i < (1-startY)/0.1; i++)
+            {
+                Grass g = new Grass(this, placeX, placeY);
+                placeX -= 0.1;
+                placeY += 0.1;
+            }
+        }
+        */
+        
+    }
+    
+    public void removeCoveredGrass()
+    {
+        for(Path p : pathList)
+        {
+            for(int i = 0; i < grassList.length; i++)
+            {
+                if(p.pathOnPoint(grassList[i].getX(),grassList[i].getY()))
+                {
+                    removeGrass(i);
+                    i--;
+                }
+                /*if(p.pathOnCoord(assortedScenery.get(i).getCoordX(), assortedScenery.get(i).getCoordY()))
+                {
+                    assortedScenery.remove(assortedScenery.get(i));
+                    i--;
+                }*/
+            }
         }
     }
     
@@ -524,21 +652,39 @@ public abstract class Tile extends Toolbox implements Runnable
         }
     }
     
-    private void sortAssortedScenery()
+    private void sortScenery(Scenery[] sceneryIn)
     {
-        for(int i = 0; i < assortedScenery.size()-1; i++)
+        for(int i = 0; i < sceneryIn.length-1; i++)
         {
             int smallestIndex = i;
-            for(int j = i+1; j < assortedScenery.size(); j++)
+            for(int j = i+1; j < sceneryIn.length; j++)
             {
-                if(assortedScenery.get(j).getSortDistanceConstant() > assortedScenery.get(smallestIndex).getSortDistanceConstant())
+                if(sceneryIn[j].getSortDistanceConstant() > sceneryIn[smallestIndex].getSortDistanceConstant())
                 {
                     smallestIndex = j;
                 }
             }
-            Scenery tempScenery = assortedScenery.get(i);
-            assortedScenery.set(i, assortedScenery.get(smallestIndex));
-            assortedScenery.set(smallestIndex, tempScenery);
+            Scenery tempScenery = sceneryIn[i];
+            sceneryIn[i]= sceneryIn[smallestIndex];
+            sceneryIn[smallestIndex]= tempScenery;
+        }
+    }
+    
+    private void sortScenery(ArrayList<Scenery> sceneryIn)
+    {
+        for(int i = 0; i < sceneryIn.size()-1; i++)
+        {
+            int smallestIndex = i;
+            for(int j = i+1; j < sceneryIn.size(); j++)
+            {
+                if(sceneryIn.get(j).getSortDistanceConstant() > sceneryIn.get(smallestIndex).getSortDistanceConstant())
+                {
+                    smallestIndex = j;
+                }
+            }
+            Scenery tempScenery = sceneryIn.get(i);
+            sceneryIn.set(i, sceneryIn.get(smallestIndex));
+            sceneryIn.set(smallestIndex, tempScenery);
         }
     }
     
@@ -1443,6 +1589,15 @@ public abstract class Tile extends Toolbox implements Runnable
         //height = baseHeight;//(int)(WorldPanel.scale*baseHeight);
         myThreadedLowerPoints = getPoints().clone();
         myThreadedUpperPoints = getUpperPoints().clone();
+        //threadedGrassImage = new BufferedImage((int)threadedTilePolygon.getBounds().getX(), (int)threadedTilePolygon.getBounds().getY(), BufferedImage.TYPE_INT_ARGB);
+        
+        /*Graphics2D g2 = grassImage.createGraphics();
+        for(Grass g : grassList)
+        {
+            g.drawTufts(g2);
+        }
+        g2.dispose();*/
+        
         if(numClickedTiles() > 1)
         {
             selectClosestOfClickedTiles();
@@ -1451,7 +1606,9 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             hitPolygon = getUpdatedHitPolygon();
         }
-        sortAssortedScenery();
+        sortScenery(earlyDrawScenery);
+        sortScenery(assortedScenery);
+        sortScenery(grassList);
         //sortTrees();
         calculatePolyPoints();
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);

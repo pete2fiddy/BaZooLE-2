@@ -83,7 +83,10 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         //g2.draw(frontSideArea);
         //g2.draw(getFrontArea());
         //g2.draw(getArea());
-        
+        for(Tile t : getFrontTiles())
+        {
+            t.drawAssortedScenery(g);
+        }
         
     }
     
@@ -109,6 +112,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         }*/
         for(Tile t : getBackTiles())
         {
+            
             t.reverseShadeSides(g);
             //t.drawWaterReflectionCover(g);
             t.drawWaterReflections(g);
@@ -116,7 +120,10 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         g2.setPaint(WorldPanel.grassTexture);
         g2.fill(getBackArea());
         g.setColor(Color.BLACK);
-        
+        for(Tile t : getBackTiles())
+        {
+            t.drawAssortedScenery(g);
+        }
         //g2.draw(getBackArea());
         
     }

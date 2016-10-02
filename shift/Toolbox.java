@@ -45,6 +45,12 @@ public class Toolbox
             g.fillRect(0,0, 256, 256);
             defaultGrassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
             defaultSnowImage = snow;//ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            if(wpIn.getDayNight().getSeason().equals("winter"))
+            {
+                grassColor = defaultSnowColor;
+            }else{
+                grassColor = defaultGrassColor;
+            }
             grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
         }catch(Exception e)
         {

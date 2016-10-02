@@ -34,8 +34,10 @@ public class DirtPath extends Path
     @Override
     public void draw(Graphics g) 
     {
+        run();
+        getBoundTile().removeCoveredGrass();
         Graphics2D g2 = (Graphics2D)g;
-        
+        //getBoundTile().removeCoveredScenery();
         g.setColor(darkBrown);
         g.fillPolygon(getThreadedPathPolygon()[0], getThreadedPathPolygon()[1],getThreadedPathPolygon()[0].length);
         g.setColor(evenDarkerBrown);

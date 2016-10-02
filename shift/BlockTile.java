@@ -19,6 +19,7 @@ public class BlockTile extends Tile
         setMoveable(false);
         MergedBlockTiles.blockTiles.add(this);
         isEdgeBlock = false;
+        getAssortedScenery().clear();
     }
     
     public BlockTile(int inX, int inY, int inWidth, int inLength, int inHeight, boolean isEdgeBlockIn) 
@@ -27,6 +28,7 @@ public class BlockTile extends Tile
         setMoveable(false);
         MergedBlockTiles.blockTiles.add(this);
         isEdgeBlock = isEdgeBlockIn;
+        getAssortedScenery().clear();
     }
     
     @Override

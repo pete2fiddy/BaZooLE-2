@@ -212,6 +212,7 @@ public class Tree extends Scenery implements Runnable
     public void draw(Graphics g)//fix so that polygon arrays ONLY have the polygons that should be drawn for the current quadrant. Also, trying to only draw the "visible" parts of the leaves doesn't work because of its shape -- can result in a side missing.
     {
         
+        run();
         Graphics2D g2 = (Graphics2D)g;
         /*
         float dash1[] = {3.0f};
@@ -246,7 +247,8 @@ public class Tree extends Scenery implements Runnable
         treeShapes[1].fillDropShadow(g, getBoundTile().getHeight());
         g.setColor(new Color(86, 53, 17));
         treeShapes[0].fill(g);
-        
+        RectPrism ss = (RectPrism)treeShapes[0];
+        ss.paintShading(g);
         for(int i = 1; i < treeShapes.length; i++)
         {
             g.setColor(Toolbox.grassColor);
@@ -257,7 +259,6 @@ public class Tree extends Scenery implements Runnable
             {
                 treeShapes[i].fill(g);//drawExcludingTop(g);
                 //treeShapes[i].shadeBoundingBoxSides(g);
-                
                 if(i != 1)
                 {
                     treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
@@ -270,6 +271,7 @@ public class Tree extends Scenery implements Runnable
             }
             
         }
+        
         //.setColor(Color.WHITE);
         //g.drawString(Double.toString((int)(100.0*getSortDistanceConstant())/100.0), (int)getX(), (int)getY());
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -299,7 +301,7 @@ public class Tree extends Scenery implements Runnable
         
         for(SolidShape s : treeShapes)
         {
-            
+            //System.out.println("called");
             s.setCenterCoordX(getCoordX());
             s.setCenterCoordY(getCoordY());
             s.setZPos(getBoundTile().getHeight() + heightCount);

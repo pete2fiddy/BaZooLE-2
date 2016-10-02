@@ -95,11 +95,20 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         scale = 2.0;
         ui = new UI(this);
         try{
-            BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
-            Graphics g = snow.getGraphics();
-            g.setColor(new Color(251, 251, 251));
-            g.fillRect(0,0, 256, 256);
-            grassImage = snow;
+            if(dayNight.getSeason().equals("winter"))
+            {
+                BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = snow.getGraphics();
+                g.setColor(new Color(251, 251, 251));
+                g.fillRect(0,0, 256, 256);
+                grassImage = snow;
+            }else{
+                BufferedImage dirt = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = dirt.getGraphics();
+                g.setColor(new Color(86, 65, 46));//(120, 72, 0));
+                g.fillRect(0,0, 256, 256);
+                grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+            }
             //grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
             grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
             
@@ -195,7 +204,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+        dayNight.nightShade(g);
         if(frameCount > 20)//fps calculated at the end after all the painting has been done.
         {
             fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
@@ -205,7 +214,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             //Thread.sleep(50);
         } catch (Exception e) {
         }
-        dayNight.nightShade(g);
+        
         repaint();
     }
     
@@ -356,7 +365,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.fillPolygon(xPoints2, yPoints2, 4);
     }
     
-    //public DayNight getDayNight(){return dayNight;}
+    public DayNight getDayNight(){return dayNight;}
     
     /*
     returns the index of the integer points that make up the map's polygon in terms of which is on the left compared to the front of it being drawn, the middle, the right, and the back(back won't be used often, if at all).
@@ -659,7 +668,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             TileSorter.tileList.get(i).setThread(t);//shouldn't be working with spinTile but does?
         
         }
-        for(int i = 0; i < TileSorter.tileList.size(); i++)
+        /*for(int i = 0; i < TileSorter.tileList.size(); i++)
         {
             for(int j = 0; j < TileSorter.tileList.get(i).getSceneryList().size(); j++)
             {
@@ -667,7 +676,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 TileSorter.tileList.get(i).getSceneryList().get(j).setThread(new Thread(TileSorter.tileList.get(i).getSceneryList().get(j)));
                 TileSorter.tileList.get(i).getSceneryList().get(j).getThread().start();
             }
-        }
+        }*/
 
         player.getThread().interrupt();
         player.setThread(new Thread(player));

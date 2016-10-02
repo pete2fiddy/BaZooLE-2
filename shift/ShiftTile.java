@@ -11,6 +11,7 @@ public class ShiftTile extends Tile
     public static final Color redAlpha = new Color(255, 0, 0, 100);
     Ladder ld;
     //private Flower f;
+    private Grass grass;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
@@ -25,6 +26,7 @@ public class ShiftTile extends Tile
         ld = new Ladder(this, dp, .5, 1, .1);*/
         //Lake lake = new Lake(this, .5, .5, .8, .8);
         //f = new Flower(this,0.2,0.5,10, 1.0);
+        grass = new Grass(this, 0.25, 0.25);
     }
     
     @Override
@@ -70,6 +72,9 @@ public class ShiftTile extends Tile
         }*/
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //drawSidePolygons(g);//draws the sides of the tile.
+        
+        drawEarlyScenery(g);
+        
         g.setColor(Color.BLACK);
         
         //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);

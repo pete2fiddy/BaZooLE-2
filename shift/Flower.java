@@ -75,12 +75,14 @@ public class Flower extends Scenery implements Runnable
                     rp.fill(g);
                 }
             }
+            rp.paintShading(g);
         }
-        g.setColor(Toolbox.grassColor);
+        g.setColor(Toolbox.defaultGrassColor);
         stemPrism.fill(g);
+        stemPrism.paintShading(g);
         for(RectPrism rp : leafPrisms)//done this way to sort leaves by draw order.
         {
-            g.setColor(Toolbox.grassColor);
+            g.setColor(Toolbox.defaultGrassColor);
             if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= Math.PI)
             {
                 if(rp.getCenterCoordX() < getCoordX())
@@ -99,9 +101,11 @@ public class Flower extends Scenery implements Runnable
                     rp.fill(g);
                 }
             }
+            rp.paintShading(g);
         }
         g.setColor(petalColor);
         petalPrism.fill(g);
+        petalPrism.paintShading(g);
     }
     
     @Override public void run()

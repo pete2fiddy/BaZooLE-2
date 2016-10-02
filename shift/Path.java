@@ -36,7 +36,7 @@ public abstract class Path extends Scenery implements Runnable
         pathPolygon = new Polygon(threadedPathPolygon[0], threadedPathPolygon[1], 6);
         updateLinks();
         MergedPaths.pathList.add(this);//adds itself to MergedPath's list of paths.
-        tileIn.addPath(this);//adds itself to its bound tile's list of baths.
+        tileIn.addPath(this);//adds itself to its bound tile's list of paths.
         //tileIn.getAssortedScenery().remove(this);
         pathWidth = pathWidth/Math.sqrt(tileIn.getRawWidth() * tileIn.getRawLength());//to make path widths uniform across multi-sized tiles. May need to be fixed for odd-shaped, non-square tiles.
     }
@@ -62,7 +62,7 @@ public abstract class Path extends Scenery implements Runnable
         isStraight = true;
         updateLinks();
         MergedPaths.pathList.add(this);//adds itself to MergedPath's list of paths.
-        tileIn.addPath(this);//adds itself to its bound tile's list of baths.
+        tileIn.addPath(this);//adds itself to its bound tile's list of paths.
         pathWidth = pathWidth/Math.sqrt(tileIn.getRawWidth() * tileIn.getRawLength());//to make path widths uniform across multi-sized tiles. May need to be fixed for odd-shaped, non-square tiles.
     }
     
@@ -140,6 +140,11 @@ public abstract class Path extends Scenery implements Runnable
         
     }
     
+    public boolean pathOnCoord(double xIn, double yIn)
+    {
+        double[] points = convertToPoint(xIn, yIn);
+        return (pathPolygon.contains(points[0], points[1]));
+    }
     
     public double getZeroX()
     {
