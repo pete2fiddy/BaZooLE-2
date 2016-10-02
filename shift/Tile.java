@@ -243,9 +243,9 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             for(int j = 0; j < length*10; j++)
             {
-                double grassX = (double)i/((double)width*10);
-                double grassY = (double)j/(double)(length*10);
-                Grass g = new Grass(this, (double)i/((double)width*10), (double)j/(double)(length*10));
+                double grassX = (0.05/(double)width)+(double)i/((double)width*10);
+                double grassY = (0.05/(double)length)+(double)j/(double)(length*10);
+                Grass g = new Grass(this, grassX, grassY);
             }
             
         }
