@@ -20,7 +20,7 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class WorldPanel extends JPanel implements ActionListener, ChangeListener
+public class WorldPanel extends JPanel implements ActionListener, ChangeListener, Runnable
 {
     private Timer tickTimer;
     private boolean drawWater = true;
@@ -51,7 +51,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
     public static DayNight dayNight = new DayNight();
     private JButton randomShapes;
-    
+    private Timer secondTimer;
     TileSorter ts;
     TileDrawer td;
     private TileDrawer2 td2 = new TileDrawer2(this);
@@ -61,7 +61,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private LevelLoader levelLoader = new LevelLoader(player, this);
     private WaterRipple[] waterRipples = new WaterRipple[8];
     private Toolbox toolbox = new Toolbox(this, player);
-    
+    private int timeCount = 0;
+    private Timer frameTimer=new Timer(1, this);
+    private BufferedImage[][] patches = new BufferedImage[3][3];
+    private int patchI = 0, patchJ = 0;
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -121,6 +124,13 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         tickTimer = new Timer(5, this);
         tickTimer.setActionCommand("tick");
         tickTimer.setRepeats(true);
+        secondTimer = new Timer(1000, this);
+        secondTimer.setActionCommand("second");
+        secondTimer.setRepeats(true);
+        secondTimer.start();
+        frameTimer.setRepeats(true);
+        frameTimer.setActionCommand("frame");
+        frameTimer.start();
     }
     
     /*
@@ -160,6 +170,38 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         resetLevel.setVisible(false);
     }
     
+    public BufferedImage[][] getPatches(){return patches;}
+    
+    public void setImage()
+    {
+        int i = patchI, j = patchJ;
+        patches[i][j]= new BufferedImage((int)((screenWidth/3)), (int)((screenHeight/3)), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D imgG = patches[i][j].createGraphics();
+        
+        imgG.translate(-(int)(i*(screenWidth/3)),-(int)(j*(screenHeight/3)));
+        imgG.setClip((int)(i*(screenWidth/3)),(int)(j*(screenHeight/3)), (int)(screenWidth/3), (int)(screenHeight/3));
+        //imgG.setClip(0,0,(screenWidth/3), (screenHeight/3));
+
+        Graphics2D g2 = (Graphics2D)imgG;
+        g2.setStroke(Toolbox.worldStroke);
+        dayNight.drawStars(imgG);
+        drawMapFloor(imgG);
+
+        td2.draw(imgG);
+        fillBelowMap(imgG);
+
+        player.drawPlayersChain(imgG);//draws the player's chain on top of everything else being drawn so it can always be easily seen
+        player.drawTransparentPlayer(imgG);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
+        ui.draw(imgG);//draws UI elements like level, etc.
+
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        imgG.setFont(new Font("Futura", Font.PLAIN, 16));
+        imgG.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        
+        dayNight.nightShade(imgG);
+        
+    }
     /*
     the MAIN paint method for the project. Everything painted from here, or from instances called from here.
     */
@@ -169,12 +211,20 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         renderTextures();
         
-        frameCount++;//band-aid way to make the FPS count not change too quickly to read -- only changes the FPS once frameCount reaches a certain number and is then reset. Could be fixed. Could easily move this to use a swing timer.
-        startTime = System.nanoTime();//keeps track of the start nanoTime so that it can get the FPS from it
         
-        //backgroundColorRotation += Math.PI/5000.0;//is just an angle whose sin, cosine, etc. determines the backgorund color of the world in a cyclical pattern
-        //backgroundColor = new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198);
+        //frameCount++;
+        
+        /*\for(int i = 0; i < patches.length; i++)
+        {
+            for(int j = 0; j < patches[0].length; j++)
+            {
+                g.drawImage(patches[i][j], (int)(i*(screenWidth/3)), (int)(j*(screenHeight/3)), null);
+            }
+        }*/
+        
+        g.setClip(0,0, screenWidth, screenHeight);
         setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
+        frameCount++;
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
@@ -193,29 +243,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         
-        
-        if((double)(1/((System.nanoTime()-startTime)/1000000000.0)) > fpsCap)//sleeps the game if FPS is above cap until a time passes that would satisfy it being below the fps
-        {
-            try 
-            {
-                Thread.sleep((long)((1000.0/(double)fpsCap) - ((System.nanoTime()-startTime)/1000000)));
-            }catch (Exception ex) 
-            {
-                Logger.getLogger(WorldPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
         dayNight.nightShade(g);
-        if(frameCount > 20)//fps calculated at the end after all the painting has been done.
-        {
-            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
-            frameCount = 0;
-        }
-        try {
-            //Thread.sleep(50);
-        } catch (Exception e) {
-        }
-        
-        repaint();
+        g.setFont(new Font("Futura", Font.PLAIN, 16));
+        g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
+        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
     
     /*
@@ -223,7 +254,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     */
     private void renderTextures()
     {
-        /*if(dayNight.getSeason().equals("summer"))
+        if(dayNight.getSeason().equals("summer"))
         {
             try {
                 grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
@@ -237,7 +268,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             g.setColor(new Color(251, 251, 251));
             g.fillRect(0,0, 256, 256);
             grassImage = snow;
-        }*/
+        }
         try
         {
             grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
@@ -333,8 +364,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.drawString("Quadrant: " + Integer.toString(spinQuadrant()),125, 50);
         if(frameCount > 100)
         {
-            fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
-            frameCount = 0;
+            //fps = (double)(1/((System.nanoTime()-startTime)/1000000000.0));
+            //frameCount = 0;
         }
         g.drawString("FPS: " + Integer.toString((int)fps), 50, 50);
         g.drawString("Spin: "+Double.toString(radSpin), 100, 800);
@@ -668,7 +699,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             TileSorter.tileList.get(i).setThread(t);//shouldn't be working with spinTile but does?
         
         }
-        /*for(int i = 0; i < TileSorter.tileList.size(); i++)
+        for(int i = 0; i < TileSorter.tileList.size(); i++)
         {
             for(int j = 0; j < TileSorter.tileList.get(i).getSceneryList().size(); j++)
             {
@@ -676,7 +707,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 TileSorter.tileList.get(i).getSceneryList().get(j).setThread(new Thread(TileSorter.tileList.get(i).getSceneryList().get(j)));
                 TileSorter.tileList.get(i).getSceneryList().get(j).getThread().start();
             }
-        }*/
+        }
 
         player.getThread().interrupt();
         player.setThread(new Thread(player));
@@ -703,7 +734,33 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         String command = e.getActionCommand();
         if(command.equals("tick"))
         {
+            //patches = new BufferedImage[3][3];
+            /*for(int i = 0; i < patches.length; i++)
+            {
+                patchI = i;
+                for(int j = 0; j < patches[0].length; j++)
+                {
+                    patchJ = j;
+                    Thread t = new Thread(this);
+                    t.start();
+                    try {
+                        //t.join();
+                    } catch (Exception a) {
+                    }
+
+                }
+            }*/
             tick();
+        }else if(command.equals("frame"))
+        {
+            repaint();
+        }else if(command.equals("second"))
+        {
+            
+                fps = frameCount;
+                frameCount = 0;
+                timeCount = 0;
+            
         }else if(command.equals("randomShapes"))
         {
             baseMapWidth = 525;
@@ -747,5 +804,11 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         JSlider numIn = (JSlider)e.getSource();
         
         a.setVolume((float)numIn.getValue());
+    }
+
+    @Override
+    public void run() 
+    {
+        setImage();
     }
 }

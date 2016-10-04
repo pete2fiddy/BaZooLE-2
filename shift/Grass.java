@@ -11,8 +11,10 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.Timer;
 
@@ -20,50 +22,59 @@ import javax.swing.Timer;
  *
  * @author phusisian
  */
+
+//Plotted using this function: https://www.desmos.com/calculator/ztyfsgdcoj
 public class Grass extends Scenery implements ActionListener
 {
     //public Timer refreshTimer = new Timer(200, this);
     //Method names based around Standard quadratic form of y = a(x-h)^2+k
     private static final Color darkGrass = new Color(23,68,0);//(37, 89, 11);
     private static int height;
-    public static Point[][] grassPoints = new Point[5][5];
+    public static Point[][][] grassPoints = new Point[3][5][4];
     private static boolean goingForward = true;
-    private static double offset = 0;
-    private static double radius = 5;
+    private static double[] offsets = new double[grassPoints.length];
+    private int thisRadius;
+    private static final int minRadius = 3;
+    private static final int maxRadiusAdd = 3;
+    private static BasicStroke grassStroke;
     public Grass(Tile tileIn, double offsetXIn, double offsetYIn) 
     {
         super(tileIn, offsetXIn, offsetYIn);
         height = 4;//3 + (int)(3*Math.random());
         
         //refreshTimer.setRepeats(true);
-        radius = 5;//+(3*Math.random());
+        for(int i = 0; i < offsets.length; i++)
+        {
+            offsets[i]=0;
+        }
+        thisRadius = minRadius+(int)(Math.random()*maxRadiusAdd);
         //refreshTimer.start();
         setGrassPoints();
         tileIn.addGrass(this);
     }
     
-    private static double getA(double hIn)
+    private static double getA(double hIn, double radius)
     {
-        return -10*radius/Math.pow(hIn, 2);
+        return -Math.pow(radius,2)/Math.pow(hIn, 2);
     }
     
-    private static double getK(double hIn)
+    private static double getK(double hIn, double radius)
     {
         return Math.sqrt(Math.pow(radius, 2) - Math.pow(hIn, 2));
     }
     
-    private static double getXIntercept(double hIn)
+    private static double getXIntercept(double hIn, double radius)
     {
-        return hIn - (Math.abs(hIn)/hIn)*Math.sqrt(-getK(hIn)/getA(hIn));
+        return hIn - (Math.abs(hIn)/hIn)*Math.sqrt(-getK(hIn,radius)/getA(hIn, radius));
     }
     
     
-    private static double getYValue(double hIn, double xIn)
+    private static double getYValue(double hIn, double xIn, double radius)
     {
-        return getA(hIn)*Math.pow(xIn-hIn, 2)+getK(hIn);
+        return getA(hIn, radius)*Math.pow(xIn-hIn, 2)+getK(hIn,radius);
     }
     
-    private void graphLeaf(Graphics g, double hIn)
+    /*private void graphLeaf(Graphics g, double hIn)
     {
         g.setColor(darkGrass);
         Point[] points = new Point[3];
@@ -85,82 +96,80 @@ public class Grass extends Scenery implements ActionListener
             
             //g.drawLine((int)points[i].getX(), (int)points[i].getY(), (int)points[i+1].getX(), (int)points[i+1].getY());
         }
-    }
+    }*/
     
     public void drawTufts(Graphics g)
     {
-       
+        
         Graphics2D g2 = (Graphics2D)g;
-        g2.setStroke(new BasicStroke((int)(.75*WorldPanel.scale)));
+        g2.setStroke(grassStroke);
         double x = getX();
         double y = getY();
-        Point endPoint = new Point((int)x, (int)y);
-        Point startPoint = new Point((int)x, (int)(y-radius*WorldPanel.scale));
-       // g.setColor(Color.RED);
-       // g.fillOval((int)(startPoint.getX()-3), (int)(startPoint.getY() - 3), 6, 6);
-       // g.fillOval((int)(endPoint.getX()-3), (int)(endPoint.getY() - 3), 6, 6);
-        //GradientPaint gp = new GradientPaint(startPoint,Toolbox.defaultGrassColor,endPoint,darkGrass);
-        
-        g.setColor(Toolbox.grassColor);
-        //g2.setPaint(gp);
-        
-        for(int i = 0; i < grassPoints.length; i++)
+        Rectangle grassRect = new Rectangle((int)x,(int)y,10,10);
+        if(g.getClip().contains(grassRect))
         {
-            for(int j = 0; j < grassPoints[0].length-1; j++)
+        int iLength = grassPoints[0].length;
+        int jLength = grassPoints[0][0].length;
+        int diffR = darkGrass.getRed()-Toolbox.grassColor.getRed();
+        int diffG = Toolbox.grassColor.getGreen()-darkGrass.getGreen();
+        int diffB = Toolbox.grassColor.getBlue()-darkGrass.getBlue();
+        for(int i = 0; i < iLength; i++)
+        {
+            for(int j = 0; j < jLength-1; j++)
             {
-                double colorMultiplier = (double)(j)/(double)(grassPoints[0].length);
-                //System.out.println("Color multiplier: " + colorMultiplier);
-                //new Color(14, 155, 14);default grass
-                //new Color(23,68,0) dark grass
+                double colorMultiplier = (double)(j)/(double)(iLength);
                 
-                int red = (int)(darkGrass.getRed() - (colorMultiplier*(darkGrass.getRed()-Toolbox.grassColor.getRed())));
-                int green = (int)(darkGrass.getGreen() + (colorMultiplier*(Toolbox.grassColor.getGreen()-darkGrass.getGreen())));
-                int blue = (int)(darkGrass.getBlue() + (colorMultiplier*(Toolbox.grassColor.getBlue()-darkGrass.getBlue())));
+                int red = (int)(darkGrass.getRed() - (colorMultiplier*diffR));
+                int green = (int)(darkGrass.getGreen() + (colorMultiplier*diffG));
+                int blue = (int)(darkGrass.getBlue() + (colorMultiplier*diffB));
                 Color c = new Color(red, green, blue);
-                
-                //Color c = new Color(darkGrass.getRed() - (int)(colorMultiplier*(darkGrass.getRed() - Toolbox.defaultGrassColor.getRed())),darkGrass.getGreen() - (int)(colorMultiplier*(darkGrass.getGreen() - Toolbox.defaultGrassColor.getGreen())), darkGrass.getBlue() - (int)(colorMultiplier*(darkGrass.getBlue() - Toolbox.defaultGrassColor.getBlue())));
-                //g.drawLine(10, 10, 20, 20);
                 g.setColor(c);
-                g.drawLine((int)(x + grassPoints[i][j].getX()), (int)(y - grassPoints[i][j].getY()),(int)(x + grassPoints[i][j+1].getX()), (int)(y - grassPoints[i][j+1].getY()));
+                g.drawLine((int)(x + grassPoints[thisRadius-minRadius][i][j].getX()), (int)(y - grassPoints[thisRadius-minRadius][i][j].getY()),(int)(x + grassPoints[thisRadius-minRadius][i][j+1].getX()), (int)(y - grassPoints[thisRadius-minRadius][i][j+1].getY()));
             }
         }
         g2.setStroke(new BasicStroke(1));
+        }
     }
     
     
     public static void setGrassPoints()
     {
-        if(goingForward)
-        {
-            offset += 0.03;
-            if(offset/radius > .2)
-            {
-                goingForward = false;
-            }
-        }else{
-            offset -= 0.03;
-            if(offset/radius < -.2)
-            {
-                goingForward = true;
-            }
-        }
         
-        double incrementH = 24.0/radius/4.0;
-        //int grassCount = 0;
-        double dOffset = offset - (2*incrementH);
-        for(int grassCount = 0; grassCount < grassPoints.length; grassCount++)//double h = offset - (2*incrementH); h < offset + (2*incrementH); h += incrementH)
+        grassStroke = new BasicStroke((int)(WorldPanel.scale*0.75));
+        for(int stage = 0; stage < grassPoints.length; stage++)
         {
-            Point[] points = new Point[grassPoints[0].length];
-            double range = dOffset-getXIntercept(dOffset);
-            double increment = range/(double)points.length;
-            //System.out.println("y value: " + getYValue());
-            for(int i = 0; i < points.length; i++)
+            
+            if(goingForward)
             {
-                points[i] = new Point((int)(WorldPanel.scale*(getXIntercept(dOffset)+(increment*i))), (int)(WorldPanel.scale*Math.sin(WorldPanel.rotation)*(getYValue(dOffset, (getXIntercept(dOffset)+(increment*i))))));
+                offsets[stage] += 0.03;
+                if(offsets[stage]/(stage+minRadius) > .2)
+                {
+                    goingForward = false;
+                }
+            }else{
+                offsets[stage] -= 0.03;
+                if(offsets[stage]/(stage+minRadius) < -.2)
+                {
+                    goingForward = true;
+                }
             }
-            dOffset += incrementH;
-            grassPoints[grassCount]=points;
-            //grassCount++;
+            double incrementH = 24.0/(double)(stage+minRadius)/4.0;
+            //int grassCount = 0;
+            double dOffset = offsets[stage] - (2*incrementH);
+            for(int grassCount = 0; grassCount < grassPoints[0].length; grassCount++)//double h = offset - (2*incrementH); h < offset + (2*incrementH); h += incrementH)
+            {
+                Point[] points = new Point[grassPoints[0][0].length];
+                double range = dOffset-getXIntercept(dOffset, stage + minRadius);
+                double increment = range/(double)points.length;
+                //System.out.println("y value: " + getYValue());
+                for(int i = 0; i < points.length; i++)
+                {
+                    points[i] = new Point((int)(WorldPanel.scale*(getXIntercept(dOffset, stage + minRadius)+(increment*i))), (int)(WorldPanel.scale*Math.sin(WorldPanel.rotation)*(getYValue(dOffset, (getXIntercept(dOffset, stage + minRadius)+(increment*i)), stage + minRadius))));
+                }
+                dOffset += incrementH;
+                grassPoints[stage][grassCount]=points;
+                //grassCount++;
+            }
         }
     }
     

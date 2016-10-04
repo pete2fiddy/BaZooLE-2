@@ -11,22 +11,10 @@ public class ShiftTile extends Tile
     public static final Color redAlpha = new Color(255, 0, 0, 100);
     Ladder ld;
     //private Flower f;
-    private Grass grass;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
         TileSorter.addTile(this);//should I be adding from the Tile class?
-        /*Tree tree = new Tree(this, .25, .25);
-        Tree tree2 = new Tree(this, .75, .75);
-        double[] start = {0, .5};
-        double[] vertex = {.5,.5};
-        double[] end = {.5, 1};
-        DirtPath dp = new DirtPath(this, vertex, 0, 0);
-        Waterfall wf = new Waterfall(this, 1, .5);
-        ld = new Ladder(this, dp, .5, 1, .1);*/
-        //Lake lake = new Lake(this, .5, .5, .8, .8);
-        //f = new Flower(this,0.2,0.5,10, 1.0);
-        grass = new Grass(this, 0.25, 0.25);
     }
     
     @Override
@@ -43,65 +31,56 @@ public class ShiftTile extends Tile
     @Override
     public void draw(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D)g;
-        drawHitPolygon(g);
-        //drawWaterReflectionCover(g);
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        for(Waterfall wf : getWaterfalls())
+        if(isVisible(g))
         {
-            if(!wf.drawLast())
+            Graphics2D g2 = (Graphics2D)g;
+            drawHitPolygon(g);
+            //drawWaterReflectionCover(g);
+            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            for(Waterfall wf : getWaterfalls())
             {
-                wf.draw(g);
+                if(!wf.drawLast())
+                {
+                    wf.draw(g);
+                }
             }
-        }
-        //g.setColor(getColor());
-        g2.setPaint(WorldPanel.grassTexture);
-        fillPolygons(g);
-        g2.setPaint(WorldPanel.grassTexture);
-        g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
-        if(getClicked())
-        {
-            g.setColor(redAlpha);
-            g.fillPolygon(threadedUpperPoints()[0], threadedUpperPoints()[1], 4);
+            //g.setColor(getColor());
+            g2.setPaint(WorldPanel.grassTexture);
             fillPolygons(g);
             g2.setPaint(WorldPanel.grassTexture);
-        }
-        /*for(Lake lake : getLakes())
-        {
-            lake.draw(g);
-        }*/
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //drawSidePolygons(g);//draws the sides of the tile.
-        
-        drawEarlyScenery(g);
-        
-        g.setColor(Color.BLACK);
-        
-        //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
-        for(Path path : getPathList())
-        {
-            path.draw(g);
-        }
-        /*for(int i = 0; i < getTrees().size(); i++)
-        {
-            getTrees().get(i).draw(g);
-        }*/
-        for(Waterfall wf : getWaterfalls())
-        {
-            if(wf.drawLast())
+            g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+            if(getClicked())
             {
-                wf.draw(g);
+                g.setColor(redAlpha);
+                g.fillPolygon(threadedUpperPoints()[0], threadedUpperPoints()[1], 4);
+                fillPolygons(g);
+                g2.setPaint(WorldPanel.grassTexture);
             }
+            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            //drawSidePolygons(g);//draws the sides of the tile.
+
+            drawEarlyScenery(g);
+
+            g.setColor(Color.BLACK);
+
+            //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+            for(Path path : getPathList())
+            {
+                path.draw(g);
+            }
+            for(Waterfall wf : getWaterfalls())
+            {
+                if(wf.drawLast())
+                {
+                    wf.draw(g);
+                }
+            }
+            drawAssortedScenery(g);
         }
-        drawAssortedScenery(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //setHeight(getHeight()+1);
         //ld.draw(g);
-        /*if(getHitPolygon() != null)
-        {
-            g.setColor(Color.BLUE);
-            g.fillPolygon(getHitPolygon());
-        }*/
+        
         
         //f.draw(g);
         //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);

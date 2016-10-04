@@ -206,6 +206,12 @@ public abstract class Tile extends Toolbox implements Runnable
         
     }
     
+    public boolean isVisible(Graphics g)
+    {
+        Polygon p = new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], myThreadedUpperPoints[0].length);
+        return (g.getClip().contains(p.getBounds()) || g.getClip().contains(threadedTilePolygon.getBounds()));
+    }
+    
     /*
     adds randomly placed flowers and scenery
     */
@@ -232,6 +238,7 @@ public abstract class Tile extends Toolbox implements Runnable
         addRandomFlowers(5,15);
         int numShrooms = (int)(Math.round(Math.random()));
         double radiusApart = 0.05;
+        int numPerUnit = 9;
         for(int i = 0; i < numShrooms; i++)
         {
             double randomX = 0.05*(int)(Math.random()/radiusApart);
@@ -239,13 +246,16 @@ public abstract class Tile extends Toolbox implements Runnable
             //int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
             Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
         }
-        for(int i = 0; i < width*10; i++)
+        for(int i = 0; i < width*numPerUnit; i++)
         {
-            for(int j = 0; j < length*10; j++)
+            for(int j = 0; j < length*numPerUnit; j++)
             {
-                double grassX = (0.05/(double)width)+(double)i/((double)width*10);
-                double grassY = (0.05/(double)length)+(double)j/(double)(length*10);
-                Grass g = new Grass(this, grassX, grassY);
+                if(Math.random() < .33)
+                {
+                    double grassX = (0.05/(double)width)+(double)i/((double)width*numPerUnit);
+                    double grassY = (0.05/(double)length)+(double)j/(double)(length*numPerUnit);
+                    Grass g = new Grass(this, grassX, grassY);
+                }
             }
             
         }
@@ -1210,17 +1220,20 @@ public abstract class Tile extends Toolbox implements Runnable
         AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
         g2.setComposite(transparencyComposite);
         g2.setPaint(WorldPanel.grassTexture);
+        
+        int[][] clone1= getLeftSidePoints();
+        int[][] clone2 = getRightSidePoints();
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();
         int[][] points2 = new int[2][4];//getRightSidePoints().clone();
         for(int i = 0; i < points1[0].length; i++)
         {
-            points1[0][i] = getLeftSidePoints()[0][i];
-            points1[1][i]+= getLeftSidePoints()[1][i] + getScaledDistortedHeight();
+            points1[0][i] = clone1[0][i];
+            points1[1][i]+= clone1[1][i] + getScaledDistortedHeight();
             
             
             
-            points2[0][i] = getRightSidePoints()[0][i];
-            points2[1][i]+= getRightSidePoints()[1][i] + getScaledDistortedHeight();
+            points2[0][i] = clone2[0][i];
+            points2[1][i]+= clone2[1][i] + getScaledDistortedHeight();
         }
         
         

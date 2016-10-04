@@ -33,6 +33,7 @@ public class PathChains implements Runnable
     
     public void rebuildChains()
     {
+        
         try{
             chains.clear();
             int chainsMade = 0;
@@ -100,6 +101,7 @@ public class PathChains implements Runnable
             {
                 rebuildChains();
             }
+            
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {

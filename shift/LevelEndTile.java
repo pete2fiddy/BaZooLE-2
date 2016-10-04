@@ -33,6 +33,7 @@ public class LevelEndTile extends Tile
     @Override
     public void draw(Graphics g) 
     {
+        
         if(Input.dRotation != 0 || MouseInput.dScale != 0)
         {
             spaceship.getThread().interrupt();

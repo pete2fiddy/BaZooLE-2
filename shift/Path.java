@@ -72,7 +72,7 @@ public abstract class Path extends Scenery implements Runnable
     /*
     updates the links's list so that the hangover points for path connections are accurate with world movement.
     */
-    private void updateLinks()//make sure it ALWAYS makes proper links for its path -- haven't tried every path combination yet. (make sure where links are being placed makes sense)
+    public void updateLinks()//make sure it ALWAYS makes proper links for its path -- haven't tried every path combination yet. (make sure where links are being placed makes sense)
     {
         if(!isStraight)
         {

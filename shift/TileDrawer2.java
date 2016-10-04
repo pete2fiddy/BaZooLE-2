@@ -31,7 +31,7 @@ public class TileDrawer2 implements Runnable
     public TileDrawer2(WorldPanel wp)
     {
         ll= new LevelLoader();   
-        ll.spawnLevel(UI.level);
+        //ll.spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
         fillWaterRipples();
@@ -82,26 +82,13 @@ public class TileDrawer2 implements Runnable
     public void draw(Graphics g)
     {
         Grass.setGrassPoints();
-        mp.getThread().interrupt();
-        mp.setThread(new Thread(mp));
-        mp.getThread().start();
+        //mp.getThread().interrupt();
+        //mp.setThread(new Thread(mp));
+        //mp.getThread().start();
         Graphics2D g2 = (Graphics2D)g;
         
-        /*Composite originalComposite = g2.getComposite();
-        int type = AlphaComposite.SRC_OVER;
-        AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, 0.75f);
-        g2.setComposite(transparencyComposite);
-        g2.setPaint(WorldPanel.grassTexture);
-        g2.fill(getTotalLeftReflectionArea());
         
-        AlphaComposite transparencyComposite2 = AlphaComposite.getInstance(type, 0.50f);
-        g2.setComposite(transparencyComposite2);
-        g2.fill(getTotalRightReflectionArea());
-        
-        g2.setComposite(originalComposite);*/
-        //drawReflectionOutlines(g);
-        
-        for(int i = 0; i < tileList.size(); i++)
+        for(int i = 0; i < tileList.size(); i++)//removing causes negligible change in FPS
         {
             if(tileList.get(i).getClass() != BlockTile.class)
             {
@@ -114,14 +101,16 @@ public class TileDrawer2 implements Runnable
                 }
             }
         }
-        worldPanel.drawTransparentGridLines(g);
+        worldPanel.drawTransparentGridLines(g);//removing has negligible change in fps
         for(WaterRipple wr : waterRipples)
         {
             wr.draw(g);
         }
-        mbt.getThread().interrupt();
+        
+        /*mbt.getThread().interrupt();//doesn't do anything?
         mbt.setThread(new Thread(mbt));
-        mbt.getThread().start();
+        mbt.getThread().start();*/
+        
         mbt.draw(g);
         for(int i = 0; i < tileList.size(); i++)
         {
@@ -141,7 +130,7 @@ public class TileDrawer2 implements Runnable
         {
             wd.draw(g);
         }
-        mp.draw(g);
+        //mp.draw(g);
         //worldPanel.drawTransparentGridLines(g);
         mbt.drawFrontArea(g);
         
@@ -184,6 +173,7 @@ public class TileDrawer2 implements Runnable
     @Override
     public void run()
     {
+        
         tileList = TileSorter2.sortByDistance(tileList);
         TileDrawer.tileList = tileList;//to keep from breaking code that relies on TileDrawer.tileList. FIX LATER.
         if(Tile.tileJustUnclicked)
