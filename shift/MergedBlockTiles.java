@@ -44,14 +44,14 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         /*
         ***consider switching to threaded area?***
         */
-        for(int i = 0; i < blockTiles.size(); i++)
+        /*for(int i = 0; i < blockTiles.size(); i++)
         {
             blockTiles.get(i).getThread().interrupt();
             blockTiles.get(i).setThread(new Thread(blockTiles.get(i)));
             blockTiles.get(i).getThread().start();
             //blockTiles.get(i).draw(g);
             area.add(new Area(blockTiles.get(i).getUpperPolygon()));
-        }
+        }*/
         drawBackArea(g);
         threadedArea = area;
     }

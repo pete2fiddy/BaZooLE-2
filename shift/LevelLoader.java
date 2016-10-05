@@ -164,10 +164,10 @@ public class LevelLoader
                     {
                         //player.setFreezePlayer(false);
                         playerStartPath = startTile.getPathList().get(0);
+                        
                         //player.setX(playerStartPath.getCoordX());
                         //player.setY(playerStartPath.getCoordY());
                         movePlayerToStart = true;
-                        
                     }
                     currentLine++;
                     //System.out.println(line);

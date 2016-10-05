@@ -326,6 +326,8 @@ public class Player extends Toolbox implements Runnable
         
     }
     
+    public boolean getFreezePlayer(){return freezePlayer;}
+    
     public boolean playerCanTravelToPath(int xPos, int yPos)
     {
         for(int i = 0; i < pathChains.getChains().size(); i++)

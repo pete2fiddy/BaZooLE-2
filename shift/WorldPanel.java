@@ -57,12 +57,12 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private TileDrawer2 td2 = new TileDrawer2(this);
     Input input = new Input();
     MouseInput mouseInput = new MouseInput(this);
-    Player player = new Player(0, 0, 5);
+    Player player = new Player(30, 30, 5);
     private LevelLoader levelLoader = new LevelLoader(player, this);
     private WaterRipple[] waterRipples = new WaterRipple[8];
     private Toolbox toolbox = new Toolbox(this, player);
     private int timeCount = 0;
-    private Timer frameTimer=new Timer(1, this);
+    private Timer frameTimer=new Timer(8, this);
     private BufferedImage[][] patches = new BufferedImage[3][3];
     private int patchI = 0, patchJ = 0;
     public WorldPanel()
@@ -169,7 +169,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         add(resetLevel);
         resetLevel.setVisible(false);
     }
-    
+    /*
     public BufferedImage[][] getPatches(){return patches;}
     
     public void setImage()
@@ -201,26 +201,13 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         dayNight.nightShade(imgG);
         
-    }
+    }*/
     /*
     the MAIN paint method for the project. Everything painted from here, or from instances called from here.
     */
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        
-        renderTextures();
-        
-        
-        //frameCount++;
-        
-        /*\for(int i = 0; i < patches.length; i++)
-        {
-            for(int j = 0; j < patches[0].length; j++)
-            {
-                g.drawImage(patches[i][j], (int)(i*(screenWidth/3)), (int)(j*(screenHeight/3)), null);
-            }
-        }*/
         
         g.setClip(0,0, screenWidth, screenHeight);
         setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
@@ -243,10 +230,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         
-        dayNight.nightShade(g);
-        g.setFont(new Font("Futura", Font.PLAIN, 16));
-        g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
     }
     
     /*
@@ -633,6 +616,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     dimensions of the world, and starts threads when necessary for objects such as tiles.*/
     private void tick()
     {
+        
         if(scale < 6.0 && MouseInput.dScale > 0)
         {
             scale += MouseInput.dScale;
@@ -712,6 +696,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         player.getThread().interrupt();
         player.setThread(new Thread(player));
         player.getThread().start();
+        
+        for(int i = 0; i < MergedBlockTiles.blockTiles.size(); i++)
+        {
+            MergedBlockTiles.blockTiles.get(i).getThread().interrupt();
+            MergedBlockTiles.blockTiles.get(i).setThread(new Thread(MergedBlockTiles.blockTiles.get(i)));
+            MergedBlockTiles.blockTiles.get(i).getThread().start();
+        
+        }
     }
     
     /*
@@ -750,6 +742,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
 
                 }
             }*/
+            Thread t = new Thread(this);
+            t.start();
             tick();
         }else if(command.equals("frame"))
         {
@@ -809,6 +803,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     @Override
     public void run() 
     {
-        setImage();
+        renderTextures();
     }
 }

@@ -86,7 +86,7 @@ public class PathChain
                     {
                         System.out.println("is big chain");
                     }
-                    if(chain.size() > 1)
+                    /*if(chain.size() > 1)
                     {
                         if(currentPath != chain.get(0))
                         {
@@ -99,7 +99,7 @@ public class PathChain
                     }else{
                         chain.add(currentPath.getNeighboringPathsExcluding(chain.get(chain.size()-2)).get(0));//adds the next path in the chain -- excludes the one already found. Note this will not work for paths that fork out. Can only be one continuous line. 
                         currentPath = chain.get(chain.size()-1);
-                    }
+                    }*/
                 }
                 
                 

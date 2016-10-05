@@ -127,6 +127,7 @@ public class Waterfall extends Scenery implements Runnable
     @Override
     public void draw(Graphics g) 
     {
+        run();
         g.setColor(lightBlue);
         g.fillPolygon(waterfallPoints()[0], waterfallPoints()[1], 4);
         g.fillPolygon(threadedWaterfallPoints[0], threadedWaterfallPoints[1],4);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class LevelEndTile extends Tile
 {
     private Spaceship spaceship;
+    private boolean pathSpawned = false;
     public LevelEndTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength, inHeight);
@@ -15,7 +16,7 @@ public class LevelEndTile extends Tile
         setMoveable(false);
         double[] vertexPos = {.5, .5};
         LevelEndPath lep = new LevelEndPath(this, vertexPos, 0, 0);//sort of janky way to make a path the same size as the tile so the tile can be treated like a walkable path.
-        lep.setPathWidth(.5);
+        
         //ArrayList<Scenery> s = new ArrayList<Scenery>();
         getAssortedScenery().clear();
         spaceship = new Spaceship(this, .5, .5);
@@ -33,6 +34,15 @@ public class LevelEndTile extends Tile
     @Override
     public void draw(Graphics g) 
     {
+       
+       
+       
+       
+       
+       
+       
+       
+        
         
         if(Input.dRotation != 0 || MouseInput.dScale != 0)
         {

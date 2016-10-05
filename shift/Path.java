@@ -292,6 +292,7 @@ public abstract class Path extends Scenery implements Runnable
         return color;
     }
     
+    public void setPathPolygon(Polygon p){pathPolygon = p;}
     public void setPathWidth(double d){pathWidth = d;}
     
     /*
@@ -416,7 +417,7 @@ public abstract class Path extends Scenery implements Runnable
     */
     public boolean pathOnPoint(double x, double y)
     {
-        if(pathPolygon.contains(x, y))
+        if(getPathPolygon().contains(x, y))//uses getPathPolygon so i can override a tile's path polygon if it is oddly shaped (level end path for example)
         {
             //System.out.println("was called");
             return true;

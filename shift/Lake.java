@@ -157,6 +157,7 @@ public class Lake extends Scenery implements Runnable
     */
     public void draw(Graphics g) 
     {
+        run();
         Graphics2D g2 = (Graphics2D)g;
         g.setColor(lakeBlue);
         g.fillPolygon(threadedBottomPondPoints[0], threadedBottomPondPoints[1], 4);
