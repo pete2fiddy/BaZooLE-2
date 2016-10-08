@@ -28,13 +28,16 @@ public class Grass extends Scenery implements ActionListener
 {
     //public Timer refreshTimer = new Timer(200, this);
     //Method names based around Standard quadratic form of y = a(x-h)^2+k
-    private static final Color darkGrass = new Color(23,68,0);//(37, 89, 11);
+    public static Color lowGrassShade = new Color(23,68,0);//(37, 89, 11);
+    public static final Color defaultLowGrassShade = new Color(23, 68,0);
+    public static final Color defaultLowGrassSnowShade = new Color(240,240,240);
     private static int height;
     public static Point[][][] grassPoints = new Point[3][5][4];
     private static boolean goingForward = true;
     private static double[] offsets = new double[grassPoints.length];
     private int thisRadius;
-    private static final int minRadius = 3;
+    private int initialHeight;
+    public static final int minRadius = 3;
     private static final int maxRadiusAdd = 3;
     private static BasicStroke grassStroke;
     public Grass(Tile tileIn, double offsetXIn, double offsetYIn) 
@@ -48,6 +51,7 @@ public class Grass extends Scenery implements ActionListener
             offsets[i]=0;
         }
         thisRadius = minRadius+(int)(Math.random()*maxRadiusAdd);
+        initialHeight = thisRadius;
         //refreshTimer.start();
         setGrassPoints();
         tileIn.addGrass(this);
@@ -68,6 +72,9 @@ public class Grass extends Scenery implements ActionListener
         return hIn - (Math.abs(hIn)/hIn)*Math.sqrt(-getK(hIn,radius)/getA(hIn, radius));
     }
     
+    public void setHeight(int newHeight){thisRadius = newHeight;}
+    public int getHeight(){return thisRadius;}
+    public int getInitialHeight(){return initialHeight;}
     
     private static double getYValue(double hIn, double xIn, double radius)
     {
@@ -110,18 +117,18 @@ public class Grass extends Scenery implements ActionListener
         {
         int iLength = grassPoints[0].length;
         int jLength = grassPoints[0][0].length;
-        int diffR = darkGrass.getRed()-Toolbox.grassColor.getRed();
-        int diffG = Toolbox.grassColor.getGreen()-darkGrass.getGreen();
-        int diffB = Toolbox.grassColor.getBlue()-darkGrass.getBlue();
+        int diffR = lowGrassShade.getRed()-Toolbox.grassColor.getRed();
+        int diffG = Toolbox.grassColor.getGreen()-lowGrassShade.getGreen();
+        int diffB = Toolbox.grassColor.getBlue()-lowGrassShade.getBlue();
         for(int i = 0; i < iLength; i++)
         {
             for(int j = 0; j < jLength-1; j++)
             {
                 double colorMultiplier = (double)(j)/(double)(iLength);
                 
-                int red = (int)(darkGrass.getRed() - (colorMultiplier*diffR));
-                int green = (int)(darkGrass.getGreen() + (colorMultiplier*diffG));
-                int blue = (int)(darkGrass.getBlue() + (colorMultiplier*diffB));
+                int red = (int)(lowGrassShade.getRed() - (colorMultiplier*diffR));
+                int green = (int)(lowGrassShade.getGreen() + (colorMultiplier*diffG));
+                int blue = (int)(lowGrassShade.getBlue() + (colorMultiplier*diffB));
                 Color c = new Color(red, green, blue);
                 g.setColor(c);
                 g.drawLine((int)(x + grassPoints[thisRadius-minRadius][i][j].getX()), (int)(y - grassPoints[thisRadius-minRadius][i][j].getY()),(int)(x + grassPoints[thisRadius-minRadius][i][j+1].getX()), (int)(y - grassPoints[thisRadius-minRadius][i][j+1].getY()));

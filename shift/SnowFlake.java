@@ -54,7 +54,7 @@ public class SnowFlake extends Toolbox
                 if(boundCloud.getCloudSpeed() != 0)
                 {
                     g.setColor(Color.WHITE);
-                    g.fillOval((int)convertToPoint(x, y)[0]-2, (int)(convertToPoint(x, y)[1]-2 - scaledDistortedHeight((int)height)), 4, 4);
+                    g.fillOval((int)(convertToPoint(x, y)[0]-(WorldPanel.scale*1)), (int)(convertToPoint(x, y)[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
                 }
             }
             if(height < 0)
@@ -78,7 +78,7 @@ public class SnowFlake extends Toolbox
                 if(boundCloud.getCloudSpeed() != 0)
                 {
                     g.setColor(new Color(255, 255, 255, (int)(255*boundCloud.getAlphaPercent())));
-                    g.fillOval((int)convertToPoint(x, y)[0]-2, (int)(convertToPoint(x, y)[1]-2 - scaledDistortedHeight((int)height)), 4, 4);
+                    g.fillOval((int)(convertToPoint(x, y)[0]-(WorldPanel.scale*1)), (int)(convertToPoint(x, y)[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
                 }
             }
             if(height < 0)

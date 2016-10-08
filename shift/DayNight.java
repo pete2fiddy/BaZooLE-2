@@ -31,7 +31,7 @@ public class DayNight implements ActionListener
     Point[] starPoints = new Point[75];
     private int daysPassed = 0;
     private int daysSinceSeasonChange=0;
-    private String season = "summer";
+    private String season = "winter";
     private int starMoveCount = 0;
     private int starMove = 0;
     public DayNight()
@@ -71,6 +71,10 @@ public class DayNight implements ActionListener
                 g.setColor(Color.WHITE);
                 g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 6, 6);
             }
+            if(starMove > 1)
+            {
+                starMove = 0;
+            }
         }else if(timeDescriber.equals("evening"))
         {
             int alpha = (int)(255*(secondsTicked/(double)transitSeconds));
@@ -85,6 +89,10 @@ public class DayNight implements ActionListener
                 }
                 g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 6, 6);
             }
+            if(starMove > 1)
+            {
+                starMove = 0;
+            }
         }else if(timeDescriber.equals("morning"))
         {
             g.setColor(new Color(255,255,255,(int)(255*((double)(transitSeconds-secondsTicked)/(double)transitSeconds))));
@@ -98,10 +106,10 @@ public class DayNight implements ActionListener
                 }
                 g.fillOval((int)p.getX() - 3, (int)p.getY() - 3, 6, 6);
             }
-        }
-        if(starMove > 1)
-        {
-            starMove = 0;
+            if(starMove > 1)
+            {
+                starMove = 0;
+            }
         }
     }
     
@@ -116,6 +124,35 @@ public class DayNight implements ActionListener
     
     public String getSeason(){return season;}
     
+    public static void shortenGrass(int amount)
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            for(Grass g : TileDrawer2.tileList.get(i).getGrassList())
+            {
+                if(g.getHeight()-amount >= Grass.minRadius)
+                {
+                    g.setHeight(g.getHeight()-amount);
+                }else{
+                    g.setHeight(Grass.minRadius);
+                }
+            }
+            
+        }
+    }
+    
+    public static void restoreGrassHeight()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            for(Grass g : TileDrawer2.tileList.get(i).getGrassList())
+            {
+                g.setHeight(g.getInitialHeight());
+            }
+            //TileDrawer2.tileList.get(i).setHeight(TileDrawer2.tileList.get(i).getInitialHeight());
+        }
+    }
+    
     public void toggleSeason()
     {
         if(season.equals("summer"))
@@ -123,11 +160,15 @@ public class DayNight implements ActionListener
             season = "winter";
             Toolbox.grassColor = Toolbox.defaultSnowColor;
             WorldPanel.grassImage = Toolbox.defaultSnowImage;
+            Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;
+            shortenGrass(3);
         }else if(season.equals("winter"))
         {
             season = "summer";
             Toolbox.grassColor = Toolbox.defaultGrassColor;
             WorldPanel.grassImage = Toolbox.defaultGrassImage;
+            Grass.lowGrassShade = Grass.defaultLowGrassShade;
+            restoreGrassHeight();
         }
     }
     

@@ -47,8 +47,10 @@ public class Toolbox
             defaultSnowImage = snow;//ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
             if(wpIn.getDayNight().getSeason().equals("winter"))
             {
+                Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;//defaultSnowColor;
                 grassColor = defaultSnowColor;
             }else{
+                Grass.lowGrassShade = Grass.defaultLowGrassShade;
                 grassColor = defaultGrassColor;
             }
             grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));

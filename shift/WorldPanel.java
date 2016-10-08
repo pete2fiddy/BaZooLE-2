@@ -62,9 +62,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private WaterRipple[] waterRipples = new WaterRipple[8];
     private Toolbox toolbox = new Toolbox(this, player);
     private int timeCount = 0;
-    private Timer frameTimer=new Timer(8, this);
-    private BufferedImage[][] patches = new BufferedImage[3][3];
-    private int patchI = 0, patchJ = 0;
+    private Timer frameTimer=new Timer(2, this);
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -169,39 +167,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         add(resetLevel);
         resetLevel.setVisible(false);
     }
-    /*
-    public BufferedImage[][] getPatches(){return patches;}
     
-    public void setImage()
-    {
-        int i = patchI, j = patchJ;
-        patches[i][j]= new BufferedImage((int)((screenWidth/3)), (int)((screenHeight/3)), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D imgG = patches[i][j].createGraphics();
-        
-        imgG.translate(-(int)(i*(screenWidth/3)),-(int)(j*(screenHeight/3)));
-        imgG.setClip((int)(i*(screenWidth/3)),(int)(j*(screenHeight/3)), (int)(screenWidth/3), (int)(screenHeight/3));
-        //imgG.setClip(0,0,(screenWidth/3), (screenHeight/3));
-
-        Graphics2D g2 = (Graphics2D)imgG;
-        g2.setStroke(Toolbox.worldStroke);
-        dayNight.drawStars(imgG);
-        drawMapFloor(imgG);
-
-        td2.draw(imgG);
-        fillBelowMap(imgG);
-
-        player.drawPlayersChain(imgG);//draws the player's chain on top of everything else being drawn so it can always be easily seen
-        player.drawTransparentPlayer(imgG);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
-        ui.draw(imgG);//draws UI elements like level, etc.
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        imgG.setFont(new Font("Futura", Font.PLAIN, 16));
-        imgG.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        
-        dayNight.nightShade(imgG);
-        
-    }*/
     /*
     the MAIN paint method for the project. Everything painted from here, or from instances called from here.
     */
@@ -211,7 +177,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         g.setClip(0,0, screenWidth, screenHeight);
         setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
-        frameCount++;
+        frameCount++;//adds one to the number of frames so that the FPS counter knows how many frames have passed since the last interval
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
@@ -225,11 +191,15 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
         ui.draw(g);//draws UI elements like level, etc.
         
+        drawFPS(g, g2);
+    }
+    
+    private void drawFPS(Graphics g, Graphics2D g2)
+    {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setFont(new Font("Futura", Font.PLAIN, 16));
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        
     }
     
     /*
@@ -702,7 +672,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             MergedBlockTiles.blockTiles.get(i).getThread().interrupt();
             MergedBlockTiles.blockTiles.get(i).setThread(new Thread(MergedBlockTiles.blockTiles.get(i)));
             MergedBlockTiles.blockTiles.get(i).getThread().start();
-        
         }
     }
     
@@ -726,22 +695,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         String command = e.getActionCommand();
         if(command.equals("tick"))
         {
-            //patches = new BufferedImage[3][3];
-            /*for(int i = 0; i < patches.length; i++)
-            {
-                patchI = i;
-                for(int j = 0; j < patches[0].length; j++)
-                {
-                    patchJ = j;
-                    Thread t = new Thread(this);
-                    t.start();
-                    try {
-                        //t.join();
-                    } catch (Exception a) {
-                    }
-
-                }
-            }*/
             Thread t = new Thread(this);
             t.start();
             tick();

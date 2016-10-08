@@ -82,9 +82,6 @@ public class TileDrawer2 implements Runnable
     public void draw(Graphics g)
     {
         Grass.setGrassPoints();
-        //mp.getThread().interrupt();
-        //mp.setThread(new Thread(mp));
-        //mp.getThread().start();
         Graphics2D g2 = (Graphics2D)g;
         
         
@@ -92,10 +89,13 @@ public class TileDrawer2 implements Runnable
         {
             if(tileList.get(i).getClass() != BlockTile.class)
             {
-                tileList.get(i).drawReflections(g);
+                if(tileList.get(i).isVisible(g))
+                {
+                    tileList.get(i).drawReflections(g);
+                }
             }else{
                 BlockTile bt = (BlockTile)tileList.get(i);
-                if(!bt.getIsEdgeBlock())
+                if(!bt.getIsEdgeBlock() && bt.isVisible(g))
                 {
                     tileList.get(i).drawReflections(g);
                 }

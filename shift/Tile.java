@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
@@ -142,6 +143,7 @@ public abstract class Tile extends Toolbox implements Runnable
     public Polygon getUpperPolygon(){return new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], 4);}//returns the upper polygon of the bounding box of this tile. Normally used for point collision detection.
     public Polygon getHitPolygon(){return hitPolygon;}    
     public Color getColor(){return color;}
+    public Grass[] getGrassList(){return grassList;}
     
     public void drawEarlyScenery(Graphics g)
     {
@@ -208,8 +210,23 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public boolean isVisible(Graphics g)
     {
-        Polygon p = new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], myThreadedUpperPoints[0].length);
-        return (g.getClip().contains(p.getBounds()) || g.getClip().contains(threadedTilePolygon.getBounds()));
+        
+        //Polygon p = new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], myThreadedUpperPoints[0].length);
+        for(int i = 0; i < myThreadedUpperPoints[0].length; i++)
+        {
+            Point p1 = new Point(myThreadedUpperPoints[0][i], myThreadedUpperPoints[1][i]);
+            Point p2 = new Point(myThreadedLowerPoints[0][i], myThreadedLowerPoints[1][i]);
+            if(g.getClip().contains(p1) || g.getClip().contains(p2))
+            {
+                return true;
+            }
+        }
+        /*
+        if(Player.boundTile != this)
+        {
+            return (g.getClip().contains(p.getBounds()) || g.getClip().contains(threadedTilePolygon.getBounds()));
+        }*/
+        return false;
     }
     
     /*

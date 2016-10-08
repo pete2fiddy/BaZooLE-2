@@ -40,7 +40,7 @@ public class UI
     
     public UI(WorldPanel wp)
     {
-        level = 1;
+        level = 0;
         worldPanel = wp;
         menu = new Menu(wp, this);
         System.setProperty("awt.useSystemAAFontSettings","on");
