@@ -11,7 +11,7 @@ public class LevelEndTile extends Tile
     public LevelEndTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength, inHeight);
-        TileSorter.addTile(this);
+        //TileSorter.addTile(this);
         setSpinnable(false);
         setMoveable(false);
         double[] vertexPos = {.5, .5};

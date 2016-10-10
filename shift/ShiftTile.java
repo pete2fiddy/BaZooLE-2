@@ -3,18 +3,15 @@ package shift;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.ArrayList;
 
 public class ShiftTile extends Tile
 {
     public static final Color redAlpha = new Color(255, 0, 0, 100);
-    Ladder ld;
-    //private Flower f;
+    
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
-        TileSorter.addTile(this);//should I be adding from the Tile class?
+        //TileSorter.addTile(this);//should I be adding from the Tile class?
     }
     
     @Override
@@ -35,8 +32,6 @@ public class ShiftTile extends Tile
         {
             Graphics2D g2 = (Graphics2D)g;
             drawHitPolygon(g);
-            //drawWaterReflectionCover(g);
-            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             for(Waterfall wf : getWaterfalls())
             {
                 if(!wf.drawLast())
@@ -44,7 +39,6 @@ public class ShiftTile extends Tile
                     wf.draw(g);
                 }
             }
-            //g.setColor(getColor());
             g2.setPaint(WorldPanel.grassTexture);
             fillPolygons(g);
             g2.setPaint(WorldPanel.grassTexture);
@@ -56,14 +50,9 @@ public class ShiftTile extends Tile
                 fillPolygons(g);
                 g2.setPaint(WorldPanel.grassTexture);
             }
-            //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            //drawSidePolygons(g);//draws the sides of the tile.
 
             drawEarlyScenery(g);
 
-            g.setColor(Color.BLACK);
-
-            //g.drawPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             for(Path path : getPathList())
             {
                 path.draw(g);
@@ -77,13 +66,6 @@ public class ShiftTile extends Tile
             }
             drawAssortedScenery(g);
         }
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        //setHeight(getHeight()+1);
-        //ld.draw(g);
-        
-        
-        //f.draw(g);
-        //g.drawString(Integer.toString(getBottomCornerOrderPos()), (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[0], (int)convertToPoint(getBottomCornerCoordinates()[0], getBottomCornerCoordinates()[1])[1]);
     }
     
     private void drawSidePolygons(Graphics g)
@@ -98,19 +80,7 @@ public class ShiftTile extends Tile
     {
         g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
         g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        /*int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        
-        g.setColor(new Color(0,0,0,leftAlpha));
-        g.fillPolygon(getLeftSidePoints()[0], getLeftSidePoints()[1], 4);
-        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        int rightAlpha = 50-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(new Color(0,0,0,rightAlpha));
-        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.fillPolygon(getRightSidePoints()[0], getRightSidePoints()[1], 4);*/
         shadeSides(g);
-        g.setColor(Color.BLACK);
-        
-        //g.drawString(Integer.toString(leftAlpha), 500, 500);
     }
     
     

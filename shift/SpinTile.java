@@ -24,7 +24,7 @@ public class SpinTile extends Tile implements Runnable
         setSpinnable(true);
         diameter = diameterIn;
         rotation = WorldPanel.radSpin;
-        TileSorter.addTile(this);
+        //TileSorter.addTile(this);
         threadedCylinderPoints = cylinderPoints(tileVertices);
         threadedTopCylinderPoints = cylinderPoints(tileVertices);
         threadedSideArrays = calcSideArrays(tileVertices);
@@ -42,7 +42,7 @@ public class SpinTile extends Tile implements Runnable
         setSpinnable(true);
         diameter = diameterIn;
         rotation = WorldPanel.radSpin;
-        TileSorter.addTile(this);
+        //TileSorter.addTile(this);
         threadedCylinderPoints = cylinderPoints(tileVertices);
         threadedTopCylinderPoints = cylinderPoints(tileVertices);
         threadedSideArrays = calcSideArrays(tileVertices);

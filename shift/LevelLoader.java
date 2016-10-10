@@ -49,8 +49,8 @@ public class LevelLoader
         TileDrawer.waterDroplets.clear();
         TileDrawer2.tileList.clear();
         try{
-            TileSorter.holdList.clear();
-            TileSorter.tileList.clear();
+            //TileSorter.holdList.clear();
+            //TileSorter.tileList.clear();
         }catch(Exception e)
         {
             

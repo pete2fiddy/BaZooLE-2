@@ -52,7 +52,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public static DayNight dayNight = new DayNight();
     private JButton randomShapes;
     private Timer secondTimer;
-    TileSorter ts;
+    //TileSorter ts;
     TileDrawer td;
     private TileDrawer2 td2 = new TileDrawer2(this);
     Input input = new Input();
@@ -80,7 +80,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         initButtons();
         
         //"talk-to" instances created.
-        ts = new TileSorter();
+        //ts = new TileSorter();
         td = new TileDrawer();
         tickTimer.start();//started here so that everything is initialized by the time the timer calls them
     }
@@ -641,7 +641,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             LevelLoader.sortTiles = false; 
         }
         
-        for(int i = 0; i < TileSorter.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            TileDrawer2.tileList.get(i).getThread().interrupt();
+            Thread t = new Thread(TileDrawer2.tileList.get(i));
+            TileDrawer2.tileList.get(i).setThread(t);
+            t.start();
+        }
+        /*for(int i = 0; i < TileSorter.tileList.size(); i++)
         {
             try{
                 ts.getThread().join();//waits for editing to be finished first. Maybe there is a better way to do this? Seems like it isn't as fast as possible this way. 
@@ -652,8 +659,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             t.start();
             TileSorter.tileList.get(i).setThread(t);//shouldn't be working with spinTile but does?
         
-        }
-        for(int i = 0; i < TileSorter.tileList.size(); i++)
+        }*/
+        /*for(int i = 0; i < TileSorter.tileList.size(); i++)
         {
             for(int j = 0; j < TileSorter.tileList.get(i).getSceneryList().size(); j++)
             {
@@ -661,7 +668,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 TileSorter.tileList.get(i).getSceneryList().get(j).setThread(new Thread(TileSorter.tileList.get(i).getSceneryList().get(j)));
                 TileSorter.tileList.get(i).getSceneryList().get(j).getThread().start();
             }
-        }
+        }*/
 
         player.getThread().interrupt();
         player.setThread(new Thread(player));

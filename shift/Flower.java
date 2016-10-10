@@ -114,7 +114,10 @@ public class Flower extends Scenery implements Runnable
         }
         g.setColor(petalColor);
         petalPrism.fill(g);
-        petalPrism.paintShading(g);
+        if(WorldPanel.scale > 1)
+        {
+            petalPrism.paintShading(g);
+        }
     }
     
     @Override public void run()

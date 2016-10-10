@@ -40,6 +40,7 @@ public class Grass extends Scenery implements ActionListener
     public static final int minRadius = 3;
     private static final int maxRadiusAdd = 3;
     private static BasicStroke grassStroke;
+    
     public Grass(Tile tileIn, double offsetXIn, double offsetYIn) 
     {
         super(tileIn, offsetXIn, offsetYIn);
@@ -50,6 +51,7 @@ public class Grass extends Scenery implements ActionListener
         {
             offsets[i]=0;
         }
+        
         thisRadius = minRadius+(int)(Math.random()*maxRadiusAdd);
         initialHeight = thisRadius;
         //refreshTimer.start();

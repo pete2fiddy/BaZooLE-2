@@ -101,7 +101,6 @@ public class PathChains implements Runnable
             {
                 rebuildChains();
             }
-            
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {

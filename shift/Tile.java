@@ -1636,10 +1636,9 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             hitPolygon = getUpdatedHitPolygon();
         }
-        sortScenery(earlyDrawScenery);
-        sortScenery(assortedScenery);
-        sortScenery(grassList);
-        //sortTrees();
+        //sortScenery(earlyDrawScenery);
+        //sortScenery(assortedScenery);
+        //sortScenery(grassList);
         calculatePolyPoints();
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);
         if(moveable)

@@ -20,7 +20,7 @@ public class BreakShiftTile extends Tile
     public BreakShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
-        TileSorter.addTile(this);//should I be adding from the Tile class?
+        //TileSorter.addTile(this);//should I be adding from the Tile class?
         double[] vertex = {0.5, 0.5};
         DirtPath dp = new DirtPath(this,vertex,1,1);
         try{

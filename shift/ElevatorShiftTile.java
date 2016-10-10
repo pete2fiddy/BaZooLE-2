@@ -14,7 +14,7 @@ public class ElevatorShiftTile extends Tile
     public ElevatorShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
-        TileSorter.addTile(this);//should I be adding from the Tile class?
+        //TileSorter.addTile(this);//should I be adding from the Tile class?
         setHeightChangeable(true);
         double[] vertex = {0.5, 0.5};
         DirtPath dp = new DirtPath(this, vertex, 0, 1);
