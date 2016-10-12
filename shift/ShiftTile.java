@@ -3,6 +3,7 @@ package shift;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 public class ShiftTile extends Tile
 {
@@ -11,6 +12,7 @@ public class ShiftTile extends Tile
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
+        //Snowman s = new Snowman(this,0.5,0.5);
         //TileSorter.addTile(this);//should I be adding from the Tile class?
     }
     
@@ -65,6 +67,11 @@ public class ShiftTile extends Tile
                 }
             }
             drawAssortedScenery(g);
+            /*g.setColor(new Color(255, 0, 0, 70));
+            for(Rectangle r : getBoundingRects())
+            {
+                g.fillRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
+            }*/
         }
     }
     

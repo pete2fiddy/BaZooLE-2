@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 public abstract class Tile extends Toolbox implements Runnable
 {
     private boolean rightClicked= false;
+    private int index = 0;
     private boolean moveable = true;
     private double spin;
     private boolean spinnable = false;
@@ -52,6 +54,7 @@ public abstract class Tile extends Toolbox implements Runnable
     private double movingX = 0, movingY = 0;
     private Player player;
     private BufferedImage grassImage;
+    private static int grassSkip;
           
     /*
     Params: Takes a coordinate x(from bottom left corner), coordinate y(from bottom left corner), a units width, a units length, a PIXELS height (pixels it takes up on screen at 1 scale with fully rotated world to see the full side of it)
@@ -63,8 +66,10 @@ public abstract class Tile extends Toolbox implements Runnable
         polyPoints1 = new int[2][4];
         polyPoints2 = new int[2][4];
         color = new Color(14, 155, 14);
-        myThreadedUpperPoints = getUpperPoints();
-        myThreadedLowerPoints = getPoints();
+        //getUpperPoints();
+        myThreadedLowerPoints = getPoints().clone();
+        myThreadedUpperPoints = new int[2][4];
+        setUpperPoints();
         thread = new Thread(this);
         transitPos = new int[2];
         spin = 0;
@@ -76,6 +81,8 @@ public abstract class Tile extends Toolbox implements Runnable
         thread.start();
         player = getPlayer();
         addRandomScenery();
+        sortAllScenery();
+        setGrassSkip();
     }
     /*
     sets the player so that the tile can use it. Isn't passed through construc
@@ -86,6 +93,18 @@ public abstract class Tile extends Toolbox implements Runnable
     called by tiles that are able to be spun to signify that this tile can be rotated.
     */
     public void setSpinnable(boolean b){spinnable = b;}
+    
+    public int getIndex(){return index;}
+    
+    public Rectangle[] getBoundingRects()
+    {
+        Polygon p1 = new Polygon(polyPoints1[0], polyPoints1[1], 4);
+        Polygon p2 = new Polygon(polyPoints2[0], polyPoints2[1], 4);
+        Rectangle[] giveReturn = {p1.getBounds(), p2.getBounds()};
+        return giveReturn;
+    }
+    
+    public void setIndex(int i){index = i;}
     
     /*
     setters
@@ -165,11 +184,22 @@ public abstract class Tile extends Toolbox implements Runnable
         boolean playerDrawn = false;
         
         int sceneryCount = 0;
-        for(int i = 0; i < grassList.length; i++)
+        //int grassSkip = (int)Math.pow(2,(int)(3.0-((WorldPanel.scale-WorldPanel.minScale)/((WorldPanel.maxScale-WorldPanel.minScale)/3.0))));//gives the amount the grass list is incremented for the grass being drawn -- e.g. how many grasses to skip so that you draw fewer when zoomed out, more when zoomed in for optimization.
+        /*if(WorldPanel.scale <  1.5)
+        {
+            grassSkip = 3;
+        }else if(WorldPanel.scale > 2.5)
+        {
+            grassSkip = 1;
+        }*/
+        for(int i = 0; i < grassList.length; i+= grassSkip)
         {
             if(assortedScenery.size() > 0 && assortedScenery.get(sceneryCount).getSortDistanceConstant()>grassList[i].getSortDistanceConstant() && sceneryCount < assortedScenery.size()-1)
             {
-                assortedScenery.get(sceneryCount).draw(g);
+                if(assortedScenery.get(sceneryCount).isVisible(g))
+                {
+                    assortedScenery.get(sceneryCount).draw(g);
+                }
                 if(player.getSortDistanceConstant() <= assortedScenery.get(sceneryCount).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(sceneryCount+1).getMiddleSortDistanceConstant() && !playerDrawn)
                 {
                     playerDrawn = true;
@@ -177,11 +207,17 @@ public abstract class Tile extends Toolbox implements Runnable
                 }
                 sceneryCount++;
             }
-            grassList[i].drawTufts(g);
+            if(grassList[i].isVisible(g))
+            {
+                grassList[i].drawTufts(g);
+            }
         }
         for(int i = sceneryCount; i < assortedScenery.size(); i++)
         {
-            assortedScenery.get(i).draw(g);
+            if(assortedScenery.get(sceneryCount).isVisible(g))
+            {
+                assortedScenery.get(i).draw(g);
+            }
         }
         if(!playerDrawn)
         {
@@ -211,13 +247,35 @@ public abstract class Tile extends Toolbox implements Runnable
     public boolean isVisible(Graphics g)
     {
         
+        
         //Polygon p = new Polygon(myThreadedUpperPoints[0], myThreadedUpperPoints[1], myThreadedUpperPoints[0].length);
         for(int i = 0; i < myThreadedUpperPoints[0].length; i++)
         {
             Point p1 = new Point(myThreadedUpperPoints[0][i], myThreadedUpperPoints[1][i]);
             Point p2 = new Point(myThreadedLowerPoints[0][i], myThreadedLowerPoints[1][i]);
+            
             if(g.getClip().contains(p1) || g.getClip().contains(p2))
             {
+                /*Rectangle[] rects = getBoundingRects();
+                int numCovered = 0;
+                for(Rectangle r : rects)
+                {
+                    Point[] points = {new Point((int)r.getX(), (int)r.getY()), new Point((int)(r.getX()+r.getWidth()), (int)r.getY()), new Point((int)(r.getX()+r.getWidth()), (int)(r.getY()+r.getHeight())), new Point((int)(r.getX()), (int)(r.getY()+r.getHeight()))};
+                    
+                    for(Point p : points)
+                    {
+                        if(TileDrawer2.pointCovered(index, (int)p.getX(), (int)p.getY()))
+                        {
+                            numCovered++;
+                        }
+                    }
+                }
+                if(numCovered == 8)
+                {
+                    return false;
+                }
+                return true;
+                */
                 return true;
             }
         }
@@ -227,6 +285,11 @@ public abstract class Tile extends Toolbox implements Runnable
             return (g.getClip().contains(p.getBounds()) || g.getClip().contains(threadedTilePolygon.getBounds()));
         }*/
         return false;
+    }
+    
+    public static void setGrassSkip()
+    {
+        grassSkip = (int)Math.pow(2,(int)(3.0-((WorldPanel.scale-WorldPanel.minScale)/((WorldPanel.maxScale-WorldPanel.minScale)/3.0))));//gives the amount the grass list is incremented for the grass being drawn -- e.g. how many grasses to skip so that you draw fewer when zoomed out, more when zoomed in for optimization.
     }
     
     /*
@@ -388,14 +451,19 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public int getPointCoordY(int point){return (int)y + ((int)((double)point/2.0)*length);}
     
-    public int[][] getUpperPoints()//should this be working with the threaded upper points? Code works but...
+    public void setUpperPoints()//should this be working with the threaded upper points? Code works but...
     {
-        int[][]myThreadedUpperPoints={getPoints()[0],getPoints()[1]};
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < myThreadedLowerPoints[0].length; i++)
+        {
+            myThreadedUpperPoints[0][i]=myThreadedLowerPoints[0][i];
+            myThreadedUpperPoints[1][i]=myThreadedLowerPoints[1][i]-(int)(WorldPanel.scale * WorldPanel.distortedHeight(WorldPanel.rotation, getHeight()));;
+        }
+        //myThreadedUpperPoints = myThreadedLowerPoints.clone();//myThreadedLowerPoints.clone();//{getPoints()[0],getPoints()[1]};
+        /*for(int i = 0; i < 4; i++)
         {
             myThreadedUpperPoints[1][i]-=(int)(WorldPanel.scale * WorldPanel.distortedHeight(WorldPanel.rotation, getHeight()));
-        }
-        return myThreadedUpperPoints;
+        }*/
+        
     }
     public double getScaledDistortedHeight()
     {
@@ -1598,6 +1666,13 @@ public abstract class Tile extends Toolbox implements Runnable
         }
     }
     
+    public void sortAllScenery()
+    {
+        sortScenery(earlyDrawScenery);
+        sortScenery(assortedScenery);
+        sortScenery(grassList);
+    }
+    
     private int numClickedTiles()
     {
         int giveReturn = 0;
@@ -1618,7 +1693,8 @@ public abstract class Tile extends Toolbox implements Runnable
     {
         //height = baseHeight;//(int)(WorldPanel.scale*baseHeight);
         myThreadedLowerPoints = getPoints().clone();
-        myThreadedUpperPoints = getUpperPoints().clone();
+        setUpperPoints();
+        //myThreadedUpperPoints = getUpperPoints().clone();
         //threadedGrassImage = new BufferedImage((int)threadedTilePolygon.getBounds().getX(), (int)threadedTilePolygon.getBounds().getY(), BufferedImage.TYPE_INT_ARGB);
         
         /*Graphics2D g2 = grassImage.createGraphics();
@@ -1636,9 +1712,9 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             hitPolygon = getUpdatedHitPolygon();
         }
-        //sortScenery(earlyDrawScenery);
-        //sortScenery(assortedScenery);
-        //sortScenery(grassList);
+        /*sortScenery(earlyDrawScenery);
+        sortScenery(assortedScenery);
+        sortScenery(grassList);*/
         calculatePolyPoints();
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);
         if(moveable)

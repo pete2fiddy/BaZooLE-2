@@ -19,11 +19,14 @@ import java.awt.geom.Area;
  */
 public abstract class SolidShape 
 {
+    private Color color;
     private double xCoord, yCoord, width, length, spin;
     private double centerCoordX, centerCoordY;
     private int height, zPos;
     private Polygon[] visibleShapeSidePolygons;
     private double dz = 0;
+    private double offsetX, offsetY;
+    
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
     {
         centerCoordX = inX;
@@ -35,6 +38,7 @@ public abstract class SolidShape
         length = inLength;
         height = inHeight;
         spin = 0;
+        offsetX = 0; offsetY = 0;
         //visibleShapeSidePolygons = getV
     }
     
@@ -49,8 +53,15 @@ public abstract class SolidShape
         length = inLength;
         height = inHeight;
         spin = spinIn;
+        offsetX = 0; offsetY = 0;
     }
     
+    public void setColor(Color c){color = c;}
+    public Color getColor(){return color;}
+    public void setOffsetX(double d){offsetX = d;}
+    public void setOffsetY(double d){offsetY = d;}
+    public double getOffsetY(){return offsetY;}
+    public double getOffsetX(){return offsetX;}
     
     public boolean isVisible()
     {
@@ -107,6 +118,40 @@ public abstract class SolidShape
         }else{
             cornerX = xCoord+width;
             cornerY = yCoord;
+            slope = 1;
+            constant = cornerY-(slope*cornerX);
+        }
+       
+        return constant;
+        
+    }
+    
+    public double getMiddleSortDistanceConstant()
+    {
+        double cornerX, cornerY;
+        int slope;
+        double constant;
+        if(WorldPanel.radSpin > 0 && WorldPanel.radSpin <= (Math.PI/2.0))
+        {
+            cornerX = centerCoordX;
+            cornerY = centerCoordY;
+            slope = -1;
+             constant = (cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI/2.0 && WorldPanel.radSpin <= (Math.PI))
+        {
+            cornerX = centerCoordX;
+            cornerY = centerCoordY;
+            slope = 1;
+             constant = -(cornerY-(slope*cornerX));
+        }else if(WorldPanel.radSpin > Math.PI && WorldPanel.radSpin <= (3*Math.PI/2.0))
+        {
+            cornerX = centerCoordX;
+            cornerY = centerCoordY;
+            slope = -1;
+            constant = -(cornerY-(slope*cornerX));
+        }else{
+            cornerX = centerCoordX;
+            cornerY = centerCoordY;
             slope = 1;
             constant = cornerY-(slope*cornerX);
         }
@@ -305,6 +350,18 @@ public abstract class SolidShape
     {
         return Math.sin(WorldPanel.rotation)*heightIn;
     }  
+    
+    public void rotateAroundCoord(double xCoordIn, double yCoordIn, double theta)//SETS THE OFFSET BASED OFF OF THE POINT INPUTTED
+    {
+        double radius = Math.sqrt(Math.pow(xCoordIn-centerCoordX, 2) + Math.pow(yCoordIn-centerCoordY, 2));
+        double oldTheta = Math.atan2(yCoordIn-centerCoordY, xCoordIn-centerCoordX);
+        centerCoordX = xCoordIn+(radius*Math.cos(theta+oldTheta));
+        centerCoordY = yCoordIn+(radius*Math.sin(theta+oldTheta));
+        offsetX = (radius*Math.cos(theta+oldTheta));
+        offsetY = (radius*Math.sin(theta+oldTheta));
+        xCoord = centerCoordX - (double)(width/2.0);//so that they are spawned from the center of the shape, but have coordinate at bottom left
+        yCoord = centerCoordY - (double)(length/2.0);
+    }
     
     public double getScaledDistortedHeight(double heightIn)
     {

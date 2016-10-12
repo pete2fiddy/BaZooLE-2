@@ -45,14 +45,23 @@ public class TileSorter2
                 
             }*/
             //System.out.print(orderPos + ": ");
+            //int index = 0;
             for(Tile t : posList)
             {
                 //System.out.print(t.getArea() + " ");
+                //t.setIndex(index);
                 giveReturn.add(t);
+                //index++;
             }
             //System.out.println();
+        }
+        for(int i = 0; i < giveReturn.size(); i++)
+        {
+            giveReturn.get(i).setIndex(i);
         }
         Tile.resortTiles = false;
         return giveReturn;
     }
+    
+    
 }

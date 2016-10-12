@@ -125,28 +125,31 @@ public class Flower extends Scenery implements Runnable
         try{
             int heightCount = 5;
             int heightAdd = 10;
-            stemPrism.setCenterCoordX(getCoordX());
-            stemPrism.setCenterCoordY(getCoordY());
-            stemPrism.setZPos(getBoundTile().getHeight());
-            stemPrism.updateShapePolygons();
-
-            petalPrism.setCenterCoordX(getCoordX());
-            petalPrism.setCenterCoordY(getCoordY());
-            petalPrism.setZPos(getBoundTile().getHeight() + stemPrism.getHeight());
-            petalPrism.updateShapePolygons();
-            for(int i = 0; i < leafPrisms.length; i++)
+            if(getBoundTile().getInTransit())
             {
-                if(i%2 == 0)
+                stemPrism.setCenterCoordX(getCoordX());
+                stemPrism.setCenterCoordY(getCoordY());
+                stemPrism.setZPos(getBoundTile().getHeight());
+                stemPrism.updateShapePolygons();
+
+                petalPrism.setCenterCoordX(getCoordX());
+                petalPrism.setCenterCoordY(getCoordY());
+                petalPrism.setZPos(getBoundTile().getHeight() + stemPrism.getHeight());
+                petalPrism.updateShapePolygons();
+                for(int i = 0; i < leafPrisms.length; i++)
                 {
-                    leafPrisms[i].setCenterCoordX(getCoordX()-(stemSize/2.0));
-                    leafPrisms[i].setCenterCoordY(getCoordY());
-                }else{
-                    leafPrisms[i].setCenterCoordX(getCoordX()+(stemSize/2.0));
-                    leafPrisms[i].setCenterCoordY(getCoordY());
+                    if(i%2 == 0)
+                    {
+                        leafPrisms[i].setCenterCoordX(getCoordX()-(stemSize/2.0));
+                        leafPrisms[i].setCenterCoordY(getCoordY());
+                    }else{
+                        leafPrisms[i].setCenterCoordX(getCoordX()+(stemSize/2.0));
+                        leafPrisms[i].setCenterCoordY(getCoordY());
+                    }
+                    leafPrisms[i].setZPos(getBoundTile().getHeight() + heightCount);
+                    leafPrisms[i].updateShapePolygons();
+                    heightCount += heightAdd;
                 }
-                leafPrisms[i].setZPos(getBoundTile().getHeight() + heightCount);
-                leafPrisms[i].updateShapePolygons();
-                heightCount += heightAdd;
             }
         }catch(Exception e)
         {

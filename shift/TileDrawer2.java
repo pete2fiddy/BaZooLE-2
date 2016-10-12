@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
@@ -87,6 +88,7 @@ public class TileDrawer2 implements Runnable
         
         for(int i = 0; i < tileList.size(); i++)//removing causes negligible change in FPS
         {
+            
             if(tileList.get(i).getClass() != BlockTile.class)
             {
                 if(tileList.get(i).isVisible(g))
@@ -117,6 +119,10 @@ public class TileDrawer2 implements Runnable
             if(tileList.get(i).getClass() != BlockTile.class)
             {
                 tileList.get(i).draw(g);
+                //g.setColor(new Color(255, 0, 0, 70));
+                //g.fillRect((int)tileList.get(i).getBoundingRect().getX(), (int)tileList.get(i).getBoundingRect().getY(), (int)tileList.get(i).getBoundingRect().getWidth(), (int)tileList.get(i).getBoundingRect().getHeight());
+                //g.setColor(Color.BLACK);
+                //g.drawString("Index: " + Integer.toString(tileList.get(i).getIndex()), (int)tileList.get(i).threadedUpperPoints()[0][0], (int)tileList.get(i).threadedUpperPoints()[1][0]);
             }else{
                 BlockTile bt = (BlockTile)tileList.get(i);
                 if(!bt.getIsEdgeBlock())
@@ -184,5 +190,25 @@ public class TileDrawer2 implements Runnable
             }
             Tile.tileJustUnclicked = false;
         }
+    }
+    
+    public static boolean pointCovered(int index, int xPos, int yPos)
+    {
+        for(int i = index + 1; i < tileList.size(); i++)
+        {
+            Rectangle[] rects = tileList.get(i).getBoundingRects();
+            for(Rectangle r : rects)
+            {
+                if(r.contains(xPos, yPos))
+                {
+                    return true;
+                }
+            }
+            /*if(tileList.get(i).getBoundingRect().contains(xPos, yPos))
+            {
+                return true;
+            }*/
+        }
+        return false;
     }
 }

@@ -20,8 +20,13 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
+/*
+reminder to set lake to use RectPrism with "drawExcludingTop"
+*/
 public class WorldPanel extends JPanel implements ActionListener, ChangeListener, Runnable
 {
+    public static final double minScale = 0.5, maxScale = 6.0;
     private Timer tickTimer;
     private boolean drawWater = true;
     private int tempQuadrant, frameCount;
@@ -110,8 +115,12 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 g.fillRect(0,0, 256, 256);
                 grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
             }
+            BufferedImage dirt = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = dirt.getGraphics();
+                g.setColor(new Color(89,139,44));//(51,153,51));//(0,153,0));//(86, 65, 46));//(120, 72, 0));
+                g.fillRect(0,0, 256, 256);
             //grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
-            grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+            grassTexture = new TexturePaint(dirt, new Rectangle(0, 0, 256, 256));
             
             leavesImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Leaves3.png"));
             leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, leavesImage.getWidth(), leavesImage.getHeight()));
@@ -210,8 +219,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         if(dayNight.getSeason().equals("summer"))
         {
             try {
-                grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
-                grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+                //grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
+                //grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
             } catch (Exception e) {
             }
         }else if(dayNight.getSeason().equals("winter"))
@@ -224,7 +233,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         }
         try
         {
-            grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
+            //grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
             leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
         }catch(Exception e)
         {
@@ -243,7 +252,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         double radiusHeight = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));//finds the radius of the oval's height (since circle is squashed by the amount the world is turned)
         double radiusWidth = radiusHeight/shrink(rotation);//finds the radius of the oval's width taking into account the squahsed world
         
-        double theta = Math.atan2(-dy, dx);
+        double theta = 0.5;//Math.atan2(-dy, dx);
         
         double unturneddx = radiusWidth*Math.cos(theta-radSpin);
         double unturneddy = radiusHeight*Math.sin(theta-radSpin);
@@ -263,7 +272,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         double radiusHeight = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));//finds the radius of the oval's height (since circle is squashed by the amount the world is turned)
         double radiusWidth = radiusHeight/shrink(rotation);//finds the radius of the oval's width taking into account the squahsed world
         
-        double theta = Math.atan2(-dy, dx);
+        double theta = 0.5;//Math.atan2(-dy, dx);
         
         double unturneddx = radiusWidth*Math.cos(theta-radSpin);
         double unturneddy = radiusHeight*Math.sin(theta-radSpin);
@@ -587,13 +596,15 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private void tick()
     {
         
-        if(scale < 6.0 && MouseInput.dScale > 0)
+        if(scale < maxScale && MouseInput.dScale > 0)
         {
             scale += MouseInput.dScale;
+            Tile.setGrassSkip();//determines how many grass needs to be drawn based on the scale
         }
-        if(scale > .5 && MouseInput.dScale < 0)
+        if(scale > minScale && MouseInput.dScale < 0)
         {
             scale += MouseInput.dScale;
+            Tile.setGrassSkip();//determines how many grass needs to be drawn based on the scale
         }
         unit = (int)(baseUnit * scale);
         straightUnit = (double)unit/Math.sqrt(2);
@@ -622,21 +633,37 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         radSpin += Input.dSpin;
         rotation+=Input.dRotation;
         
-        /*resets the spins if they go over or under a full revolution*/
-        if(rotation > Math.PI/2.3){
-            rotation = Math.PI/2.3;
+        
+        if(rotation > 1.3659){
+            rotation = 1.3659;
         }else if(rotation<0.5){
             rotation = .5;
-        }if(radSpin > (2*Math.PI)){
+        }
+        /*resets the spins if they go over or under a full revolution*/
+        if(radSpin > (2*Math.PI)){
             radSpin -= 2*Math.PI;
         }else if(radSpin < 0){
             radSpin += 2*Math.PI;
         }
-        if(tempQuadrant != spinQuadrant() || MouseInput.clickJustReleased() || MouseInput.clicked || LevelLoader.sortTiles || Tile.resortTiles)//needs to run last
+        
+        if(tempQuadrant != spinQuadrant())
+        {
+            for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+            {
+                TileDrawer2.tileList.get(i).sortAllScenery();
+            }
+            td2.getThread().interrupt();
+            td2.setThread(new Thread(td2));
+            td2.getThread().start();
+            
+            tempQuadrant = spinQuadrant();
+            LevelLoader.sortTiles = false; 
+        }else if(MouseInput.clickJustReleased() || MouseInput.clicked || LevelLoader.sortTiles || Tile.resortTiles)//needs to run last
         {
             td2.getThread().interrupt();
             td2.setThread(new Thread(td2));
             td2.getThread().start();
+            
             tempQuadrant = spinQuadrant();
             LevelLoader.sortTiles = false; 
         }

@@ -91,15 +91,18 @@ public class Mushroom extends Scenery
         petalPrism.setCenterCoordX(getCoordX());
         petalPrism.setCenterCoordY(getCoordY());*/
         
-        shapes[0].setCenterCoordX(getCoordX());
-        shapes[1].setCenterCoordX(getCoordX());
-        shapes[0].setCenterCoordY(getCoordY());
-        shapes[1].setCenterCoordY(getCoordY());
-        
-        shapes[0].updateShapePolygons();
-        shapes[1].updateShapePolygons();
-        LayeredSolidShape s = (LayeredSolidShape)shapes[1];
-        s.updateFlatShapes(getCoordX(), getCoordY());
+        //if(getBoundTile().getInTransit())
+        //{
+            shapes[0].setCenterCoordX(getCoordX());
+            shapes[1].setCenterCoordX(getCoordX());
+            shapes[0].setCenterCoordY(getCoordY());
+            shapes[1].setCenterCoordY(getCoordY());
+
+            shapes[0].updateShapePolygons();
+            shapes[1].updateShapePolygons();
+            LayeredSolidShape s = (LayeredSolidShape)shapes[1];
+            s.updateFlatShapes(getCoordX(), getCoordY());
+        //}
         
         shapes[1].fillDropShadow(g, getBoundTile().getHeight());
         //shapes[0].updateShapePolygons();

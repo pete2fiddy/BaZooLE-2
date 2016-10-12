@@ -29,6 +29,16 @@ public abstract class Scenery extends Toolbox implements Runnable
         boundingBoxWidth = widthIn; boundingBoxLength = lengthIn;
     }
     
+    public boolean isVisible(Graphics g)
+    {
+        int x = (int)getX(); int y = (int)getY();
+        if(g.getClip().contains(x, y))
+        {
+            return !TileDrawer2.pointCovered(getBoundTile().getIndex(), x, y);
+        }
+        return false;
+    }
+    
     public double getSortDistanceConstant()
     {
         double cornerX, cornerY;

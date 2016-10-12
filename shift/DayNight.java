@@ -31,7 +31,7 @@ public class DayNight implements ActionListener
     Point[] starPoints = new Point[75];
     private int daysPassed = 0;
     private int daysSinceSeasonChange=0;
-    private String season = "winter";
+    private String season = "summer";
     private int starMoveCount = 0;
     private int starMove = 0;
     public DayNight()
@@ -40,6 +40,33 @@ public class DayNight implements ActionListener
         dayTimer.setRepeats(true);
         dayTimer.start();
         fillStarPoints();
+    }
+    
+    public void addSnowmen()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            if(Math.random()>0.75)
+            {
+                double offsetX = Math.random();
+                double offsetY = Math.random();
+                Snowman s = new Snowman(TileDrawer2.tileList.get(i), offsetX, offsetY);
+            }
+        }
+    }
+    
+    public void removeSnowmen()
+    {
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            for(int j = 0; j < TileDrawer2.tileList.get(i).getAssortedScenery().size(); j++)
+            {
+                if(TileDrawer2.tileList.get(i).getAssortedScenery().get(j).getClass() == Snowman.class)
+                {
+                    TileDrawer2.tileList.get(i).getAssortedScenery().remove(j);
+                }
+            }
+        }
     }
     
     private void fillStarPoints()
@@ -157,6 +184,7 @@ public class DayNight implements ActionListener
     {
         if(season.equals("summer"))
         {
+            addSnowmen();
             season = "winter";
             Toolbox.grassColor = Toolbox.defaultSnowColor;
             WorldPanel.grassImage = Toolbox.defaultSnowImage;
@@ -164,6 +192,7 @@ public class DayNight implements ActionListener
             shortenGrass(3);
         }else if(season.equals("winter"))
         {
+            removeSnowmen();
             season = "summer";
             Toolbox.grassColor = Toolbox.defaultGrassColor;
             WorldPanel.grassImage = Toolbox.defaultGrassImage;

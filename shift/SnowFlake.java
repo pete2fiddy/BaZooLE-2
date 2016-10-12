@@ -41,6 +41,12 @@ public class SnowFlake extends Toolbox
         currentTime = System.currentTimeMillis();
         waitTime = baseDelay + (int)(Math.random() * 400);
     }
+    
+    private boolean isVisible(Graphics g, double x, double y)
+    {
+        return (g.getClip().contains(x,y));
+    }
+    
     public void paint(Graphics g)
     {
         if(!boundCloud.outsideOfMap())
@@ -48,21 +54,25 @@ public class SnowFlake extends Toolbox
             //x+=boundCloud.getCloudSpeed();
             x = boundCloud.getCoordX() + dx;
             y = boundCloud.getCoordY() + dy;
-            if(currentTime + waitTime < System.currentTimeMillis())
+            double[] points = convertToPoint(x,y);
+            if(isVisible(g, points[0], points[1]))
             {
-                height -= fallSpeed;
-                if(boundCloud.getCloudSpeed() != 0)
+                if(currentTime + waitTime < System.currentTimeMillis())
                 {
-                    g.setColor(Color.WHITE);
-                    g.fillOval((int)(convertToPoint(x, y)[0]-(WorldPanel.scale*1)), (int)(convertToPoint(x, y)[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+                    height -= fallSpeed;
+                    if(boundCloud.getCloudSpeed() != 0)
+                    {
+                        g.setColor(Color.WHITE);
+                        g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+                    }
                 }
-            }
-            if(height < 0)
-            {
-                height = boundCloud.getZPos();
-                fallSpeed = .75 + .75*(Math.random());
-                currentTime = System.currentTimeMillis();
-                waitTime = (int)(50 + Math.random()*200);
+                if(height < 0)
+                {
+                    height = boundCloud.getZPos();
+                    fallSpeed = .75 + .75*(Math.random());
+                    currentTime = System.currentTimeMillis();
+                    waitTime = (int)(50 + Math.random()*200);
+                }
             }
             /*if(x > (WorldPanel.worldTilesWidth/2) || x < -(WorldPanel.worldTilesWidth/2))
             {
@@ -72,21 +82,25 @@ public class SnowFlake extends Toolbox
             //x+=boundCloud.getCloudSpeed();
             x = boundCloud.getCoordX() + dx;
             y = boundCloud.getCoordY() + dy;
-            if(currentTime + waitTime < System.currentTimeMillis())
+            double[] points = convertToPoint(x,y);
+            if(isVisible(g, points[0], points[1]))
             {
-                height -= fallSpeed;
-                if(boundCloud.getCloudSpeed() != 0)
+                if(currentTime + waitTime < System.currentTimeMillis())
                 {
-                    g.setColor(new Color(255, 255, 255, (int)(255*boundCloud.getAlphaPercent())));
-                    g.fillOval((int)(convertToPoint(x, y)[0]-(WorldPanel.scale*1)), (int)(convertToPoint(x, y)[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+                    height -= fallSpeed;
+                    if(boundCloud.getCloudSpeed() != 0)
+                    {
+                        g.setColor(new Color(255, 255, 255, (int)(255*boundCloud.getAlphaPercent())));
+                        g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+                    }
                 }
-            }
-            if(height < 0)
-            {
-                height = boundCloud.getZPos();
-                fallSpeed = .75 + .75*(Math.random());
-                currentTime = System.currentTimeMillis();
-                waitTime = (int)(50 + Math.random()*200);
+                if(height < 0)
+                {
+                    height = boundCloud.getZPos();
+                    fallSpeed = .75 + .75*(Math.random());
+                    currentTime = System.currentTimeMillis();
+                    waitTime = (int)(50 + Math.random()*200);
+                }
             }
         }
     }

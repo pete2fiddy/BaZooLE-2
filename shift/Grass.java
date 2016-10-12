@@ -115,8 +115,8 @@ public class Grass extends Scenery implements ActionListener
         double x = getX();
         double y = getY();
         Rectangle grassRect = new Rectangle((int)x,(int)y,10,10);
-        if(g.getClip().contains(grassRect))
-        {
+        //if(g.getClip().contains(grassRect))
+        //{
         int iLength = grassPoints[0].length;
         int jLength = grassPoints[0][0].length;
         int diffR = lowGrassShade.getRed()-Toolbox.grassColor.getRed();
@@ -137,7 +137,7 @@ public class Grass extends Scenery implements ActionListener
             }
         }
         g2.setStroke(new BasicStroke(1));
-        }
+        //}
     }
     
     

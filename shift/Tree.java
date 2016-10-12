@@ -296,18 +296,21 @@ public class Tree extends Scenery implements Runnable
         threadedLeavesPolygons = getLeavesPolygons().clone();
         threadedVisibleTrunkPolygons = getVisibleTrunkPolygons().clone();
         threadedVisibleLeavesPolygons = getVisibleLeavesPolygons().clone();*/
-        int heightCount = 0;
-        
-        
-        for(SolidShape s : treeShapes)
-        {
-            //System.out.println("called");
-            s.setCenterCoordX(getCoordX());
-            s.setCenterCoordY(getCoordY());
-            s.setZPos(getBoundTile().getHeight() + heightCount);
-            s.updateShapePolygons();
-            heightCount += 10;
-        }
+        //if(getBoundTile().getInTransit())
+        //{
+            int heightCount = 0;
+
+
+            for(SolidShape s : treeShapes)
+            {
+                //System.out.println("called");
+                s.setCenterCoordX(getCoordX());
+                s.setCenterCoordY(getCoordY());
+                s.setZPos(getBoundTile().getHeight() + heightCount);
+                s.updateShapePolygons();
+                heightCount += 10;
+            }
+       //}
         
         
     }
