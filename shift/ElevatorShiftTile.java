@@ -35,7 +35,7 @@ public class ElevatorShiftTile extends Tile
     @Override
     public void draw(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D)g;
+        //Graphics2D g2 = (Graphics2D)g;
         drawHitPolygon(g);
         
         if(MouseInput.dHeight < 0 && getHeight() > 5)
@@ -63,7 +63,7 @@ public class ElevatorShiftTile extends Tile
             }
         }
         
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         fillPolygons(g);
         g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         

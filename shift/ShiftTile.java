@@ -32,7 +32,7 @@ public class ShiftTile extends Tile
     {
         if(isVisible(g))
         {
-            Graphics2D g2 = (Graphics2D)g;
+            //Graphics2D g2 = (Graphics2D)g;
             drawHitPolygon(g);
             for(Waterfall wf : getWaterfalls())
             {
@@ -41,16 +41,16 @@ public class ShiftTile extends Tile
                     wf.draw(g);
                 }
             }
-            g2.setPaint(WorldPanel.grassTexture);
+            g.setColor(WorldPanel.grassColor);
             fillPolygons(g);
-            g2.setPaint(WorldPanel.grassTexture);
+            g.setColor(WorldPanel.grassColor);
             g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             if(getClicked())
             {
                 g.setColor(redAlpha);
                 g.fillPolygon(threadedUpperPoints()[0], threadedUpperPoints()[1], 4);
                 fillPolygons(g);
-                g2.setPaint(WorldPanel.grassTexture);
+                g.setColor(WorldPanel.grassColor);
             }
 
             drawEarlyScenery(g);

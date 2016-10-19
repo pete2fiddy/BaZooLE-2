@@ -63,12 +63,12 @@ public class SpinTile extends Tile implements Runnable
     @Override
     public void draw(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D)g;
+        //Graphics2D g2 = (Graphics2D)g;
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g.setColor(Color.BLACK);
         //g.drawPolygon(threadedCylinderPoints[0],threadedCylinderPoints[1],32);
         //g.setColor(getColor());
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         g.fillPolygon(threadedTopCylinderPoints[0], threadedTopCylinderPoints[1], 32);
         drawSides(g);
         

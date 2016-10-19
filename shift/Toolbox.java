@@ -13,9 +13,7 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import static shift.WorldPanel.grassImage;
-import static shift.WorldPanel.grassTexture;
 import static shift.WorldPanel.leavesImage;
-import static shift.WorldPanel.leavesTexture;
 import static shift.WorldPanel.worldX;
 import static shift.WorldPanel.worldY;
 
@@ -53,7 +51,7 @@ public class Toolbox
                 Grass.lowGrassShade = Grass.defaultLowGrassShade;
                 grassColor = defaultGrassColor;
             }
-            grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
+            //grassTexture = new TexturePaint(grassImage, new Rectangle(0, 0, 256, 256));
         }catch(Exception e)
         {
             System.err.println(e);

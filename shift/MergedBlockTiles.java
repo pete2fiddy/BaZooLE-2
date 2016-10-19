@@ -59,7 +59,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     public void drawFrontArea(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         g2.fill(getFrontArea());
         for(Polygon p : getFrontPolygons())
         {
@@ -94,7 +94,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     {
         Graphics2D g2 = (Graphics2D)g;
         
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         
         //g.setColor(Color.BLACK);
         for(int i = 0; i < blockTiles.size(); i++)
@@ -117,7 +117,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             //t.drawWaterReflectionCover(g);
             t.drawWaterReflections(g);
         }
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         g2.fill(getBackArea());
         g.setColor(Color.BLACK);
         for(Tile t : getBackTiles())

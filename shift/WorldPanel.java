@@ -26,6 +26,9 @@ reminder to set lake to use RectPrism with "drawExcludingTop"
 */
 public class WorldPanel extends JPanel implements ActionListener, ChangeListener, Runnable
 {
+    public static final Color defaultSnowColor = new Color(251, 251, 251);
+    public static final Color defaultGrassColor = new Color(80,124,41);
+    public static Color grassColor = defaultGrassColor;//(89,139,44);
     public static final double minScale = 0.5, maxScale = 6.0;
     private Timer tickTimer;
     private boolean drawWater = true;
@@ -48,7 +51,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private UI ui;
     private static double backgroundColorRotation = 0;
     public static BufferedImage grassImage, leavesImage;
-    public static TexturePaint grassTexture, leavesTexture;;
+    //public static TexturePaint grassTexture, leavesTexture;;
     private Object loopNotify = new Object();
     private JButton turnLeft, turnRight, resetLevel;
     Audio a = new Audio();
@@ -68,6 +71,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private Toolbox toolbox = new Toolbox(this, player);
     private int timeCount = 0;
     private Timer frameTimer=new Timer(2, this);
+    private Mountains mountains;
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -88,6 +92,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //ts = new TileSorter();
         td = new TileDrawer();
         tickTimer.start();//started here so that everything is initialized by the time the timer calls them
+        
+        DayNight.addSeasonalScenery(DayNight.season);
     }
     
     /*
@@ -103,12 +109,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         try{
             if(dayNight.getSeason().equals("winter"))
             {
+                grassColor = defaultSnowColor;
                 BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = snow.getGraphics();
                 g.setColor(new Color(251, 251, 251));
                 g.fillRect(0,0, 256, 256);
                 grassImage = snow;
             }else{
+                grassColor = defaultGrassColor;
                 BufferedImage dirt = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = dirt.getGraphics();
                 g.setColor(new Color(86, 65, 46));//(120, 72, 0));
@@ -120,14 +128,15 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
                 g.setColor(new Color(89,139,44));//(51,153,51));//(0,153,0));//(86, 65, 46));//(120, 72, 0));
                 g.fillRect(0,0, 256, 256);
             //grassImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Grass5.png"));
-            grassTexture = new TexturePaint(dirt, new Rectangle(0, 0, 256, 256));
+            //grassTexture = new TexturePaint(dirt, new Rectangle(0, 0, 256, 256));
             
             leavesImage = ImageIO.read(WorldPanel.class.getClassLoader().getResourceAsStream("Images/Leaves3.png"));
-            leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, leavesImage.getWidth(), leavesImage.getHeight()));
+            //leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, leavesImage.getWidth(), leavesImage.getHeight()));
         }catch(Exception e)
         {
             System.err.println(e);
         }
+        mountains = new Mountains();
         tickTimer = new Timer(5, this);
         tickTimer.setActionCommand("tick");
         tickTimer.setRepeats(true);
@@ -190,7 +199,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
-        dayNight.drawStars(g);
+        dayNight.draw(g);
+        mountains.draw(g);
         drawMapFloor(g);
         
         td2.draw(g);
@@ -201,6 +211,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         ui.draw(g);//draws UI elements like level, etc.
         
         drawFPS(g, g2);
+        
+        //mountain.draw(g);
     }
     
     private void drawFPS(Graphics g, Graphics2D g2)
@@ -234,7 +246,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         try
         {
             //grassTexture = new TexturePaint(grassImage, new Rectangle((int)worldX, (int)worldY, (int)(scale*128), (int)(scale*128*getShrink)));
-            leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
+            //leavesTexture = new TexturePaint(leavesImage, new Rectangle((int)worldX, (int)worldY, (int)(0.5*scale*leavesImage.getWidth()), (int)(0.5*scale*distortedHeight(rotation, leavesImage.getHeight()))));
         }catch(Exception e)
         {
             System.err.println(e);
@@ -729,8 +741,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         String command = e.getActionCommand();
         if(command.equals("tick"))
         {
-            Thread t = new Thread(this);
-            t.start();
+            //Thread t = new Thread(this);
+            //t.start();
             tick();
         }else if(command.equals("frame"))
         {

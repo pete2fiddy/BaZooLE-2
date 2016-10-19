@@ -182,6 +182,7 @@ public class LevelLoader
             System.out.println(e);
         }
         TileDrawer2.populateCloudList();
+        DayNight.addSeasonalScenery(DayNight.season);
         isLoading = false;
         //setTileInfo();
         

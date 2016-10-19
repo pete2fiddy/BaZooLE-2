@@ -68,7 +68,7 @@ public class BreakShiftTile extends Tile
             }
         }
         
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         fillPolygons(g);
         g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         

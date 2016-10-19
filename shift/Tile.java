@@ -54,7 +54,7 @@ public abstract class Tile extends Toolbox implements Runnable
     private double movingX = 0, movingY = 0;
     private Player player;
     private BufferedImage grassImage;
-    private static int grassSkip;
+    private static double grassSkip;
           
     /*
     Params: Takes a coordinate x(from bottom left corner), coordinate y(from bottom left corner), a units width, a units length, a PIXELS height (pixels it takes up on screen at 1 scale with fully rotated world to see the full side of it)
@@ -192,24 +192,28 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             grassSkip = 1;
         }*/
-        for(int i = 0; i < grassList.length; i+= grassSkip)
+        for(double d = 0; d < grassList.length; d+= grassSkip)
         {
-            if(assortedScenery.size() > 0 && assortedScenery.get(sceneryCount).getSortDistanceConstant()>grassList[i].getSortDistanceConstant() && sceneryCount < assortedScenery.size()-1)
+            if(d == (int)d)
             {
-                if(assortedScenery.get(sceneryCount).isVisible(g))
+                int i = (int)d;
+                if(assortedScenery.size() > 0 && assortedScenery.get(sceneryCount).getSortDistanceConstant()>grassList[i].getSortDistanceConstant() && sceneryCount < assortedScenery.size()-1)
                 {
-                    assortedScenery.get(sceneryCount).draw(g);
+                    if(assortedScenery.get(sceneryCount).isVisible(g))
+                    {
+                        assortedScenery.get(sceneryCount).draw(g);
+                    }
+                    if(player.getSortDistanceConstant() <= assortedScenery.get(sceneryCount).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(sceneryCount+1).getMiddleSortDistanceConstant() && !playerDrawn)
+                    {
+                        playerDrawn = true;
+                        drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+                    }
+                    sceneryCount++;
                 }
-                if(player.getSortDistanceConstant() <= assortedScenery.get(sceneryCount).getMiddleSortDistanceConstant() && player.getSortDistanceConstant() >= assortedScenery.get(sceneryCount+1).getMiddleSortDistanceConstant() && !playerDrawn)
+                if(grassList[i].isVisible(g))
                 {
-                    playerDrawn = true;
-                    drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
+                    grassList[i].drawTufts(g);
                 }
-                sceneryCount++;
-            }
-            if(grassList[i].isVisible(g))
-            {
-                grassList[i].drawTufts(g);
             }
         }
         for(int i = sceneryCount; i < assortedScenery.size(); i++)
@@ -289,7 +293,12 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public static void setGrassSkip()
     {
-        grassSkip = (int)Math.pow(2,(int)(3.0-((WorldPanel.scale-WorldPanel.minScale)/((WorldPanel.maxScale-WorldPanel.minScale)/3.0))));//gives the amount the grass list is incremented for the grass being drawn -- e.g. how many grasses to skip so that you draw fewer when zoomed out, more when zoomed in for optimization.
+        if(!DayNight.season.equals("winter"))//winter is laggier since snow is graphics intensive. Also grass is less noticeable in the snow so it doesn't matter as much to draw fewer of it.
+        {
+            grassSkip = (int)Math.pow(1.5,(int)(3.0-((WorldPanel.scale-WorldPanel.minScale)/((WorldPanel.maxScale-WorldPanel.minScale)/3.0))));//gives the amount the grass list is incremented for the grass being drawn -- e.g. how many grasses to skip so that you draw fewer when zoomed out, more when zoomed in for optimization.
+        }else{
+            grassSkip = (int)Math.pow(2.5,(int)(3.0-((WorldPanel.scale-WorldPanel.minScale)/((WorldPanel.maxScale-WorldPanel.minScale)/3.0))));//gives the amount the grass list is incremented for the grass being drawn -- e.g. how many grasses to skip so that you draw fewer when zoomed out, more when zoomed in for optimization.
+        }
     }
     
     /*
@@ -330,7 +339,7 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             for(int j = 0; j < length*numPerUnit; j++)
             {
-                if(Math.random() < .33)
+                if(Math.random() < .45)
                 {
                     double grassX = (0.05/(double)width)+(double)i/((double)width*numPerUnit);
                     double grassY = (0.05/(double)length)+(double)j/(double)(length*numPerUnit);
@@ -377,6 +386,26 @@ public abstract class Tile extends Toolbox implements Runnable
                 if(p.pathOnPoint(grassList[i].getX(),grassList[i].getY()))
                 {
                     removeGrass(i);
+                    i--;
+                }
+                /*if(p.pathOnCoord(assortedScenery.get(i).getCoordX(), assortedScenery.get(i).getCoordY()))
+                {
+                    assortedScenery.remove(assortedScenery.get(i));
+                    i--;
+                }*/
+            }
+        }
+    }
+    
+    public void removeCoveredScenery()
+    {
+        for(Path p : pathList)
+        {
+            for(int i = 0; i < assortedScenery.size(); i++)
+            {
+                if(p.pathOnPoint(assortedScenery.get(i).getX(),assortedScenery.get(i).getY()))
+                {
+                    assortedScenery.remove(i);
                     i--;
                 }
                 /*if(p.pathOnCoord(assortedScenery.get(i).getCoordX(), assortedScenery.get(i).getCoordY()))
@@ -1278,7 +1307,7 @@ public abstract class Tile extends Toolbox implements Runnable
         g.setColor(c);
         g.fillPolygon(points1[0], points1[1], points1[0].length);
         g.fillPolygon(points2[0], points2[1], points2[0].length);
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         g2.setComposite(transparencyComposite);
         //points1[1][2] -= (int)(scaledDistortedHeight((int)height)/2.0);
         //points1[1][3] -= (int)(scaledDistortedHeight((int)height)/2.0);
@@ -1304,7 +1333,7 @@ public abstract class Tile extends Toolbox implements Runnable
         
         AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
         g2.setComposite(transparencyComposite);
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         
         int[][] clone1= getLeftSidePoints();
         int[][] clone2 = getRightSidePoints();

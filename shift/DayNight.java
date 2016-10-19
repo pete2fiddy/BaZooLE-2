@@ -19,7 +19,7 @@ import javax.swing.Timer;
 public class DayNight implements ActionListener
 {
     private final double starSpeed = .05;
-    private static final int daySeconds = 20;
+    private static final int daySeconds = 2;
     private static final int transitSeconds = 5;
     private String timeDescriber = "day";
     private static final Color nightColor = new Color(42, 57, 86);
@@ -31,9 +31,10 @@ public class DayNight implements ActionListener
     Point[] starPoints = new Point[75];
     private int daysPassed = 0;
     private int daysSinceSeasonChange=0;
-    private String season = "summer";
+    public static String season = "winter";
     private int starMoveCount = 0;
     private int starMove = 0;
+    private Sun sun = new Sun();
     public DayNight()
     {
         dayTimer.setActionCommand("tick");
@@ -42,26 +43,51 @@ public class DayNight implements ActionListener
         fillStarPoints();
     }
     
-    public void addSnowmen()
+    public static void addSeasonalScenery(String season)
     {
-        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        if(season.equals("winter"))
         {
-            if(Math.random()>0.75)
+            for(int i = 0; i < TileDrawer2.tileList.size(); i++)
             {
-                double offsetX = Math.random();
-                double offsetY = Math.random();
-                Snowman s = new Snowman(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                if(Math.random()>0.75)
+                {
+                    double offsetX = Math.random();
+                    double offsetY = Math.random();
+                    Snowman s = new Snowman(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                }
+            }
+        }else if(season.equals("summer"))
+        {
+            for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+            {
+                if(Math.random()>0.75)
+                {
+                    double offsetX = Math.random();
+                    double offsetY = Math.random();
+                    Pumpkin p = new Pumpkin(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                }
             }
         }
     }
     
-    public void removeSnowmen()
+    public static void removeSeasonalScenery(String season)
+    {
+        if(!season.equals("winter"))
+        {
+            removeSceneryType(Snowman.class);
+        }else if(!season.equals("summer"))
+        {
+            removeSceneryType(Pumpkin.class);
+        }
+    }
+    
+    public static void removeSceneryType(Class<?> c)
     {
         for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
             for(int j = 0; j < TileDrawer2.tileList.get(i).getAssortedScenery().size(); j++)
             {
-                if(TileDrawer2.tileList.get(i).getAssortedScenery().get(j).getClass() == Snowman.class)
+                if(TileDrawer2.tileList.get(i).getAssortedScenery().get(j).getClass() == c)
                 {
                     TileDrawer2.tileList.get(i).getAssortedScenery().remove(j);
                 }
@@ -79,8 +105,12 @@ public class DayNight implements ActionListener
     
     public Color getColor(){return color;}
     
-    public void drawStars(Graphics g)
+    public void draw(Graphics g)
     {
+        if(!timeDescriber.equals("night"))
+        {
+            sun.draw(g);
+        }
         if(timeDescriber.equals("night"))
         {
             //g.setColor(Color.WHITE);
@@ -184,17 +214,23 @@ public class DayNight implements ActionListener
     {
         if(season.equals("summer"))
         {
-            addSnowmen();
+            //addSnowmen();
             season = "winter";
-            Toolbox.grassColor = Toolbox.defaultSnowColor;
+            addSeasonalScenery(season);
+            removeSeasonalScenery(season);
+            WorldPanel.grassColor = WorldPanel.defaultSnowColor;
+            //Toolbox.grassColor = Toolbox.defaultSnowColor;
             WorldPanel.grassImage = Toolbox.defaultSnowImage;
             Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;
             shortenGrass(3);
         }else if(season.equals("winter"))
         {
-            removeSnowmen();
+            //removeSnowmen();
             season = "summer";
-            Toolbox.grassColor = Toolbox.defaultGrassColor;
+            addSeasonalScenery(season);
+            removeSeasonalScenery(season);
+            WorldPanel.grassColor = WorldPanel.defaultGrassColor;
+            //Toolbox.grassColor = Toolbox.defaultGrassColor;
             WorldPanel.grassImage = Toolbox.defaultGrassImage;
             Grass.lowGrassShade = Grass.defaultLowGrassShade;
             restoreGrassHeight();
@@ -216,11 +252,13 @@ public class DayNight implements ActionListener
         secondsTicked += (double)timerIncrement/1000.0;
         if(timeDescriber.equals("evening"))
         {
+            sun.controlSun(-(((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(dayColor.getRed() + (secondsTicked/(double)transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(dayColor.getGreen() + (secondsTicked/(double)transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
             (int)(dayColor.getBlue() + (secondsTicked/(double)transitSeconds)*(nightColor.getBlue() - dayColor.getBlue())));
         }else if(timeDescriber.equals("morning"))
         {
+            sun.controlSun((((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(nightColor.getRed() - (secondsTicked/transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(nightColor.getGreen() - (secondsTicked/transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
             (int)(nightColor.getBlue() - (secondsTicked/transitSeconds)*(nightColor.getBlue() - dayColor.getBlue())));
@@ -228,6 +266,7 @@ public class DayNight implements ActionListener
         
         if(secondsTicked > daySeconds && timeDescriber.equals("day"))
         {
+            sun.setHeight(sun.getBaseMaxHeight());
             timeDescriber = "evening";
             secondsTicked = 0;
         }else if(secondsTicked > transitSeconds && timeDescriber.equals("evening"))

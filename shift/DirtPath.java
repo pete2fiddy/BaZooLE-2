@@ -37,6 +37,7 @@ public class DirtPath extends Path
     {
         run();
         getBoundTile().removeCoveredGrass();
+        getBoundTile().removeCoveredScenery();
         Graphics2D g2 = (Graphics2D)g;
         //getBoundTile().removeCoveredScenery();
         g.setColor(darkBrown);

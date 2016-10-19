@@ -46,9 +46,9 @@ public class BlockTile extends Tile
     @Override
     public void draw(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D)g;
+        //Graphics2D g2 = (Graphics2D)g;
         
-        g2.setPaint(WorldPanel.grassTexture);
+        g.setColor(WorldPanel.grassColor);
         g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
         g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
         g.setColor(Color.BLACK);
