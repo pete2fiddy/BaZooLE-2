@@ -20,14 +20,30 @@ public class Sun
     private int changeRed = 3, changeGreen = -79, changeBlue = 10;
     private static final Color baseColor = new Color(242, 237,111);
     private static final Color[] sunColors = {new Color(242, 237,111), new Color(244,224,77), new Color(241, 145, 167)};
-    private double relX, relY;
-    private static final int baseMaxHeight = 700; //500 above worldX and worldY
-    private int baseSunDim = 225;
+    private static double relX, relY;
+    private static final int unscaledBaseMaxHeight = 500;
+    private static int baseMaxHeight = 500; //500 above worldX and worldY
+    private static int unscaledSunDim = 225;
+    private static int baseSunDim;// = 225;
+    private static double unscaledUpperSunDim = 1000 - (((relY-(baseMaxHeight/8))/(double)baseMaxHeight)*1000) + 75;
+    private static double baseUpperSunDim;// = baseSunDim + 1000 - (((relY-(baseMaxHeight/8))/(double)baseMaxHeight)*1000) + 75;
+    private static double minScale;
+    private static double sunMargin;
     public Sun()
     {
         relX = 0;
         relY = baseMaxHeight;
         
+    }
+    
+    public static void setHeightWithScale(double minScaleIn)
+    {
+        minScale = minScaleIn;
+        baseSunDim = (int)(unscaledSunDim/minScaleIn);
+        baseUpperSunDim = baseSunDim + (unscaledUpperSunDim/minScaleIn);
+        relY = (int)(baseMaxHeight/minScaleIn);
+        baseMaxHeight = (int)((double)unscaledBaseMaxHeight/minScaleIn);
+        sunMargin = 75.0/minScale;
     }
     
     public void controlSun( double amount)
@@ -50,15 +66,20 @@ public class Sun
         Composite originalComposite = g2.getComposite();
         //g.setColor(Color.YELLOW);
         //g.fillOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*baseSunDim/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*baseSunDim/2.0)), (int)(WorldPanel.scale*baseSunDim), (int)(WorldPanel.scale*baseSunDim));
+        System.out.println(baseSunDim);
+        System.out.println(baseUpperSunDim);
         double smallR = baseSunDim;
-        double bigR = baseSunDim + 1000 - (((relY-(baseMaxHeight/8))/(double)baseMaxHeight)*1000) + 75;
+        double percentRisen = (baseMaxHeight-relY)/(baseMaxHeight);
+        System.out.println("Percent risen: " + percentRisen);
+        double bigR = baseUpperSunDim - (baseUpperSunDim-baseSunDim)*(1-percentRisen) + sunMargin;// - (baseUpperSunDim-baseSunDim)*((relY-baseMaxHeight)/(baseUpperSunDim-baseSunDim));//baseSunDim + 1000 - (((relY-(baseMaxHeight/8))/(double)baseMaxHeight)*1000) + 75;
+        System.out.println(bigR);
         int type = AlphaComposite.SRC_OVER;
         int increments = 25;
         double redInc = (double)changeRed/(double)increments;
         double greenInc = (double)changeGreen/(double)increments;
         double blueInc = (double)changeBlue/(double)increments;
         double expandAmount = (bigR-smallR)/increments;
-        double constant = (double)(bigR-smallR)/(double)Math.pow(increments, 2);
+        double constant = (double)((bigR-smallR))/(double)Math.pow(increments, 2);
         double initialAlpha = 0;
         //int radiusCount = 0;
         if(relY < baseMaxHeight/3)

@@ -31,7 +31,7 @@ public class DayNight implements ActionListener
     Point[] starPoints = new Point[75];
     private int daysPassed = 0;
     private int daysSinceSeasonChange=0;
-    public static String season = "winter";
+    public static String season = "summer";
     private int starMoveCount = 0;
     private int starMove = 0;
     private Sun sun = new Sun();

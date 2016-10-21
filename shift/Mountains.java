@@ -5,6 +5,7 @@
  */
 package shift;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Area;
 
@@ -14,22 +15,26 @@ import java.awt.geom.Area;
  */
 public class Mountains 
 {
-    private Mountain[] mountainList = new Mountain[7];
+    private static Mountain[] mountainList = new Mountain[7];
     public Mountains()
     {
         fillMountainList();
     }
     
-    private void fillMountainList()
+    public static void fillMountainList()
     {
+        //WorldPanel.minScale = (double)WorldPanel.screenWidth/(double)(WorldPanel.unit*WorldPanel.worldTilesWidth);
+        //WorldPanel.scale = (double)WorldPanel.screenWidth/(double)(WorldPanel.straightUnit*Math.sqrt(2)*WorldPanel.worldTilesWidth);
         int yVal = 995;
-        mountainList[0] = new Mountain(-57,995, 1, 4);
-        mountainList[1] = new Mountain(145,995, 2, 3);
-        mountainList[6] = new Mountain(298,995, 3,0);
-        mountainList[5] = new Mountain(468,995, 4,1);
-        mountainList[4] = new Mountain(635,995, 5,2);
-        mountainList[2] = new Mountain(845,995, 6, 4);
-        mountainList[3] = new Mountain(1091,995, 7, 3);
+        int centerScreen = (int)((double)WorldPanel.screenWidth/(2.0));
+        System.out.println(WorldPanel.minScale);
+        mountainList[0] = new Mountain(centerScreen+(int)((double)((-57)-centerScreen)/WorldPanel.minScale),995, 1, 4, WorldPanel.minScale);
+        mountainList[1] = new Mountain(centerScreen+(int)((double)(145-centerScreen)/WorldPanel.minScale),995, 2, 3,WorldPanel.minScale);
+        mountainList[6] = new Mountain(centerScreen+(int)((double)(298-centerScreen)/WorldPanel.minScale),995, 3,0,WorldPanel.minScale);
+        mountainList[5] = new Mountain(centerScreen+(int)((double)(468-centerScreen)/WorldPanel.minScale),995, 4,1,WorldPanel.minScale);
+        mountainList[4] = new Mountain(centerScreen+(int)((double)(635-centerScreen)/WorldPanel.minScale),995, 5,2,WorldPanel.minScale);
+        mountainList[2] = new Mountain(centerScreen+(int)((double)(845-centerScreen)/WorldPanel.minScale),995, 6, 4,WorldPanel.minScale);
+        mountainList[3] = new Mountain(centerScreen+(int)((double)(1091-centerScreen)/WorldPanel.minScale),995, 7, 3,WorldPanel.minScale);
     }
     
     public void draw(Graphics g)
@@ -37,9 +42,14 @@ public class Mountains
         Area a = new Area();
         for(Mountain m : mountainList)
         {
-            
-            m.draw(g, a);
-            a.add(new Area(m.getMountainPolygon()));
+            if(m!= null)
+            {
+                
+                m.draw(g, a);
+                a.add(new Area(m.getMountainPolygon()));
+                //g.setColor(Color.RED);
+                //g.fillOval((int)(WorldPanel.worldX+(WorldPanel.scale*(m.getX()-WorldPanel.worldX)))-5, (int)WorldPanel.worldY-200-5, 10,10);
+            }
         }
     }
     

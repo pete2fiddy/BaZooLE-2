@@ -32,83 +32,83 @@ public class Mountain
     private int[] xPoints, yPoints;
     private Polygon mountainPolygon;
     private Point topPoint;
-    public Mountain(double xIn, double yIn, int mountainType, int sortDistanceIn)
+    public Mountain(double xIn, double yIn, int mountainType, int sortDistanceIn, double minScale)
     {
         x = xIn;
         relX = (x-WorldPanel.worldX);
         y = yIn;
         dSpin = Math.toRadians(1.5+Math.random()*2.0);
-        fillMountainPoints(mountainType);
+        fillMountainPoints(mountainType, minScale);
         sortDistance = sortDistanceIn;
-        spinRadius = 15 + (10*Math.random());
+        spinRadius = 7 + (8*Math.random());
         setMountainPolygon();
     }
     
-    private void fillMountainPoints(int mountainType)
+    private void fillMountainPoints(int mountainType, double minScale)
     {
         switch(mountainType)
         {//switched from using points to int x and y vals
             case 1:
                 mountainPoints = new Point[3];
-                mountainPoints[0] = new Point(0,479);
-                mountainPoints[1] = new Point(251,0);
+                mountainPoints[0] = new Point(0,(int)(479.0/minScale));
+                mountainPoints[1] = new Point((int)(251.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(513, 479);
-                height = 479;
+                mountainPoints[2] = new Point((int)(513.0/minScale), (int)(479.0/minScale));
+                height = (int)(479.0/minScale);
                 break;
             case 2:
                 mountainPoints = new Point[3];
-                mountainPoints[0] = new Point(0,545);
-                mountainPoints[1] = new Point(245,0);
+                mountainPoints[0] = new Point(0,(int)(545.0/minScale));
+                mountainPoints[1] = new Point((int)(245.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(507,545);
-                height = 545;
+                mountainPoints[2] = new Point((int)(507.0/minScale),(int)(545/minScale));
+                height = (int)(545.0/minScale);
                 break;
             case 3:
                 mountainPoints = new Point[5];
-                mountainPoints[0] = new Point(0,383);
-                mountainPoints[1] = new Point(107,115);
-                mountainPoints[2] = new Point(169,221);
-                mountainPoints[3] = new Point(257,0);
+                mountainPoints[0] = new Point(0,(int)(383.0/minScale));
+                mountainPoints[1] = new Point((int)(107.0/minScale),(int)(115.0/minScale));
+                mountainPoints[2] = new Point((int)(169.0/minScale),(int)(221.0/minScale));
+                mountainPoints[3] = new Point((int)(257.0/minScale),0);
                 topPoint = mountainPoints[3];
-                mountainPoints[4] = new Point(472,383);
-                height = 383;
+                mountainPoints[4] = new Point((int)(472.0/minScale),(int)(383.0/minScale));
+                height = (int)(383.0/minScale);
                 break;
             case 4:
                 mountainPoints = new Point[5];
-                mountainPoints[0] = new Point(0,440);
-                mountainPoints[1] = new Point(220,0);
+                mountainPoints[0] = new Point(0,(int)(440.0/minScale));
+                mountainPoints[1] = new Point((int)(220.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(364,285);
-                mountainPoints[3] = new Point(401,220);
-                mountainPoints[4] = new Point(532,440);
-                height = 440;
+                mountainPoints[2] = new Point((int)(364.0/minScale),(int)(285.0/minScale));
+                mountainPoints[3] = new Point((int)(401.0/minScale),(int)(220.0/minScale));
+                mountainPoints[4] = new Point((int)(532.0/minScale),(int)(440.0/minScale));
+                height = (int)(440.0/minScale);
                 break;
             case 5:
                 mountainPoints = new Point[5];
-                mountainPoints[0] = new Point(0,525);
-                mountainPoints[1] = new Point(238,0);
+                mountainPoints[0] = new Point(0,(int)(525.0/minScale));
+                mountainPoints[1] = new Point((int)(238.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(403,349);
-                mountainPoints[3] = new Point(473,251);
-                mountainPoints[4] = new Point(594,525);
-                height = 525;
+                mountainPoints[2] = new Point((int)(403.0/minScale),(int)(349.0/minScale));
+                mountainPoints[3] = new Point((int)(473.0/minScale),(int)(251.0/minScale));
+                mountainPoints[4] = new Point((int)(594.0/minScale),(int)(525.0/minScale));
+                height = (int)(525.0/minScale);
                 break;
             case 6:
                 mountainPoints = new Point[3];
-                mountainPoints[0] = new Point(0,470);
-                mountainPoints[1] = new Point(268,0);
+                mountainPoints[0] = new Point(0,(int)(470.0/minScale));
+                mountainPoints[1] = new Point((int)(268.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(511,470);
-                height = 470;
+                mountainPoints[2] = new Point((int)(511.0/minScale),(int)(470.0/minScale));
+                height = (int)(470.0/minScale);
                 break;
             case 7:
                 mountainPoints = new Point[3];
-                mountainPoints[0] = new Point(0,383);
-                mountainPoints[1] = new Point(192,0);
+                mountainPoints[0] = new Point(0,(int)(383.0/minScale));
+                mountainPoints[1] = new Point((int)(192.0/minScale),0);
                 topPoint = mountainPoints[1];
-                mountainPoints[2] = new Point(387,383);
-                height = 383;
+                mountainPoints[2] = new Point((int)(387.0/minScale),(int)(383.0/minScale));
+                height = (int)(383.0/minScale);
                 break;
         }
     }
@@ -173,6 +173,11 @@ public class Mountain
         
     }
     
+    public double getX()
+    {
+        return x;
+    }
+    
     public void draw(Graphics g, Area a)
     {
         Graphics2D g2 = (Graphics2D)g;
@@ -223,14 +228,18 @@ public class Mountain
             //shadeArea.intersect(a);
             //g.setColor(new Color(0,0,0,lowerAlpha+((upperAlpha-lowerAlpha)/numShades)));
             //g2.fill(shadeArea);
-             g.setColor(new Color(65, 0, 120));
+            
+            
+            
+            g.setColor(new Color(65, 0, 120));
+            //g.setColor(Color.WHITE);
              //g.setColor(Color.BLACK);
             g2.fill(aCopy);
         }
         g2.setComposite(originalComposite);
         int grayInc = 5;
         g.setColor(new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance));
-        g.fillPolygon(mountainPolygon);
+        g.fillPolygon(getScaledPolygon(1));
         
         g2.setStroke(new BasicStroke(1));
        

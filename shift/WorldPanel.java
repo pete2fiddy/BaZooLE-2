@@ -25,7 +25,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public static final Color defaultSnowColor = new Color(251, 251, 251);
     public static final Color defaultGrassColor = new Color(80,124,41);
     public static Color grassColor = defaultGrassColor;//(89,139,44);
-    public static final double minScale = 0.5, maxScale = 6.0;
+    public static double minScale = 0.5, maxScale = 6.0;
     private Timer tickTimer;
     private boolean drawWater = true;
     private int tempQuadrant, frameCount;
@@ -132,7 +132,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         {
             System.err.println(e);
         }
-        mountains = new Mountains();
+        
         tickTimer = new Timer(5, this);
         tickTimer.setActionCommand("tick");
         tickTimer.setRepeats(true);
@@ -143,6 +143,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         frameTimer.setRepeats(true);
         frameTimer.setActionCommand("frame");
         frameTimer.start();
+        mountains = new Mountains();
     }
     
     /*
@@ -217,6 +218,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.setFont(new Font("Futura", Font.PLAIN, 16));
         g.drawString("FPS: " + Integer.toString((int)fps), 30, 100);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.drawString("Scale: " + Double.toString(scale), 110, 775);
     }
     
     /*

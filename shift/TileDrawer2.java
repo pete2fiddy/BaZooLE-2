@@ -30,7 +30,7 @@ public class TileDrawer2 implements Runnable
     public TileDrawer2(WorldPanel wp)
     {
         ll= new LevelLoader();   
-        //ll.spawnLevel(UI.level);
+        ll.spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
         fillWaterRipples();
