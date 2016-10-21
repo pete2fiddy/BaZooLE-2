@@ -90,6 +90,7 @@ public class DayNight implements ActionListener
                 if(TileDrawer2.tileList.get(i).getAssortedScenery().get(j).getClass() == c)
                 {
                     TileDrawer2.tileList.get(i).getAssortedScenery().remove(j);
+                    j--;
                 }
             }
         }

@@ -2,7 +2,6 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 public class LevelEndTile extends Tile
 {

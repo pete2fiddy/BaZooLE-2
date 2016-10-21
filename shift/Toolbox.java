@@ -8,14 +8,8 @@ package shift;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import static shift.WorldPanel.grassImage;
-import static shift.WorldPanel.leavesImage;
-import static shift.WorldPanel.worldX;
-import static shift.WorldPanel.worldY;
 
 /**
  *

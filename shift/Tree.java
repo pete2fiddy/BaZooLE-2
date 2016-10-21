@@ -1,10 +1,8 @@
 package shift;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 public class Tree extends Scenery implements Runnable
 {

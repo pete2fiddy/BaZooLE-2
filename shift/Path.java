@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /*
 Is a path that player can walk across to complete objectives. Is a special type of scenery which is traversable. All paths are traversable by default, however in the future i may want to make this toggleable.

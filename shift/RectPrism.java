@@ -2,7 +2,6 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Polygon;
 
 public class RectPrism extends SolidShape
