@@ -17,7 +17,7 @@ public class ShiftTile extends Tile
     @Override
     public void drawReflections(Graphics g)
     {
-        drawWaterReflectionCover(g);
+        //drawWaterReflectionCover(g);
         if(!getClicked())
         {
             drawWaterReflections(g);
@@ -83,9 +83,10 @@ public class ShiftTile extends Tile
     
     public void fillPolygons(Graphics g)
     {
-        g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        shadeSides(g);
+        drawShadedSides(g, WorldPanel.grassColor);
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        //shadeSides(g);
     }
     
     

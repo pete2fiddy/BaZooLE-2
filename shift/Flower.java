@@ -53,7 +53,7 @@ public class Flower extends Scenery implements Runnable
         petalPrism.setCenterCoordY(getCoordY());
         stemPrism.updateShapePolygons();
         petalPrism.updateShapePolygons();
-        if(WorldPanel.scale > 1)
+        if(WorldPanel.scale > 2)
         {
             petalPrism.fillDropShadow(g, getBoundTile().getHeight());
         }
@@ -78,14 +78,14 @@ public class Flower extends Scenery implements Runnable
                     rp.fill(g);
                 }
             }
-            if(WorldPanel.scale > 1)
+            if(WorldPanel.scale > 2)
             {
                 rp.paintShading(g);
             }
         }
         g.setColor(Toolbox.defaultGrassColor);
         stemPrism.fill(g);
-        if(WorldPanel.scale > 1)
+        if(WorldPanel.scale > 2)
         {
             stemPrism.paintShading(g);
         }
@@ -110,11 +110,14 @@ public class Flower extends Scenery implements Runnable
                     rp.fill(g);
                 }
             }
-            rp.paintShading(g);
+            if(WorldPanel.scale > 2)
+            {
+                rp.paintShading(g);
+            }
         }
         g.setColor(petalColor);
         petalPrism.fill(g);
-        if(WorldPanel.scale > 1)
+        if(WorldPanel.scale > 2)
         {
             petalPrism.paintShading(g);
         }

@@ -17,7 +17,7 @@ import java.awt.geom.Area;
  *
  * @author phusisian
  */
-public abstract class SolidShape 
+public abstract class SolidShape
 {
     private Color color;
     private double xCoord, yCoord, width, length, spin;
@@ -327,7 +327,7 @@ public abstract class SolidShape
         }
     }
     
-    
+    /*needs to be updated to color interpolation*/
     
     public void shadeBoundingBoxSides(Graphics g)
     {
@@ -505,26 +505,57 @@ public abstract class SolidShape
         
     }
     
-    public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons)
+    public Color getLerpColor(Color topColor, Color bottomColor, double alpha)
+    {
+        //double alphaNum = (double)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        
+        int red, green, blue;
+        
+        if(topColor.getRed() > bottomColor.getRed())
+        {
+            red = (int)(topColor.getRed() + ((alpha)*(bottomColor.getRed()-topColor.getRed())));
+        }else{
+            red = (int)(topColor.getRed() + ((1-alpha)*(bottomColor.getRed()-topColor.getRed())));
+        }
+        if(topColor.getGreen() > bottomColor.getGreen())
+        {
+            green = (int)(topColor.getGreen() + ((alpha)*(bottomColor.getGreen()-topColor.getGreen())));
+        }else{
+            green = (int)(topColor.getGreen() + ((1-alpha)*(bottomColor.getGreen()-topColor.getGreen())));
+        }
+        if(topColor.getBlue() > bottomColor.getBlue())
+        {
+            blue = (int)(topColor.getBlue() + ((alpha)*(bottomColor.getBlue()-topColor.getBlue())));
+        }else{
+            blue = (int)(topColor.getBlue() + ((1-alpha)*(bottomColor.getBlue()-topColor.getBlue())));
+        }
+        
+        
+        
+        return new Color(red,green,blue);
+    }
+    
+    public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons, Color lowerColor)
     {
         visibleShapeSidePolygons = sidePolygons.clone();
         int numSides = sidePolygons.length;
         int maxZPos = 500;
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        int shadeAlpha = 75 - (int)(75 * ((double)zPos/(double)maxZPos));//not sure if this is good
+        double shadeAlpha = (double)(75 - (int)(75 * ((double)zPos/(double)maxZPos)))/255.0;//not sure if this is good
         if(shadeAlpha < 0)
         {
             shadeAlpha = 0;
         }
         if(shadeAlpha < 35 + (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))
         {
-            shadeAlpha = 35+ (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+            shadeAlpha = (double)(35+ (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))/255.0;
         }
         //int shadeAlpha = 80;
         for(Polygon p : sidePolygons)
         {
-            shadeAlpha -= (int)(30.0/(double)numSides);
-            g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+            shadeAlpha -= (30.0/(double)numSides)/255.0;
+            g.setColor(getLerpColor(Color.BLACK, lowerColor, shadeAlpha));
+            //g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
             //g.setColor(Color.WHITE);
             //g.drawString(Integer.toString(shadeAlpha), (int)p.getBounds().getX(), (int)p.getBounds().getY());
@@ -571,6 +602,7 @@ public abstract class SolidShape
     
     }
     
+    /*need to fix for shading*/
     public void shadeSidePolygonsWithZPos(Graphics g, Polygon[] sidePolygons, int inZPos)
     {
         visibleShapeSidePolygons = sidePolygons.clone();

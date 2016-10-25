@@ -24,18 +24,18 @@ public class Snowman extends Scenery
         int heightAdd = 0;
         for(int i = 0; i < 3; i++)
         {
-            shapes[i] = new RectPrism(getCoordX(), getCoordY(), getBoundTile().getHeight()+heightAdd, squareDim, squareDim, (int)(WorldPanel.straightUnit*squareDim));
+            shapes[i] = new RectPrism(getCoordX(), getCoordY(), getBoundTile().getHeight()+heightAdd, squareDim, squareDim, (int)(WorldPanel.baseStraightUnit*squareDim));
             shapes[i].setColor(Color.WHITE);
             double armLength = 0.10;
             double armWidth = 0.02;
-            heightAdd += (WorldPanel.straightUnit*squareDim);
+            heightAdd += (WorldPanel.baseStraightUnit*squareDim);
             if(i==1)
             {
                 if(rotation == 0 || rotation == Math.PI)
                 {
                     shapes[5] = new RectPrism(getCoordX(),
                                                 getCoordY()+(squareDim/2.0)+(armLength/2.0),
-                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit/3.0)),
+                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit/3.0)),
                                                 armWidth,
                                                 armLength,
                                                 1);
@@ -46,7 +46,7 @@ public class Snowman extends Scenery
 
                     shapes[6] = new RectPrism(getCoordX(),
                                                 getCoordY()-(1.25*squareDim)+(armLength/2.0),
-                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit/3.0)),
+                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit/3.0)),
                                                 armWidth,
                                                 armLength,
                                                 1);
@@ -57,7 +57,7 @@ public class Snowman extends Scenery
                 }else{
                     shapes[5] = new RectPrism(getCoordX()+(squareDim/2.0)+(armLength/2.0),
                                                 getCoordY(),
-                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit/3.0)),
+                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit/3.0)),
                                                 armLength,
                                                 armWidth,
                                                 1);
@@ -68,7 +68,7 @@ public class Snowman extends Scenery
 
                     shapes[6] = new RectPrism(getCoordX()-(1.25*squareDim)+(armLength/2.0),
                                                 getCoordY(),
-                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit/3.0)),
+                                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit/3.0)),
                                                 armLength,
                                                 armWidth,
                                                 1);
@@ -82,7 +82,7 @@ public class Snowman extends Scenery
             squareDim -= 0.05;
             double eyeballDim = 0.02;
             
-            int eyeballHeight =(int)(eyeballDim*WorldPanel.straightUnit);
+            int eyeballHeight =(int)(eyeballDim*WorldPanel.baseStraightUnit);
             
             
             
@@ -90,7 +90,7 @@ public class Snowman extends Scenery
             {
                 shapes[3] = new RectPrism(getCoordX()+((squareDim)+(eyeballDim/2.0)),
                                 getCoordY()+(squareDim/2.0),
-                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit)-((double)eyeballHeight/2.0)/2.0),
+                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit)-((double)eyeballHeight/2.0)/2.0),
                                 eyeballDim, 
                                 eyeballDim,
                                 eyeballHeight);
@@ -102,7 +102,7 @@ public class Snowman extends Scenery
                 
                 shapes[4] = new RectPrism(getCoordX()+((squareDim)+(eyeballDim/2.0)),
                                 getCoordY()-(squareDim/2.0),
-                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.straightUnit)-((double)eyeballHeight/2.0)/2.0),
+                                (int)(getBoundTile().getHeight()+heightAdd-(squareDim*WorldPanel.baseStraightUnit)-((double)eyeballHeight/2.0)/2.0),
                                 eyeballDim, 
                                 eyeballDim,
                                 eyeballHeight);

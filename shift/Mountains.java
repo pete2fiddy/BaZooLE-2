@@ -7,6 +7,8 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.Area;
 
 /**
@@ -39,18 +41,33 @@ public class Mountains
     
     public void draw(Graphics g)
     {
+        Area screenArea = new Area(new Rectangle(0,0,WorldPanel.screenWidth, WorldPanel.screenHeight));
+        Area undrawnArea = new Area();
         Area a = new Area();
+        Area drawnArea = new Area();
+        for(Mountain m : mountainList)
+        {
+            a.add(new Area(m.getMountainPolygon()));
+            
+        }
+        undrawnArea = (Area)a.clone();
+        int mountainCount = 0;
         for(Mountain m : mountainList)
         {
             if(m!= null)
             {
-                
-                m.draw(g, a);
-                a.add(new Area(m.getMountainPolygon()));
+                undrawnArea.subtract(new Area(m.getMountainPolygon()));
+                m.draw(g, a, drawnArea, undrawnArea, mountainCount, mountainList, screenArea);
+                drawnArea.add(new Area(m.getMountainPolygon()));
+                undrawnArea.subtract(new Area(m.getMountainPolygon()));
+                //a.add(new Area(m.getMountainPolygon()));
                 //g.setColor(Color.RED);
                 //g.fillOval((int)(WorldPanel.worldX+(WorldPanel.scale*(m.getX()-WorldPanel.worldX)))-5, (int)WorldPanel.worldY-200-5, 10,10);
+                mountainCount++;
             }
         }
+        //Graphics2D g2 = (Graphics2D)g;
+        //g2.fill(a);
     }
     
 }

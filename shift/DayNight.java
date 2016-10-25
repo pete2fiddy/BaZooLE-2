@@ -24,14 +24,14 @@ public class DayNight implements ActionListener
     private String timeDescriber = "day";
     private static final Color nightColor = new Color(42, 57, 86);
     private static final Color dayColor = new Color(38, 94, 172);
-    private Color color = dayColor;
+    public static Color color = dayColor;
     private static final int timerIncrement = 10;
     private double secondsTicked = 0;
     private Timer dayTimer = new Timer(timerIncrement, this);
     Point[] starPoints = new Point[75];
     private int daysPassed = 0;
     private int daysSinceSeasonChange=0;
-    public static String season = "summer";
+    public static String season = "winter";
     private int starMoveCount = 0;
     private int starMove = 0;
     private Sun sun = new Sun();
@@ -136,7 +136,8 @@ public class DayNight implements ActionListener
         }else if(timeDescriber.equals("evening"))
         {
             int alpha = (int)(255*(secondsTicked/(double)transitSeconds));
-            g.setColor(new Color(255,255,255,alpha));
+            //g.setColor(new Color(255,255,255,alpha));
+            g.setColor(Color.WHITE);
             for(Point p : starPoints)
             {
                 //p.setLocation((double)(p.getX() + starMove), (double)p.getY());
@@ -153,7 +154,8 @@ public class DayNight implements ActionListener
             }
         }else if(timeDescriber.equals("morning"))
         {
-            g.setColor(new Color(255,255,255,(int)(255*((double)(transitSeconds-secondsTicked)/(double)transitSeconds))));
+            g.setColor(Color.WHITE);
+            //g.setColor(new Color(255,255,255,(int)(255*((double)(transitSeconds-secondsTicked)/(double)transitSeconds))));
             for(Point p : starPoints)
             {
                 //p.setLocation((double)(p.getX() + starMove), (double)p.getY());

@@ -23,6 +23,7 @@ public class RectPrism extends SolidShape
     @Override
     void draw(Graphics g) 
     {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         int[][] upperPoints = threadedUpperPoints;//getUpperBoundingShapePolyPoints();
         //int[][] lowerPoints = getLowerBoundingShapePolyPoints();
@@ -46,11 +47,12 @@ public class RectPrism extends SolidShape
         
         
         Polygon[] poly = threadedVisibleSidePolygons;
-        shadeSidePolygons(g, poly);
+        shadeSidePolygons(g, poly, c);
     }   
     
     public void drawExcludingTop(Graphics g)
     {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         int[][] upperPoints = threadedUpperPoints;//getUpperBoundingShapePolyPoints();
         //int[][] lowerPoints = getLowerBoundingShapePolyPoints();
@@ -72,7 +74,7 @@ public class RectPrism extends SolidShape
         
         //paintShading(g);
         Polygon[] poly = threadedVisibleSidePolygons;
-        shadeSidePolygons(g, poly);
+        shadeSidePolygons(g, poly, c);
         
         //Pyramid py = new Pyramid(3, 3, 0, 1, 100, 8);
         //py.draw(g);
@@ -83,8 +85,9 @@ public class RectPrism extends SolidShape
     }
     public void paintShading(Graphics g) 
     {
+        Color c = g.getColor();
         Polygon[] poly = threadedVisibleSidePolygons;
-        shadeSidePolygons(g, poly);
+        shadeSidePolygons(g, poly,c);
         //shadeBoundingBoxSides(g);
     }
 

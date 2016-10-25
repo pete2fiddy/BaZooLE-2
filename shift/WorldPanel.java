@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -55,6 +58,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
     public static DayNight dayNight = new DayNight();
     private JButton randomShapes;
+    public static Color waterColor = new Color(30, 144, 255);
     private Timer secondTimer;
     //TileSorter ts;
     TileDrawer td;
@@ -68,6 +72,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private int timeCount = 0;
     private Timer frameTimer=new Timer(2, this);
     private Mountains mountains;
+    public static Area belowMapArea;
     public WorldPanel()
     {
         //panel settings and nuts and bolts methods
@@ -188,7 +193,18 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     */
     public void paintComponent(Graphics g)
     {
-        super.paintComponent(g);
+        super.paintComponent(g);   
+        //VolatileImage vImg = createVolatileImage(screenWidth, screenHeight);
+        //Graphics g = vImg.createGraphics();
+        //VolatileImage vImg = createVolatileImage(screenWidth, screenHeight);
+        //Graphics2D g = vImg.createGraphics();
+        
+
+        //FIX TRANSPARENCY (convert to shifting to a color) THEN TRY USING VOLATILE IMAGES -- TRANSPARENCY ON VOLATILE IMAGES IS SLOW
+        //or... EXPERIMENT WITH BUFFER STRATEGY
+        //getSnapShot() of volatile image returns bufferedimage
+        
+        
         
         g.setClip(0,0, screenWidth, screenHeight);
         setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
@@ -201,15 +217,17 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         drawMapFloor(g);
         
         td2.draw(g);
-        fillBelowMap(g);
+        //fillBelowMap(g);
         
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
-        ui.draw(g);//draws UI elements like level, etc.
+        ui.draw(g);//draws UI elements like level, etc.*/
         
         drawFPS(g, g2);
-        
-        //mountain.draw(g);
+        //gIn.drawImage(vImg, 0,0,null);
+        //vImg.flush();
+        //gIn.drawImage(vImg, 0, 0, null);
+        //vImg.flush();
     }
     
     private void drawFPS(Graphics g, Graphics2D g2)
@@ -344,6 +362,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.drawString("Scale: " + Double.toString(scale), 100, 775);
     }
     
+    
+    
     /*
     AREA FOR IMPROVEMENT.
     Fills the area beneath the map with the background color on top of any shadows or other protrusions from tiles, shapes, shadows, reflections, etc. that poke outside of the world. Ideally these would simply not draw beneath the bounds of the map.
@@ -366,6 +386,29 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         g.setColor(dayNight.getColor());
         g.fillPolygon(xPoints1, yPoints1, 4);
         g.fillPolygon(xPoints2, yPoints2, 4);
+    }
+    
+    private void setBelowMapArea()
+    {
+        int tempLowerPoints[][] = new int[2][4];
+        for(int i = 0; i < 4; i++)
+        {
+            tempLowerPoints[0][i] = mapPoints[0][i];
+            tempLowerPoints[1][i] = mapPoints[1][i];
+        }
+        int[] xPoints1 = {tempLowerPoints[0][getMapCornerIndexAt("left")], tempLowerPoints[0][getMapCornerIndexAt("middle")], tempLowerPoints[0][getMapCornerIndexAt("middle")],tempLowerPoints[0][getMapCornerIndexAt("left")]};
+        int[] yPoints1 = {tempLowerPoints[1][getMapCornerIndexAt("left")], tempLowerPoints[1][getMapCornerIndexAt("middle")], screenHeight, screenHeight};
+        
+        int[] xPoints2 = {tempLowerPoints[0][getMapCornerIndexAt("middle")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("right")], tempLowerPoints[0][getMapCornerIndexAt("middle")]};
+        int[] yPoints2 = {tempLowerPoints[1][getMapCornerIndexAt("middle")], tempLowerPoints[1][getMapCornerIndexAt("right")], screenHeight, screenHeight};
+        
+        belowMapArea = new Area(new Polygon(xPoints1, yPoints1, 4));
+        belowMapArea.add(new Area(new Polygon(xPoints2, yPoints2, 4)));
+        
+        //g.setColor(new Color(0, 65 + (int)(Math.abs(100*Math.sin(backgroundColorRotation))), 198));//g.setColor(new Color(30, 144, 255));
+        //g.setColor(dayNight.getColor());
+        //g.fillPolygon(xPoints1, yPoints1, 4);
+        //g.fillPolygon(xPoints2, yPoints2, 4);
     }
     
     public DayNight getDayNight(){return dayNight;}
@@ -605,7 +648,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     dimensions of the world, and starts threads when necessary for objects such as tiles.*/
     private void tick()
     {
-        
+        setBelowMapArea();
         if(scale < maxScale && MouseInput.dScale > 0)
         {
             scale += MouseInput.dScale;

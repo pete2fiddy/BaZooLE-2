@@ -99,6 +99,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         //g.setColor(Color.BLACK);
         for(int i = 0; i < blockTiles.size(); i++)
         {
+            blockTiles.get(i).drawWaterReflections(g);
             //blockTiles.get(i).draw(g);
             g.fillPolygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4);
             g.fillPolygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4);
@@ -115,7 +116,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             
             t.reverseShadeSides(g);
             //t.drawWaterReflectionCover(g);
-            t.drawWaterReflections(g);
+            
         }
         g.setColor(WorldPanel.grassColor);
         g2.fill(getBackArea());

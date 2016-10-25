@@ -209,4 +209,17 @@ public class TileDrawer2 implements Runnable
         }
         return false;
     }
+    
+    public static int getGreatestTileHeight()
+    {
+        int highest = 0;
+        for(int i = 0; i < tileList.size(); i++)
+        {
+            if(tileList.get(i).getHeight() > highest)
+            {
+                highest = tileList.get(i).getHeight();
+            }
+        }
+        return highest;
+    }
 }

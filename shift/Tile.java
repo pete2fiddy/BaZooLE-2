@@ -78,7 +78,7 @@ public abstract class Tile extends Toolbox implements Runnable
         TileDrawer2.tileList.add(this);
         thread.start();
         player = getPlayer();
-        addRandomScenery();
+        //addRandomScenery();
         sortAllScenery();
         setGrassSkip();
     }
@@ -179,6 +179,7 @@ public abstract class Tile extends Toolbox implements Runnable
     */
     public void drawAssortedScenery(Graphics g)
     {
+        //assortedScenery.clear();
         boolean playerDrawn = false;
         
         int sceneryCount = 0;
@@ -322,7 +323,7 @@ public abstract class Tile extends Toolbox implements Runnable
     */
     private void addRandomScenery()
     {
-        addRandomFlowers(5,15);
+        addRandomFlowers(5,10);
         int numShrooms = (int)(Math.round(Math.random()));
         double radiusApart = 0.05;
         int numPerUnit = 9;
@@ -333,7 +334,7 @@ public abstract class Tile extends Toolbox implements Runnable
             //int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
             Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
         }
-        for(int i = 0; i < width*numPerUnit; i++)
+        /*for(int i = 0; i < width*numPerUnit; i++)
         {
             for(int j = 0; j < length*numPerUnit; j++)
             {
@@ -345,7 +346,7 @@ public abstract class Tile extends Toolbox implements Runnable
                 }
             }
             
-        }
+        }*/
         /*
         double placeX = 0;
         double placeY = 0;
@@ -1283,7 +1284,7 @@ public abstract class Tile extends Toolbox implements Runnable
     public void drawWaterReflectionsWithColor(Graphics g, Color c)
     {
         
-        Graphics2D g2 = (Graphics2D)g;
+        /*Graphics2D g2 = (Graphics2D)g;
         Composite originalComposite = g2.getComposite();
         int type = AlphaComposite.SRC_OVER;
         
@@ -1319,20 +1320,69 @@ public abstract class Tile extends Toolbox implements Runnable
         g2.setComposite(originalComposite);
         
         g.setColor(Color.BLACK);
-        //g.drawString(Boolean.toString(tileCurrentlyMoving), (int)getX(), (int)getY());
+        //g.drawString(Boolean.toString(tileCurrentlyMoving), (int)getX(), (int)getY());*/
+        
+        double alphaNum = (double)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //int red = (int)(c.getRed() - (alphaNum*(c.getRed()-WorldPanel.waterColor.getRed())));
+        //int green = (int)(c.getGreen() - (alphaNum*(c.getGreen()-WorldPanel.waterColor.getGreen())));
+        //int blue = (int)(c.getBlue() - (alphaNum*(c.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(c, WorldPanel.waterColor, alphaNum));
+        int[][] clone1= getLeftSidePoints();
+        int[][] clone2 = getRightSidePoints();
+        int[][] points1 = new int[2][4];//getLeftSidePoints().clone();int red
+        int[][] points2 = new int[2][4];//getRightSidePoints().clone();
+        for(int i = 0; i < points1[0].length; i++)
+        {
+            points1[0][i] = clone1[0][i];
+            points1[1][i]+= clone1[1][i] + getScaledDistortedHeight();
+            
+            
+            
+            points2[0][i] = clone2[0][i];
+            points2[1][i]+= clone2[1][i] + getScaledDistortedHeight();
+        }
+        
+        
+        //points1[1][2] -= (int)(scaledDistortedHeight((int)height)/2.0);
+        //points1[1][3] -= (int)(scaledDistortedHeight((int)height)/2.0);
+        
+        //points2[1][2] -= (int)(scaledDistortedHeight((int)height)/2.0);
+        //points2[1][3] -= (int)(scaledDistortedHeight((int)height)/2.0);
+        
+        Area a = new Area(new Polygon(points1[0], points1[1], points1[0].length));
+        a.subtract(WorldPanel.belowMapArea);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.fill(a);
+        //g.fillPolygon(points1[0], points1[1],points1[0].length);
+        
+        alphaNum = (double)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g2.setComposite(AlphaComposite.getInstance(type, (float)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+        //red = (int)(c.getRed() - (alphaNum*(c.getRed()-WorldPanel.waterColor.getRed())));
+        //green = (int)(c.getGreen() - (alphaNum*(c.getGreen()-WorldPanel.waterColor.getGreen())));
+        //blue = (int)(c.getBlue() - (alphaNum*(c.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(c,WorldPanel.waterColor,alphaNum));
+        a = new Area(new Polygon(points2[0], points2[1], points2[0].length));
+        a.subtract(WorldPanel.belowMapArea);
+        g2.fill(a);
+        //g.fillPolygon(points2[0], points2[1], points2[0].length);
         
     }
     
     public void drawWaterReflections(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D)g;
+        /*Graphics2D g2 = (Graphics2D)g;
         Composite originalComposite = g2.getComposite();
         int type = AlphaComposite.SRC_OVER;
         
         AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
         g2.setComposite(transparencyComposite);
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(WorldPanel.grassColor);*/
         
+        double alphaNum = (double)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //int red = (int)(WorldPanel.grassColor.getRed() - (alphaNum*(WorldPanel.grassColor.getRed()-WorldPanel.waterColor.getRed())));
+        //int green = (int)(WorldPanel.grassColor.getGreen() - (alphaNum*(WorldPanel.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
+        //int blue = (int)(WorldPanel.grassColor.getBlue() - (alphaNum*(WorldPanel.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(WorldPanel.grassColor, WorldPanel.waterColor, alphaNum));
         int[][] clone1= getLeftSidePoints();
         int[][] clone2 = getRightSidePoints();
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();
@@ -1355,10 +1405,58 @@ public abstract class Tile extends Toolbox implements Runnable
         //points2[1][2] -= (int)(scaledDistortedHeight((int)height)/2.0);
         //points2[1][3] -= (int)(scaledDistortedHeight((int)height)/2.0);
         
-        g.fillPolygon(points1[0], points1[1],points1[0].length);
-        g2.setComposite(AlphaComposite.getInstance(type, (float)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
-        g.fillPolygon(points2[0], points2[1], points2[0].length);
-        g2.setComposite(originalComposite);
+        Area a = new Area(new Polygon(points1[0], points1[1], points1[0].length));
+        a.subtract(WorldPanel.belowMapArea);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.fill(a);
+        //g.fillPolygon(points1[0], points1[1],points1[0].length);
+        
+        alphaNum = (double)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g2.setComposite(AlphaComposite.getInstance(type, (float)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
+        //red = (int)(WorldPanel.grassColor.getRed() - (alphaNum*(WorldPanel.grassColor.getRed()-WorldPanel.waterColor.getRed())));
+        //green = (int)(WorldPanel.grassColor.getGreen() - (alphaNum*(WorldPanel.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
+        //blue = (int)(WorldPanel.grassColor.getBlue() - (alphaNum*(WorldPanel.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(WorldPanel.grassColor, WorldPanel.waterColor, alphaNum));
+        a = new Area(new Polygon(points2[0], points2[1], points2[0].length));
+        a.subtract(WorldPanel.belowMapArea);
+        g2.fill(a);
+        //g.fillPolygon(points2[0], points2[1], points2[0].length);
+        //g2.setComposite(originalComposite);
+    }
+    
+    
+    
+    public void drawShadedSides(Graphics g, Color color)
+    {
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        double leftAlpha = 0.31372549019608-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        
+        
+        if(thisClicked)
+        {
+            g.setColor(getLerpColor(Color.RED,getLerpColor(Color.BLACK, color, leftAlpha),0.5));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }else{
+            g.setColor(getLerpColor(Color.BLACK, color, leftAlpha));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }
+        
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        double rightAlpha = 0.19607843137255-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        if(thisClicked)
+        {
+            g.setColor(getLerpColor(Color.RED, getLerpColor(Color.BLACK, color, rightAlpha),0.5));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+            
+        }else{
+            g.setColor(getLerpColor(Color.BLACK, color, rightAlpha));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+        }
+        
+        
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        
     }
     
     public void shadeSides(Graphics g)
@@ -1377,16 +1475,19 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public void reverseShadeSides(Graphics g)
     {
-        int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        
-        g.setColor(new Color(0,0,0,leftAlpha));
-        g.fillPolygon(getLeftSidePoints()[0], getLeftSidePoints()[1], 4);
+        int[][] leftPoints = getLeftSidePoints();
+        //int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        double leftAlpha = 0.07843137254902 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, leftAlpha));
+        g.fillPolygon(leftPoints[0], leftPoints[1], 4);
         //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        int rightAlpha = 50+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(new Color(0,0,0,rightAlpha));
+        //int rightAlpha = 50+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        double rightAlpha = 0.19607843137255 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, rightAlpha));
+        int[][] rightPoints = getRightSidePoints();
         //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.fillPolygon(getRightSidePoints()[0], getRightSidePoints()[1], 4);
-        g.setColor(Color.BLACK);
+        g.fillPolygon(rightPoints[0], rightPoints[1], 4);
+        //g.setColor(Color.BLACK);
     }
     
     public void drawWaterReflectionCover(Graphics g)

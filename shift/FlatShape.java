@@ -115,6 +115,7 @@ public class FlatShape
         return giveReturn;
     }
     
+    /*Fix for shading*/
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons)
     {
         int numSides = sidePolygons.length;

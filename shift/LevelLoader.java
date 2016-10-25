@@ -180,14 +180,18 @@ public class LevelLoader
             System.out.println(e);
         }
         
+        WorldPanel.scale = (double)WorldPanel.screenWidth/(double)(WorldPanel.baseStraightUnit*Math.sqrt(2)*WorldPanel.worldTilesWidth);
+        WorldPanel.minScale = (double)WorldPanel.screenWidth/(double)(WorldPanel.baseUnit*WorldPanel.worldTilesWidth);
+        //WorldPanel.scale = 1;
         TileDrawer2.populateCloudList();
         DayNight.addSeasonalScenery(DayNight.season);
-        isLoading = false;
+        
         //setTileInfo();
-        WorldPanel.scale = (double)WorldPanel.screenWidth/(double)(WorldPanel.straightUnit*Math.sqrt(2)*WorldPanel.worldTilesWidth);
-        WorldPanel.minScale = (double)WorldPanel.screenWidth/(double)(WorldPanel.unit*WorldPanel.worldTilesWidth);
+        
         Mountains.fillMountainList();
         Sun.setHeightWithScale(WorldPanel.minScale);
+        
+        isLoading = false;
     }
     
     private static LevelEndTile spawnLevelEndTile(String line)

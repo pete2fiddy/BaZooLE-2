@@ -56,17 +56,19 @@ public class SpinTile extends Tile implements Runnable
     public void drawReflections(Graphics g)
     {
         
-        cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
+        //cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
     }
     @Override
     public void draw(Graphics g)
     {
+        
         //Graphics2D g2 = (Graphics2D)g;
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g.setColor(Color.BLACK);
         //g.drawPolygon(threadedCylinderPoints[0],threadedCylinderPoints[1],32);
         //g.setColor(getColor());
         g.setColor(WorldPanel.grassColor);
+        Color c = g.getColor();
         g.fillPolygon(threadedTopCylinderPoints[0], threadedTopCylinderPoints[1], 32);
         drawSides(g);
         
@@ -86,7 +88,7 @@ public class SpinTile extends Tile implements Runnable
         
         
         drawPlayer(g, Player.xPoint, Player.yPoint, Player.shadowExpand);
-        cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons());
+        cylinder.shadeSidePolygons(g, cylinder.getVisibleSidePolygons(), c);
         //cylinder.draw(g);
         //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         //g.setColor(Color.BLUE);

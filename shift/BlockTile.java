@@ -33,7 +33,7 @@ public class BlockTile extends Tile
     @Override
     public void drawReflections(Graphics g)
     {
-        drawWaterReflectionCover(g);
+        //drawWaterReflectionCover(g);
         drawWaterReflections(g);
     }
     

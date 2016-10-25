@@ -68,6 +68,7 @@ public class Pyramid extends SolidShape
     @Override
     void draw(Graphics g) 
     {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         //Polygon[] sidePolygons = getVisibleSidePolygons();
         for(Polygon p : threadedVisibleSidePolygons)
@@ -82,7 +83,7 @@ public class Pyramid extends SolidShape
             g.drawPolygon(p);
             
         }
-        shadeSidePolygons(g, threadedVisibleSidePolygons);
+        shadeSidePolygons(g, threadedVisibleSidePolygons, c);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -93,6 +94,7 @@ public class Pyramid extends SolidShape
 
     @Override
     void fill(Graphics g) {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         //Polygon[] sidePolygons = getVisibleSidePolygons();
         for(Polygon p : threadedVisibleSidePolygons)
@@ -102,7 +104,7 @@ public class Pyramid extends SolidShape
         }
         
         
-        shadeSidePolygons(g, threadedVisibleSidePolygons);
+        shadeSidePolygons(g, threadedVisibleSidePolygons,c);
     }
 
     @Override

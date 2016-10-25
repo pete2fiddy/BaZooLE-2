@@ -89,6 +89,7 @@ public class Cloud
     
     public void fill(Graphics g)
     {
+        
         if(flakeList != null)
         {
             for(SnowFlake sf : flakeList)
@@ -138,6 +139,7 @@ public class Cloud
         g2.setComposite(transparencyComposite);
         cloudShape.paintShading(g);
         g2.setComposite(originalComposite);
+        
     }
     
     public void reshapeCloud()
@@ -156,7 +158,14 @@ public class Cloud
         //x-= width/2.0;
         cloudShape.setLength(length);
         cloudShape.setWidth(width);
-        zPos = (int)(150 + (50* (int)(3 * Math.random())));
+        int highestTile = TileDrawer2.getGreatestTileHeight();
+        if(highestTile > 150)
+        {
+            zPos = (int)(TileDrawer2.getGreatestTileHeight() + 25 + (50* (int)(3 * Math.random())));
+        }else{
+            zPos = (int)(150 + (50* (int)(3 * Math.random())));
+        }
+        
         cloudSpeed = 0.015 + (0.01*((zPos - 150)/50.0));
         //cloudSpeed = .01 + .015* Math.random();
         cloudShape.updateShapePolygons();

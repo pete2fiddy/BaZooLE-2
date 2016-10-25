@@ -89,6 +89,7 @@ public class TruncatedPyramid extends SolidShape
     @Override
     public void draw(Graphics g) 
     {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
         for(Polygon p : sidePolygons)
@@ -104,12 +105,13 @@ public class TruncatedPyramid extends SolidShape
             
         }
         g.drawPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
-        shadeSidePolygons(g, sidePolygons);
+        shadeSidePolygons(g, sidePolygons,c);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public void drawExcludingTop(Graphics g) 
     {
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
         try{
@@ -127,7 +129,7 @@ public class TruncatedPyramid extends SolidShape
             
         }
         
-        shadeSidePolygons(g, sidePolygons);
+        shadeSidePolygons(g, sidePolygons,c);
         }catch(Exception e)
         {
              System.out.println("TruncatedPyramid drawExcludingTop called with empty list!");//added because after tiles would be removed to be respawned, truncated pyramids still (for some reason) would try to draw themselves.
@@ -139,6 +141,7 @@ public class TruncatedPyramid extends SolidShape
     @Override
     void fill(Graphics g) 
     {
+        Color c = g.getColor();
         try {
             Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
         for(Polygon p : sidePolygons)
@@ -148,7 +151,7 @@ public class TruncatedPyramid extends SolidShape
         int[][] topShapePoints = topShape.getShapePolyPoints();
         g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
         
-        shadeSidePolygons(g, sidePolygons);
+        shadeSidePolygons(g, sidePolygons,c);
         } catch (Exception e) {
         }
         //dotSortCorner(g);

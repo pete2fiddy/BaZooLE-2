@@ -10,6 +10,9 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 
 /**
  *
@@ -61,6 +64,9 @@ public class Sun
     
     public void draw(Graphics g)
     {
+        
+        Area screenArea = new Area(new Rectangle(0,0, WorldPanel.screenWidth, WorldPanel.screenHeight));
+        
         Graphics2D g2 = (Graphics2D)g;
         
         Composite originalComposite = g2.getComposite();
@@ -86,21 +92,22 @@ public class Sun
         {
             initialAlpha = -(1-((relY)/(double)(baseMaxHeight/3)));
         }
+        Area sunArea = new Area();
         for(int i = increments; i > 0; i--)
         {
             
             if(initialAlpha + ((double)(increments-i)/(double)increments) > 0)
             {
-                AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(initialAlpha+((double)(increments-i)/(double)increments)));
+                //AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(initialAlpha+((double)(increments-i)/(double)increments)));
 
-                g2.setComposite(transparencyComposite);
+                //g2.setComposite(transparencyComposite);
                 //double radius = smallR + 0.1*Math.pow(radiusCount, 2);
                 double radius = constant*Math.pow(i,2) + smallR;
                 //Color c = new Color(baseColor.getRed()+(int)(redInc*i), baseColor.getGreen()+(int)(greenInc*i), baseColor.getBlue()+(int)(blueInc*i), (int)(255*((double)(increments-i)/(double)increments)));
                 Color c = new Color(baseColor.getRed()+(int)(redInc*i), baseColor.getGreen()+(int)(greenInc*i), baseColor.getBlue()+(int)(blueInc*i));
 
-                g.setColor(c);
-                drawSunWithRadius(g,radius);
+                //g.setColor(c);
+                drawSunWithRadius(g, c, sunArea,radius, (double)1.0-(initialAlpha+((double)(increments-i)/(double)increments)), screenArea);
                 
             }
             //radiusCount++;
@@ -114,12 +121,24 @@ public class Sun
             g.setColor(sunColors[i]);
             g.fillOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*(baseSunDim + (i*expandAmount))/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*(baseSunDim + (i*expandAmount))/2.0)), (int)(WorldPanel.scale*(baseSunDim + (i*expandAmount))), (int)(WorldPanel.scale*(baseSunDim + (i*expandAmount))));
         }*/
+        
     }
     
-    private void drawSunWithRadius(Graphics g, double r)
+    private void drawSunWithRadius(Graphics g, Color c, Area sunArea, double r, double transparency, Area screenArea)
     {
-        g.fillOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.scale*r), (int)(WorldPanel.scale*r));
-        //g.setColor(Color.BLACK);
-        //g.drawOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.scale*r), (int)(WorldPanel.scale*r));
+        int red = (int)(c.getRed() - (transparency*(c.getRed()-DayNight.color.getRed())));
+        int green = (int)(c.getGreen() - (transparency*(c.getGreen()-DayNight.color.getGreen())));
+        int blue = (int)(c.getBlue() - (transparency*(c.getBlue()-DayNight.color.getBlue())));
+        g.setColor(new Color(red,green,blue));
+        Ellipse2D.Double sunEllipse = new Ellipse2D.Double((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.scale*r), (int)(WorldPanel.scale*r));
+        Area a = new Area(sunEllipse);
+        a.intersect(sunArea);
+        a.subtract(WorldPanel.belowMapArea);
+        Graphics2D g2 = (Graphics2D)g;
+        a.intersect(sunArea);
+        g2.fill(a);
+        sunArea.add(new Area(sunEllipse));
+        //g.fillOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*r/2.0)), (int)(WorldPanel.scale*r), (int)(WorldPanel.scale*r));
+        
     }
 }
