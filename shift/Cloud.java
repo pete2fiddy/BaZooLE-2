@@ -43,7 +43,7 @@ public class Cloud
     {
         if(dayNight.getSeason().equals("winter"))
         {
-            double flakeUnit = .25;
+            double flakeUnit = .5;
             int flakeWaves = (int)((zPos - 150)/30) + 3;
             flakeList = new SnowFlake[(int)(width/flakeUnit)*(int)(length/flakeUnit)*flakeWaves];
             int flakeCount = 0;

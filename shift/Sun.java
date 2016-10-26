@@ -72,13 +72,13 @@ public class Sun
         Composite originalComposite = g2.getComposite();
         //g.setColor(Color.YELLOW);
         //g.fillOval((int)(WorldPanel.worldX + (WorldPanel.scale*relX) - (WorldPanel.scale*baseSunDim/2.0)), (int)(WorldPanel.worldY - (WorldPanel.scale*relY) - (WorldPanel.scale*baseSunDim/2.0)), (int)(WorldPanel.scale*baseSunDim), (int)(WorldPanel.scale*baseSunDim));
-        System.out.println(baseSunDim);
-        System.out.println(baseUpperSunDim);
+        //System.out.println(baseSunDim);
+        //System.out.println(baseUpperSunDim);
         double smallR = baseSunDim;
         double percentRisen = (baseMaxHeight-relY)/(baseMaxHeight);
-        System.out.println("Percent risen: " + percentRisen);
+        //System.out.println("Percent risen: " + percentRisen);
         double bigR = baseUpperSunDim - (baseUpperSunDim-baseSunDim)*(1-percentRisen) + sunMargin;// - (baseUpperSunDim-baseSunDim)*((relY-baseMaxHeight)/(baseUpperSunDim-baseSunDim));//baseSunDim + 1000 - (((relY-(baseMaxHeight/8))/(double)baseMaxHeight)*1000) + 75;
-        System.out.println(bigR);
+        //System.out.println(bigR);
         int type = AlphaComposite.SRC_OVER;
         int increments = 25;
         double redInc = (double)changeRed/(double)increments;

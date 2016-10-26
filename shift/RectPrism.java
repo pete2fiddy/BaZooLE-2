@@ -113,8 +113,8 @@ public class RectPrism extends SolidShape
         //g.setColor(Color.BLUE);
         //int[][] leftPoints = getLeftBoundingShapePolyPoints();
         //int[][] rightPoints = getRightBoundingShapePolyPoints();
-        g.fillPolygon(threadedVisibleSidePolygons[0]);
-        g.fillPolygon(threadedVisibleSidePolygons[1]);
+        //g.fillPolygon(threadedVisibleSidePolygons[0]);
+        //g.fillPolygon(threadedVisibleSidePolygons[1]);
         
         
         

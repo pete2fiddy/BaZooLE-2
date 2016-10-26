@@ -26,6 +26,10 @@ public class Toolbox
     public static BufferedImage defaultGrassImage, defaultSnowImage;
     public static WorldPanel worldPanel;
     public static Player player;
+    public static double lowShade = 0.1;
+    public static double highShade = 0.2;
+    public static double maxNightShade = 0.25;
+    public static double nightShadeAdd = 0;
     public Toolbox(WorldPanel wpIn, Player playerIn)
     {
         worldPanel = wpIn;

@@ -163,6 +163,7 @@ public class Snowman extends Scenery
                 r.updateShapePolygons();
                 g.setColor(r.getColor());
                 r.fill(g);
+                g.setColor(r.getColor());
                 r.paintShading(g);
             }
             /*g.setColor(Color.GRAY);

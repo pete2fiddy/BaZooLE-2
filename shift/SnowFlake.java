@@ -89,7 +89,7 @@ public class SnowFlake extends Toolbox
                     if(boundCloud.getCloudSpeed() != 0)
                     {
                         g.setColor(new Color(255, 255, 255, (int)(255*boundCloud.getAlphaPercent())));
-                        g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+                        g.fillOval((int)(points[0]-(WorldPanel.scale/2.0)), (int)(points[1]-(WorldPanel.scale/2.0) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale), (int)(WorldPanel.scale));
                     }
                 }
                 if(height < 0)

@@ -26,6 +26,9 @@ public abstract class SolidShape
     private Polygon[] visibleShapeSidePolygons;
     private double dz = 0;
     private double offsetX, offsetY;
+    public static Color shadeColor = Color.BLACK;
+    
+    
     
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
     {
@@ -448,7 +451,7 @@ public abstract class SolidShape
                 a.add(new Area(p));
             }
         }else{
-            //System.out.println("IS null!");
+            System.out.println("IS null!");
         }
         
         int shadowResolution = 5;
@@ -468,7 +471,7 @@ public abstract class SolidShape
             g2.fill(a);
             /*for(Polygon p : shadows)
             {
-                g.fillPolygon(p);
+               // g.fillPolygon(p);
             }*/
             /*if(i == 1)
             {
@@ -538,28 +541,62 @@ public abstract class SolidShape
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons, Color lowerColor)
     {
         visibleShapeSidePolygons = sidePolygons.clone();
-        int numSides = sidePolygons.length;
+        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.highShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.lowShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g.setColor(darkColor);
+        //g.fillPolygon(sidePolygons[0]);
+        Polygon[] sides = sidePolygons.clone();
+        //g.setColor(lightColor);
+        //g.fillPolygon(sidePolygons[1]);
+        int numSides = sides.length;
+        //System.out.println("Dark Color " + darkColor);
+        //System.out.println("Light Color " + lightColor);
+        double dr = (double)(lightColor.getRed()-darkColor.getRed())/(double)(numSides-1);
+        double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(numSides-1);
+        double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(numSides-1);
+        for (int i = 0; i < numSides; i++) {
+            g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+            g.fillPolygon(sides[i]);
+        }
+        /*int numSides = sidePolygons.length;
         int maxZPos = 500;
+        
+        double dRed = (lightColor.getRed()-darkColor.getRed())/(double)(numSides);
+        double dBlue = (lightColor.getBlue()-darkColor.getBlue())/(double)(numSides);
+        double dGreen = (lightColor.getGreen()-darkColor.getGreen())/(double)(numSides);
+        
+        for (int i =0; i< numSides; i++) 
+        {
+            g.setColor(new Color((int)(darkColor.getRed()+dRed*i), (int)(darkColor.getGreen()+dGreen*i), (int)(darkColor.getBlue()+dBlue*i)));
+            g.fillPolygon(sidePolygons[i]);
+        }*/
         //int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        double shadeAlpha = (double)(75 - (int)(75 * ((double)zPos/(double)maxZPos)))/255.0;//not sure if this is good
+        /*double shadeAlpha = (double)(75.0 - (75.0 * ((double)zPos/(double)maxZPos)))/255.0;//not sure if this is good
         if(shadeAlpha < 0)
         {
             shadeAlpha = 0;
         }
-        if(shadeAlpha < 35 + (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))
+        if(shadeAlpha < (double)(35.0 + ((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))/255.0)
         {
-            shadeAlpha = (double)(35+ (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))/255.0;
+            shadeAlpha = (double)(35.0 + ((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))))/255.0;
         }
         //int shadeAlpha = 80;
-        for(Polygon p : sidePolygons)
+        for(int i = sidePolygons.length-1; i >= 0; i--)
         {
             shadeAlpha -= (30.0/(double)numSides)/255.0;
-            g.setColor(getLerpColor(Color.BLACK, lowerColor, shadeAlpha));
+            g.setColor(getLerpColor(shadeColor, lowerColor, shadeAlpha));
+            g.fillPolygon(sidePolygons[i]);
+        }*/
+        /*for(Polygon p : sidePolygons)
+        {
+            shadeAlpha += (30.0/(double)numSides)/255.0;
+            g.setColor(getLerpColor(shadeColor, lowerColor, shadeAlpha));
             //g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
             //g.setColor(Color.WHITE);
             //g.drawString(Integer.toString(shadeAlpha), (int)p.getBounds().getX(), (int)p.getBounds().getY());
-        }
+        }*/
+        //g.setColor(getColor());
         
     }
     

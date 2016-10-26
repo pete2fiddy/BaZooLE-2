@@ -6,10 +6,11 @@ import java.awt.Graphics;
 public class ShiftTile extends Tile
 {
     public static final Color redAlpha = new Color(255, 0, 0, 100);
-    
+    private RectPrism tilePrism;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
+        tilePrism = new RectPrism(inX - (inWidth/2), inY - (inLength/2), 0, inWidth, inLength, inHeight);
         //Snowman s = new Snowman(this,0.5,0.5);
         //TileSorter.addTile(this);//should I be adding from the Tile class?
     }
@@ -28,6 +29,7 @@ public class ShiftTile extends Tile
     @Override
     public void draw(Graphics g)
     {
+        
         if(isVisible(g))
         {
             //Graphics2D g2 = (Graphics2D)g;
@@ -41,7 +43,8 @@ public class ShiftTile extends Tile
             }
             g.setColor(WorldPanel.grassColor);
             fillPolygons(g);
-            g.setColor(WorldPanel.grassColor);
+            //g.setColor(WorldPanel.grassColor);
+            g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, Toolbox.nightShadeAdd));
             g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             if(getClicked())
             {
@@ -65,12 +68,9 @@ public class ShiftTile extends Tile
                 }
             }
             drawAssortedScenery(g);
-            /*g.setColor(new Color(255, 0, 0, 70));
-            for(Rectangle r : getBoundingRects())
-            {
-                g.fillRect((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight());
-            }*/
         }
+        
+        //tilePrism.fill(g);
     }
     
     private void drawSidePolygons(Graphics g)
@@ -89,5 +89,11 @@ public class ShiftTile extends Tile
         //shadeSides(g);
     }
     
+    @Override
+    public void run()
+    {
+        super.run();
+        //tilePrism.updateShapePolygons();
+    }
     
 }

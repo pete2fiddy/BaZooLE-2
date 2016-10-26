@@ -255,12 +255,14 @@ public class DayNight implements ActionListener
         secondsTicked += (double)timerIncrement/1000.0;
         if(timeDescriber.equals("evening"))
         {
+            Toolbox.nightShadeAdd = Toolbox.nightShadeAdd+Toolbox.maxNightShade*((double)timerIncrement/1000.0)/(double)transitSeconds;
             sun.controlSun(-(((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(dayColor.getRed() + (secondsTicked/(double)transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(dayColor.getGreen() + (secondsTicked/(double)transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
             (int)(dayColor.getBlue() + (secondsTicked/(double)transitSeconds)*(nightColor.getBlue() - dayColor.getBlue())));
         }else if(timeDescriber.equals("morning"))
         {
+            Toolbox.nightShadeAdd = Toolbox.nightShadeAdd - Toolbox.maxNightShade*(((double)timerIncrement/1000.0))/(double)transitSeconds;
             sun.controlSun((((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(nightColor.getRed() - (secondsTicked/transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(nightColor.getGreen() - (secondsTicked/transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
@@ -292,7 +294,7 @@ public class DayNight implements ActionListener
                 daysSinceSeasonChange = 0;
             }
         }
-        
+        //System.out.println(Toolbox.nightShadeAdd);
     }
     
 }

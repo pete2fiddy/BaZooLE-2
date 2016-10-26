@@ -265,7 +265,9 @@ public class Tree extends Scenery implements Runnable
             }else{
                 //treeShapes[i].draw(g);
                 treeShapes[i].fill(g);
+                
                 treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
+                //System.out.println(treeShapes[i-1].getVisibleShapeSidePolygons() == null);
             }
             
         }

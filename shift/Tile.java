@@ -1426,8 +1426,35 @@ public abstract class Tile extends Toolbox implements Runnable
     
     
     
-    public void drawShadedSides(Graphics g, Color color)
+    public void drawShadedSides(Graphics g, Color lowerColor)
     {
+        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g.setColor(darkColor);
+        //g.fillPolygon(sidePolygons[0]);
+        //Polygon[] sides = sidePolygons.clone();
+        //g.setColor(lightColor);
+        //g.fillPolygon(sidePolygons[1]);
+        //int numSides = sides.length;
+        //System.out.println("Dark Color " + darkColor);
+        //System.out.println("Light Color " + lightColor);
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        //double dr = (double)(lightColor.getRed()-darkColor.getRed())/(double)(2-1);
+        ///double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(2-1);
+        //double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(2-1);
+        //g.setColor(new Color((int)(darkColor.getRed()), (int)(darkColor.getGreen()), (int)(darkColor.getBlue())));
+        g.setColor(darkColor);
+        g.fillPolygon(rightPoints[0], rightPoints[1], rightPoints[0].length);
+        g.setColor(lightColor);
+        g.fillPolygon(leftPoints[0], leftPoints[1], leftPoints[0].length);
+        //g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+
+        /*for (int i = 0; i < 2; i++) {
+            g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+            //g.fillPolygon(rightPoints[i]);
+        }*/
+        /*
         int[][] leftPoints = getLeftSidePoints();
         int[][] rightPoints = getRightSidePoints();
         double leftAlpha = 0.31372549019608-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
@@ -1455,7 +1482,7 @@ public abstract class Tile extends Toolbox implements Runnable
         }
         
         
-        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);*/
         
     }
     
