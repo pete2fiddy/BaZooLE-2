@@ -19,12 +19,8 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-
 public class WorldPanel extends JPanel implements ActionListener, ChangeListener, Runnable
 {
-    public static final Color defaultSnowColor = new Color(251, 251, 251);
-    public static final Color defaultGrassColor = new Color(80,124,41);
-    public static Color grassColor = defaultGrassColor;//(89,139,44);
     public static double minScale = 0.5, maxScale = 6.0;
     private Timer tickTimer;
     private boolean drawWater = true;
@@ -113,14 +109,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         try{
             if(dayNight.getSeason().equals("winter"))
             {
-                grassColor = defaultSnowColor;
+                ColorPalette.grassColor = ColorPalette.defaultSnowColor;
                 BufferedImage snow = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = snow.getGraphics();
                 g.setColor(new Color(251, 251, 251));
                 g.fillRect(0,0, 256, 256);
                 grassImage = snow;
             }else{
-                grassColor = defaultGrassColor;
+                ColorPalette.grassColor = ColorPalette.defaultGrassColor;
                 BufferedImage dirt = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = dirt.getGraphics();
                 g.setColor(new Color(86, 65, 46));//(120, 72, 0));
@@ -218,9 +214,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
-        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
-        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+        //g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        //g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        //g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
         //g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         dayNight.draw(g);
         //drawMapFloor(g);

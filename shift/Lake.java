@@ -168,7 +168,7 @@ public class Lake extends Scenery implements Runnable
         }
         g.setColor(Color.BLACK);
         g.drawPolygon(threadedVisiblePondPolygons[1][0], threadedVisiblePondPolygons[1][1], 4);
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(ColorPalette.grassColor);
         //g.setColor(getBoundTile().getColor());
         for(int i = 0; i < 2; i++)
         {

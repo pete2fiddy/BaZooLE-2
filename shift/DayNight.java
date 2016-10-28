@@ -294,7 +294,7 @@ public class DayNight implements ActionListener
             season = "winter";
             addSeasonalScenery(season);
             removeSeasonalScenery(season);
-            WorldPanel.grassColor = WorldPanel.defaultSnowColor;
+            ColorPalette.grassColor = ColorPalette.defaultSnowColor;
             //Toolbox.grassColor = Toolbox.defaultSnowColor;
             WorldPanel.grassImage = Toolbox.defaultSnowImage;
             Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;
@@ -305,7 +305,7 @@ public class DayNight implements ActionListener
             season = "summer";
             addSeasonalScenery(season);
             removeSeasonalScenery(season);
-            WorldPanel.grassColor = WorldPanel.defaultGrassColor;
+            ColorPalette.grassColor = ColorPalette.defaultGrassColor;
             //Toolbox.grassColor = Toolbox.defaultGrassColor;
             WorldPanel.grassImage = Toolbox.defaultGrassImage;
             Grass.lowGrassShade = Grass.defaultLowGrassShade;

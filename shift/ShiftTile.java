@@ -41,17 +41,17 @@ public class ShiftTile extends Tile
                     wf.draw(g);
                 }
             }
-            g.setColor(WorldPanel.grassColor);
+            g.setColor(ColorPalette.grassColor);
             fillPolygons(g);
-            //g.setColor(WorldPanel.grassColor);
-            g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, Toolbox.nightShadeAdd));
+            //g.setColor(ColorPalette.grassColor);
+            g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, Toolbox.nightShadeAdd));
             g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             if(getClicked())
             {
                 g.setColor(redAlpha);
                 g.fillPolygon(threadedUpperPoints()[0], threadedUpperPoints()[1], 4);
                 fillPolygons(g);
-                g.setColor(WorldPanel.grassColor);
+                g.setColor(ColorPalette.grassColor);
             }
 
             drawEarlyScenery(g);
@@ -83,7 +83,7 @@ public class ShiftTile extends Tile
     
     public void fillPolygons(Graphics g)
     {
-        drawShadedSides(g, WorldPanel.grassColor);
+        drawShadedSides(g, ColorPalette.grassColor);
         //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
         //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
         //shadeSides(g);

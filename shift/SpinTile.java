@@ -66,7 +66,7 @@ public class SpinTile extends Tile implements Runnable
         g.setColor(Color.BLACK);
         //g.drawPolygon(threadedCylinderPoints[0],threadedCylinderPoints[1],32);
         //g.setColor(getColor());
-        g.setColor(getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd));
+        g.setColor(getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd));
         Color c = g.getColor();
         g.fillPolygon(threadedTopCylinderPoints[0], threadedTopCylinderPoints[1], 32);
         drawSides(g);

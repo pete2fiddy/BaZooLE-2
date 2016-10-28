@@ -1335,7 +1335,7 @@ public abstract class Tile extends Toolbox implements Runnable
         g.setColor(c);
         g.fillPolygon(points1[0], points1[1], points1[0].length);
         g.fillPolygon(points2[0], points2[1], points2[0].length);
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(ColorPalette.grassColor);
         g2.setComposite(transparencyComposite);
         //points1[1][2] -= (int)(scaledDistortedHeight((int)height)/2.0);
         //points1[1][3] -= (int)(scaledDistortedHeight((int)height)/2.0);
@@ -1405,13 +1405,13 @@ public abstract class Tile extends Toolbox implements Runnable
         
         AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
         g2.setComposite(transparencyComposite);
-        g.setColor(WorldPanel.grassColor);*/
+        g.setColor(ColorPalette.grassColor);*/
         
         double alphaNum = (double)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        //int red = (int)(WorldPanel.grassColor.getRed() - (alphaNum*(WorldPanel.grassColor.getRed()-WorldPanel.waterColor.getRed())));
-        //int green = (int)(WorldPanel.grassColor.getGreen() - (alphaNum*(WorldPanel.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
-        //int blue = (int)(WorldPanel.grassColor.getBlue() - (alphaNum*(WorldPanel.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(WorldPanel.grassColor, WorldPanel.waterColor, alphaNum));
+        //int red = (int)(ColorPalette.grassColor.getRed() - (alphaNum*(ColorPalette.grassColor.getRed()-WorldPanel.waterColor.getRed())));
+        //int green = (int)(ColorPalette.grassColor.getGreen() - (alphaNum*(ColorPalette.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
+        //int blue = (int)(ColorPalette.grassColor.getBlue() - (alphaNum*(ColorPalette.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
         int[][] clone1= getLeftSidePoints();
         int[][] clone2 = getRightSidePoints();
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();
@@ -1442,10 +1442,10 @@ public abstract class Tile extends Toolbox implements Runnable
         
         alphaNum = (double)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         //g2.setComposite(AlphaComposite.getInstance(type, (float)(.50 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
-        //red = (int)(WorldPanel.grassColor.getRed() - (alphaNum*(WorldPanel.grassColor.getRed()-WorldPanel.waterColor.getRed())));
-        //green = (int)(WorldPanel.grassColor.getGreen() - (alphaNum*(WorldPanel.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
-        //blue = (int)(WorldPanel.grassColor.getBlue() - (alphaNum*(WorldPanel.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(WorldPanel.grassColor, WorldPanel.waterColor, alphaNum));
+        //red = (int)(ColorPalette.grassColor.getRed() - (alphaNum*(ColorPalette.grassColor.getRed()-WorldPanel.waterColor.getRed())));
+        //green = (int)(ColorPalette.grassColor.getGreen() - (alphaNum*(ColorPalette.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
+        //blue = (int)(ColorPalette.grassColor.getBlue() - (alphaNum*(ColorPalette.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
+        g.setColor(getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
         a = new Area(new Polygon(points2[0], points2[1], points2[0].length));
         a.subtract(WorldPanel.belowMapArea);
         g2.fill(a);
@@ -1595,12 +1595,12 @@ public abstract class Tile extends Toolbox implements Runnable
         int[][] leftPoints = getLeftSidePoints();
         //int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         double leftAlpha = 0.07843137254902 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, leftAlpha));
+        g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, leftAlpha));
         g.fillPolygon(leftPoints[0], leftPoints[1], 4);
         //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
         //int rightAlpha = 50+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         double rightAlpha = 0.19607843137255 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(getLerpColor(Color.BLACK, WorldPanel.grassColor, rightAlpha));
+        g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, rightAlpha));
         int[][] rightPoints = getRightSidePoints();
         //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
         g.fillPolygon(rightPoints[0], rightPoints[1], 4);

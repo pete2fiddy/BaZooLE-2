@@ -249,7 +249,7 @@ public class Tree extends Scenery implements Runnable
         ss.paintShading(g);
         for(int i = 1; i < treeShapes.length; i++)
         {
-            g.setColor(WorldPanel.grassColor);
+            g.setColor(ColorPalette.grassColor);
             //g.setColor(new Color(251, 251, 251));
             //g2.setPaint(WorldPanel.leavesTexture);
             

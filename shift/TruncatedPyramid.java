@@ -144,17 +144,17 @@ public class TruncatedPyramid extends SolidShape
         Color c = g.getColor();
         try {
             Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
-        for(Polygon p : sidePolygons)
-        {
-            g.fillPolygon(p);
-        }
-        int[][] topShapePoints = topShape.getShapePolyPoints();
-        g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
-        
-        shadeSidePolygons(g, sidePolygons,c);
-        } catch (Exception e) {
-        }
-        //dotSortCorner(g);
+            for(Polygon p : sidePolygons)
+            {
+                //g.fillPolygon(p);
+            }
+            int[][] topShapePoints = topShape.getShapePolyPoints();
+            g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
+
+            shadeSidePolygons(g, sidePolygons,c);
+            } catch (Exception e) {
+            }
+            //dotSortCorner(g);
     }
 
     @Override

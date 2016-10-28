@@ -627,7 +627,7 @@ public abstract class SolidShape
         
         AlphaComposite transparencyComposite = AlphaComposite.getInstance(type, (float)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0))));
         g2.setComposite(transparencyComposite);
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(ColorPalette.grassColor);
         for(Polygon p : sidePolygons)
         {
             p.translate(0, (int)getScaledDistortedHeight(height));
@@ -663,6 +663,7 @@ public abstract class SolidShape
     abstract void updateShapePolygons();
     abstract void fill(Graphics g);
     abstract void stroke(Graphics g);
+    abstract void fillExcludingTop(Graphics g);
     //abstract void setShapeSpecificPolygons();
     //abstract void paintShading(Graphics g);
     abstract void draw(Graphics g);

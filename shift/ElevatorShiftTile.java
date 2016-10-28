@@ -62,7 +62,7 @@ public class ElevatorShiftTile extends Tile
             }
         }
         
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(ColorPalette.grassColor);
         fillPolygons(g);
         g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         

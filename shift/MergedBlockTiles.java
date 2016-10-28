@@ -59,7 +59,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     public void drawFrontArea(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        Color lerpedColor = getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd);
+        Color lerpedColor = getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd);
         g.setColor(lerpedColor);
         //g2.fill(getFrontArea());
         for(Polygon p : getFrontPolygons())
@@ -97,7 +97,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     {
         Graphics2D g2 = (Graphics2D)g;
         
-        Color lerpedGrass = getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd);
+        Color lerpedGrass = getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd);
         g.setColor(lerpedGrass);
         
         //g.setColor(Color.BLACK);
@@ -106,7 +106,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             blockTiles.get(i).drawWaterReflections(g);
             //blockTiles.get(i).draw(g);
             blockTiles.get(i).draw(g);
-            blockTiles.get(i).drawReverseShadedSides(g, WorldPanel.grassColor);
+            blockTiles.get(i).drawReverseShadedSides(g, ColorPalette.grassColor);
             //g.fillPolygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4);
             //g.fillPolygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4);
             //area.add(new Area(blockTiles.get(i).getUpperPolygon()));
@@ -120,11 +120,11 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         for(Tile t : getBackTiles())
         {
             t.draw(g);
-            t.drawReverseShadedSides(g, WorldPanel.grassColor);
+            t.drawReverseShadedSides(g, ColorPalette.grassColor);
             //t.drawWaterReflectionCover(g);
             
         }
-        g.setColor(getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd));
+        g.setColor(getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd));
         //g2.fill(getBackArea());
         g.setColor(Color.BLACK);
         for(Tile t : getBackTiles())
