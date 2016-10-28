@@ -208,8 +208,9 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
                 takeoff = false;
                 y = 0;
                 //LevelLoader.spawnLevel(UI.level);
-                LevelLoader ll = new LevelLoader();
-                ll.spawnLevel(UI.level);
+                //LevelLoader ll = new LevelLoader();
+                new LevelLoader().spawnLevel(UI.level);
+                //ll.spawnLevel(UI.level);
                 for(SolidShape s : shipShapes)
                 {
                     s.setDZ(0);

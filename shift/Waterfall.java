@@ -40,7 +40,8 @@ public class Waterfall extends Scenery implements Runnable
             }else{
                 direction = 1;
             }
-            WaterDroplet wdroplet = new WaterDroplet(this, (r.nextInt(getBasedx()+1)-(getBasedx()/2.0)), r.nextInt(getBasedy()+1)-(getBasedy()/2.0), r.nextInt(5) + 5, r.nextInt(30) + 30, direction, lightBlue);
+            WaterDroplet wDroplet = new WaterDroplet(this, (r.nextInt(getBasedx()+1)-(getBasedx()/2.0)), r.nextInt(getBasedy()+1)-(getBasedy()/2.0), r.nextInt(5) + 5, r.nextInt(30) + 30, direction, lightBlue);
+            TileDrawer2.addWaterDroplet(wDroplet);
         }
     }
     

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.awt.Color;
@@ -15,44 +10,36 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
-/**
- *
- * @author phusisian
- */
+
 public class TileDrawer2 implements Runnable, ActionListener
 {
     public static ArrayList<Tile> tileList = new ArrayList<Tile>();
-    public static ArrayList<WaterDroplet> waterDroplets = new ArrayList<WaterDroplet>();
-    private LevelLoader ll;
+    public static WaterDroplet[] waterDroplets = new WaterDroplet[0];
     private MergedBlockTiles mbt = new MergedBlockTiles();
     private MergedPaths mp = new MergedPaths();
     private Thread thread;
     private WaterRipple[] waterRipples=new WaterRipple[8];
     private WorldPanel worldPanel;
-    private static ArrayList<Cloud> cloudList = new ArrayList<Cloud>();
+    private static Cloud[] clouds = new Cloud[0];
     private Timer movementTimer;
     private Mountains mountains = new Mountains();
     
     public TileDrawer2(WorldPanel wp)
     {
-        ll= new LevelLoader();   
-        ll.spawnLevel(UI.level);
+        new LevelLoader().spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
         fillWaterRipples();
         worldPanel= wp;
-        //populateCloudList();
         movementTimer = new Timer(16, this);
         movementTimer.setActionCommand("move");
         movementTimer.setRepeats(true);
         movementTimer.start();
     }
     
-    public static void populateCloudList()
+    public static void populateClouds()
     {
-        cloudList.clear();
-        System.out.println("world width: " + WorldPanel.worldTilesWidth);
-        System.out.println("world height: " + WorldPanel.worldTilesHeight);
+        clearClouds();
         int numClouds = (int)(((WorldPanel.worldTilesWidth-1)*(WorldPanel.worldTilesHeight-1))/6);
         double sizeBound = ((WorldPanel.worldTilesWidth-1)*(WorldPanel.worldTilesHeight-1))/100.0;
         for(int i = 0; i < numClouds; i++)
@@ -63,14 +50,42 @@ public class TileDrawer2 implements Runnable, ActionListener
             double randWidth = sizeBound+(sizeBound*1.5)*Math.random();
             double randLength = sizeBound+(sizeBound*1.5)*Math.random();
             int randHeight = (int)(5+10*Math.random());
-            cloudList.add(new Cloud(WorldPanel.dayNight, randX, randY, 200, randWidth, randLength, randHeight));
+            addCloud(new Cloud(WorldPanel.dayNight, randX, randY, 200, randWidth, randLength, randHeight));
         }
     }
     
-    public static void clearCloudList()
+    public static void addCloud(Cloud c)
     {
-        cloudList.clear();
+        Cloud[] cloudAdded = new Cloud[clouds.length+1];
+        for(int i = 0; i < clouds.length; i++)
+        {
+            cloudAdded[i] = clouds[i];
+        }
+        cloudAdded[clouds.length] = c;
+        clouds = cloudAdded.clone();
     }
+    
+    public static void clearClouds()
+    {
+        clouds = new Cloud[0];
+    }
+    
+    public static void addWaterDroplet(WaterDroplet wDroplet)
+    {
+        WaterDroplet[] dropletAdded = new WaterDroplet[waterDroplets.length+1];
+        for(int i = 0; i < waterDroplets.length; i++)
+        {
+            dropletAdded[i] = waterDroplets[i];
+        }
+        dropletAdded[waterDroplets.length] = wDroplet;
+        waterDroplets = dropletAdded;
+    }
+    
+    public static void clearWaterDroplets()
+    {
+        waterDroplets = new WaterDroplet[0];
+    }
+    
     
     public Thread getThread()
     {
@@ -159,31 +174,13 @@ public class TileDrawer2 implements Runnable, ActionListener
         //worldPanel.drawTransparentGridLines(g);
         mbt.drawFrontArea(g);
         
-        for(Cloud c : cloudList)
+        for(Cloud c : clouds)
         {
             c.fill(g);
         }
+        
     }
 
-    private Area getTotalLeftReflectionArea()
-    {
-        Area a = new Area();
-        for(int i = 0; i < tileList.size(); i++)
-        {
-            a.add(tileList.get(i).getLeftReflectionArea());
-        }
-        return a;
-    }
-    
-    private Area getTotalRightReflectionArea()
-    {
-        Area a = new Area();
-        for(int i = 0; i < tileList.size(); i++)
-        {
-            a.add(tileList.get(i).getRightReflectionArea());
-        }
-        return a;
-    }
     
     private void drawReflectionOutlines(Graphics g)
     {
@@ -198,9 +195,7 @@ public class TileDrawer2 implements Runnable, ActionListener
     @Override
     public void run()
     {
-        
         tileList = TileSorter2.sortByDistance(tileList);
-        TileDrawer.tileList = tileList;//to keep from breaking code that relies on TileDrawer.tileList. FIX LATER.
         if(Tile.tileJustUnclicked)
         {
             for(int i = 0; i < TileDrawer2.tileList.size(); i++)
@@ -254,11 +249,12 @@ public class TileDrawer2 implements Runnable, ActionListener
         String action = e.getActionCommand();
         if(action.equals("move"))
         {
-            for(Cloud c : cloudList)
+            for(Cloud c : clouds)
             {
                 c.updatePosition();
                 c.updateSnowFlakes();
             }
+            
             //System.out.println("ticking");
             worldPanel.tick();
             mountains.moveMountains();
@@ -273,4 +269,27 @@ public class TileDrawer2 implements Runnable, ActionListener
             worldPanel.getPlayer().tick();
         }
     }
+    /*DELETABLE:*/
+    
+    /*
+    private Area getTotalRightReflectionArea()
+    {
+        Area a = new Area();
+        for(int i = 0; i < tileList.size(); i++)
+        {
+            a.add(tileList.get(i).getRightReflectionArea());
+        }
+        return a;
+    }
+    */
+    
+    /*private Area getTotalLeftReflectionArea()
+    {
+        Area a = new Area();
+        for(int i = 0; i < tileList.size(); i++)
+        {
+            a.add(tileList.get(i).getLeftReflectionArea());
+        }
+        return a;
+    }*/
 }

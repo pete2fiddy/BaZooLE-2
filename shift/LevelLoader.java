@@ -42,9 +42,9 @@ public class LevelLoader
         MergedBlockTiles.blockTiles.clear();
         MergedPaths.pathList.clear();
         MergedPaths.pathLinks.clear();
-        TileDrawer2.clearCloudList();
+        TileDrawer2.clearClouds();
         TileDrawer2.tileList.clear();
-        TileDrawer2.waterDroplets.clear();
+        TileDrawer2.clearWaterDroplets();
         TileDrawer2.tileList.clear();
         try{
             //TileSorter.holdList.clear();
@@ -183,7 +183,7 @@ public class LevelLoader
         WorldPanel.scale = (double)WorldPanel.screenWidth/(double)(WorldPanel.baseStraightUnit*Math.sqrt(2)*WorldPanel.worldTilesWidth);
         WorldPanel.minScale = (double)WorldPanel.screenWidth/(double)(WorldPanel.baseUnit*WorldPanel.worldTilesWidth);
         //WorldPanel.scale = 1;
-        TileDrawer2.populateCloudList();
+        TileDrawer2.populateClouds();
         DayNight.addSeasonalScenery(DayNight.season);
         
         //setTileInfo();
