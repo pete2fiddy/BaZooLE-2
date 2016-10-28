@@ -91,7 +91,7 @@ public class Waterfall extends Scenery implements Runnable
     
     public boolean drawLast()//tells whether or not the waterfall should be drawn in front of or behind its tile depending on the spin.
     {
-        if(WorldPanel.spinQuadrant() == quadrantsItFaces()[0] || WorldPanel.spinQuadrant() == quadrantsItFaces()[1])
+        if(WorldPanel.getSpinQuadrant() == quadrantsItFaces()[0] || WorldPanel.getSpinQuadrant() == quadrantsItFaces()[1])
         {
             return true;
         }

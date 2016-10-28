@@ -105,7 +105,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             wr.draw(g);
         }
-        //worldPanel.drawTransparentGridLines(g);//removing has negligible change in fps
+        worldPanel.drawTransparentGridLines(g);//removing has negligible change in fps
         mbt.draw(g);
         for(int i = 0; i < tileList.size(); i++)//removing causes negligible change in FPS
         {

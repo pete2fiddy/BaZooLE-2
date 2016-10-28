@@ -177,6 +177,9 @@ public class DayNight implements ActionListener
         }
     }
     
+    /*
+    Draws the background and in-game time-related objects
+    */
     public Color getColor(){return color;}
     
     public void draw(Graphics g)

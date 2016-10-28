@@ -43,8 +43,8 @@ public class LevelLoader
         MergedPaths.pathList.clear();
         MergedPaths.pathLinks.clear();
         TileDrawer2.clearCloudList();
-        TileDrawer.tileList.clear();
-        TileDrawer.waterDroplets.clear();
+        TileDrawer2.tileList.clear();
+        TileDrawer2.waterDroplets.clear();
         TileDrawer2.tileList.clear();
         try{
             //TileSorter.holdList.clear();

@@ -628,14 +628,14 @@ public abstract class Tile extends Toolbox implements Runnable
     }
     public int getTopLeftIndex()
     {
-        if(WorldPanel.spinQuadrant() == 3)
+        if(WorldPanel.getSpinQuadrant() == 3)
         {
             return 0;
-        }else if(WorldPanel.spinQuadrant() == 4)
+        }else if(WorldPanel.getSpinQuadrant() == 4)
         {
             return 1;
         }
-        return WorldPanel.spinQuadrant() + 1;
+        return WorldPanel.getSpinQuadrant() + 1;
         
     }
     public int getTopRightIndex()
@@ -715,9 +715,9 @@ public abstract class Tile extends Toolbox implements Runnable
     public Tile[] getAdjacentTiles()//gives an array of all the tiles adjacent to this one. If none, return null;
     {
         ArrayList<Tile> nearTiles = new ArrayList<Tile>();
-        for(int i = 0; i < TileDrawer.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            Tile currentTile = TileDrawer.tileList.get(i);
+            Tile currentTile = TileDrawer2.tileList.get(i);
             if(currentTile.getRawX() + currentTile.getRawWidth() == x || currentTile.getRawX() == x + width || currentTile.getRawY() == y + length || currentTile.getRawY() + currentTile.getRawLength() == y)
             {
                 nearTiles.add(currentTile);
@@ -761,9 +761,9 @@ public abstract class Tile extends Toolbox implements Runnable
     public void setHeightChangeable(boolean b){heightChangeable = b;}
     private boolean noOtherTilesClicked()
     {
-        for(int i = 0; i < TileDrawer.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            if(TileDrawer.tileList.get(i).getClicked())
+            if(TileDrawer2.tileList.get(i).getClicked())
             {
                 return false;
             }
@@ -772,12 +772,12 @@ public abstract class Tile extends Toolbox implements Runnable
     }
     private void unclickAllTiles()
     {
-        for(int i = 0; i < TileDrawer.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            if(TileDrawer.tileList.get(i) != this)
+            if(TileDrawer2.tileList.get(i) != this)
             {
-                TileDrawer.tileList.get(i).setClicked(false);
-                TileDrawer.tileList.get(i).setInTransit(false);
+                TileDrawer2.tileList.get(i).setClicked(false);
+                TileDrawer2.tileList.get(i).setInTransit(false);
             }
         }
     }
@@ -796,10 +796,10 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public static void unclickEveryTile()
     {
-        for(int i = 0; i < TileDrawer.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            TileDrawer.tileList.get(i).setClicked(false);
-            TileDrawer.tileList.get(i).setInTransit(false);
+            TileDrawer2.tileList.get(i).setClicked(false);
+            TileDrawer2.tileList.get(i).setInTransit(false);
             
         }
     }
@@ -904,17 +904,17 @@ public abstract class Tile extends Toolbox implements Runnable
         {
             if(Player.boundTile != this)
             {
-                if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] >= x && convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] <= x+width)//(WorldPanel.getMouseUnitPos()[0] >= x && WorldPanel.getMouseUnitPos()[0] <= x+width)//if x is a straight line
+                if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] >= x && convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] <= x+width)//(MouseInput.getMouseUnitPos()[0] >= x && MouseInput.getMouseUnitPos()[0] <= x+width)//if x is a straight line
                 {
                     //System.out.println("hi");
                     int endPos;
                     if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]) > y)
                     {
                         //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
-                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - length  + 1);//WorldPanel.getMouseUnitPos()[1]-length;
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - length  + 1);//MouseInput.getMouseUnitPos()[1]-length;
 
                     }else{
-                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//MouseInput.getMouseUnitPos()[1]-length;
                     }
                     if(pathIsClear((int)x, (int)y, (int)x, endPos) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
                     {
@@ -928,7 +928,7 @@ public abstract class Tile extends Toolbox implements Runnable
                         {
                             transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] - ((double)length/2.0));
                         }else{
-                            transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//WorldPanel.getMouseUnitPos()[1]-length;
+                            transitPos[1]=endPos;//(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1]);//MouseInput.getMouseUnitPos()[1]-length;
                         }*/
                         inTransit = true;
 
@@ -945,16 +945,16 @@ public abstract class Tile extends Toolbox implements Runnable
                         //MouseInput.rightClicked = false;
                         color = Toolbox.grassColor;
                     }
-                }else if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] >= y && convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] <= y+length)//(WorldPanel.getMouseUnitPos()[1] >= y && WorldPanel.getMouseUnitPos()[1] <= y+length)
+                }else if(convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] >= y && convertToUnit(MouseInput.clickX, MouseInput.clickY)[1] <= y+length)//(MouseInput.getMouseUnitPos()[1] >= y && MouseInput.getMouseUnitPos()[1] <= y+length)
                 {
                     int endPos;
                     if(Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0])>x)
                     {
                         //endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
-                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - width + 1);//WorldPanel.getMouseUnitPos()[1]-length;
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - width + 1);//MouseInput.getMouseUnitPos()[1]-length;
 
                     }else{
-                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
+                        endPos=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//MouseInput.getMouseUnitPos()[1]-length;
                     }
                     if(pathIsClear((int)x, (int)y, endPos, (int)y) )//&& !MergedBlockTiles.threadedArea.contains(MouseInput.x, MouseInput.y))
                     {
@@ -968,7 +968,7 @@ public abstract class Tile extends Toolbox implements Runnable
                             transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0] - ((double)width/2.0));
 
                         }else{
-                            transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//WorldPanel.getMouseUnitPos()[1]-length;
+                            transitPos[0]=(int)Math.floor(convertToUnit(MouseInput.clickX, MouseInput.clickY)[0]);//MouseInput.getMouseUnitPos()[1]-length;
                         }*/
                         transitPos[1]=(int)y;
 
@@ -1172,9 +1172,9 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public boolean tileAtCoord(double xIn, double yIn)
     {
-        for(int i = 0; i < TileDrawer.tileList.size(); i++)
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
-            Tile currentTile = TileDrawer.tileList.get(i);
+            Tile currentTile = TileDrawer2.tileList.get(i);
             if(xIn >= currentTile.getRawX() && xIn <= currentTile.getRawX() + currentTile.getRawWidth() && yIn >= currentTile.getRawY() && yIn <= currentTile.getRawY() + currentTile.getRawLength() && currentTile != this)//!= this so that a tile can't be blocking its own path
             {
                 return true;
@@ -1700,20 +1700,20 @@ public abstract class Tile extends Toolbox implements Runnable
     
     private void calculatePolyPoints()
     {
-        if(WorldPanel.spinQuadrant() == 1)
+        if(WorldPanel.getSpinQuadrant() == 1)
         {
             int [][] tempPoints1 = {{myThreadedUpperPoints[0][1], myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][1]},{myThreadedUpperPoints[1][1], myThreadedUpperPoints[1][2], threadedPoints()[1][2],threadedPoints()[1][1]}};
             int [][] tempPoints2 = {{myThreadedUpperPoints[0][0], myThreadedUpperPoints[0][1], myThreadedUpperPoints[0][1], myThreadedUpperPoints[0][0]},{myThreadedUpperPoints[1][0], myThreadedUpperPoints[1][1], threadedPoints()[1][1],threadedPoints()[1][0]}};
             
             polyPoints1 = tempPoints1.clone();
             polyPoints2 = tempPoints2.clone();
-        }else if(WorldPanel.spinQuadrant() == 2){
+        }else if(WorldPanel.getSpinQuadrant() == 2){
             int[][] tempPoints1 = {{myThreadedUpperPoints[0][1], myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][1]},{myThreadedUpperPoints[1][1], myThreadedUpperPoints[1][2], threadedPoints()[1][2],threadedPoints()[1][1]}};
             int[][] tempPoints2 = {{myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][3], myThreadedUpperPoints[0][3], myThreadedUpperPoints[0][2]},{myThreadedUpperPoints[1][2], myThreadedUpperPoints[1][3], threadedPoints()[1][3],threadedPoints()[1][2]}};
             
             polyPoints1 = tempPoints1.clone();
             polyPoints2 = tempPoints2.clone();
-        }else if(WorldPanel.spinQuadrant() == 3){
+        }else if(WorldPanel.getSpinQuadrant() == 3){
             int[][] tempPoints1 = {{myThreadedUpperPoints[0][3], myThreadedUpperPoints[0][0], myThreadedUpperPoints[0][0], myThreadedUpperPoints[0][3]},{myThreadedUpperPoints[1][3], myThreadedUpperPoints[1][0], threadedPoints()[1][0],threadedPoints()[1][3]}};
             int[][] tempPoints2 = {{myThreadedUpperPoints[0][2], myThreadedUpperPoints[0][3], myThreadedUpperPoints[0][3], myThreadedUpperPoints[0][2]},{myThreadedUpperPoints[1][2], myThreadedUpperPoints[1][3], threadedPoints()[1][3],threadedPoints()[1][2]}};
             
@@ -1734,8 +1734,8 @@ public abstract class Tile extends Toolbox implements Runnable
         if(thisClicked)
         {
             color = Color.RED;
-            double x1 = (WorldPanel.getMouseUnitPosDouble()[0])-(x + (width/2.0));
-            double y1 = (WorldPanel.getMouseUnitPosDouble()[1])-(y + (length/2.0));
+            double x1 = (MouseInput.getMouseUnitPosDouble()[0])-(x + (width/2.0));
+            double y1 = (MouseInput.getMouseUnitPosDouble()[1])-(y + (length/2.0));
         }else{
             color = Toolbox.grassColor;
         }
@@ -1794,7 +1794,7 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public int[] getBottomCornerCoordinates()
     {
-        int quad = WorldPanel.spinQuadrant();
+        int quad = WorldPanel.getSpinQuadrant();
         if(quad == 1)
         {
             int[] giveReturn = {(int)x, (int)y};
@@ -1816,7 +1816,7 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public int getBottomCornerConstant()//y = mx + b ... b = y-mx
     {
-        int quad = WorldPanel.spinQuadrant();
+        int quad = WorldPanel.getSpinQuadrant();
         int[] coords = getBottomCornerCoordinates();
         if(quad == 1 || quad == 3)
         {
@@ -1828,7 +1828,7 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public int getBottomCornerOrderPos()
     {
-        int quad = WorldPanel.spinQuadrant();
+        int quad = WorldPanel.getSpinQuadrant();
         if(quad == 1 || quad == 4)
         {
             return -getBottomCornerConstant();

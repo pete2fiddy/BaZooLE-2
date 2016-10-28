@@ -19,7 +19,7 @@ public class Toolbox
 {   
     
     public static BasicStroke worldStroke = new BasicStroke((float)(1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
-    
+   
     public static final Color defaultSnowColor = new Color(251, 251, 251);
     public static Color grassColor = defaultSnowColor;//new Color(14, 155, 14);
     public static final Color defaultGrassColor = new Color(14, 155, 14);
@@ -61,6 +61,9 @@ public class Toolbox
     {
         
     }
+    
+     public static void setPlayer(Player p){player = p;}
+     public static void setWorldPanel(WorldPanel wpIn){worldPanel = wpIn;}
     
     public static Color getLerpColor(Color topColor, Color bottomColor, double alpha)
     {

@@ -38,7 +38,7 @@ public class WaterDroplet
         xSpeed = (.75*Math.random()) + .25;
         baseXSpeed = xSpeed;
         baseWidthTravels = widthTravels;
-        TileDrawer.waterDroplets.add(this);
+        TileDrawer2.waterDroplets.add(this);
     }
     public void draw(Graphics g)
     {

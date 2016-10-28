@@ -107,15 +107,15 @@ public class Lake extends Scenery implements Runnable
     {
         int[][][] points = new int[2][2][4];
         int[][][] pondPolygons = getPondPolygons();
-        if(WorldPanel.spinQuadrant() == 1)
+        if(WorldPanel.getSpinQuadrant() == 1)
         {
             points[0]=pondPolygons[3];
             points[1]=pondPolygons[0];
-        }else if(WorldPanel.spinQuadrant() == 2)
+        }else if(WorldPanel.getSpinQuadrant() == 2)
         {
             points[0]=pondPolygons[2];
             points[1]=pondPolygons[3];
-        }else if(WorldPanel.spinQuadrant() == 3)
+        }else if(WorldPanel.getSpinQuadrant() == 3)
         {
             points[0]=pondPolygons[1];
             points[1]=pondPolygons[2];
@@ -133,15 +133,15 @@ public class Lake extends Scenery implements Runnable
     {
         int[][][] points = new int[2][2][4];
         int[][][] pondPolygons = getPondPolygons().clone();
-        if(WorldPanel.spinQuadrant() == 1)
+        if(WorldPanel.getSpinQuadrant() == 1)
         {
             points[0]=pondPolygons[1];
             points[1]=pondPolygons[2];
-        }else if(WorldPanel.spinQuadrant() == 2)
+        }else if(WorldPanel.getSpinQuadrant() == 2)
         {
             points[0]=pondPolygons[0];
             points[1]=pondPolygons[1];
-        }else if(WorldPanel.spinQuadrant() == 3)
+        }else if(WorldPanel.getSpinQuadrant() == 3)
         {
             points[0]=pondPolygons[0];
             points[1]=pondPolygons[3];

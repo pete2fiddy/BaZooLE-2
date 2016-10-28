@@ -14,7 +14,7 @@ public class Frame extends JFrame
         setResizable(true);
         /*Keep below in mind if I ever want to adapt this to any screen*/
         //setSize(java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width, java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
-        WorldPanel wp = new WorldPanel();
+        WorldPanel wp = new WorldPanel(this);
         setSize(screenWidth, screenHeight);
         add(wp);
     }

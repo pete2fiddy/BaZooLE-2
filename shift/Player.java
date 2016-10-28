@@ -1020,15 +1020,15 @@ public class Player extends Toolbox implements Runnable
          
         if(boundPath != null && !boundPath.getBoundTile().getClicked())
         {
-            int tileListSize = TileDrawer.tileList.size();
+            int tileListSize = TileDrawer2.tileList.size();
             for(int i = 0; i < tileListSize; i++)
             {
-                int pathListSize = TileDrawer.tileList.get(i).getPathList().size();
+                int pathListSize = TileDrawer2.tileList.get(i).getPathList().size();
                 for(int j = 0; j < pathListSize; j++)
                 {
-                    if(TileDrawer.tileList.get(i).getPathList().get(j).getPathPolygon().contains((int)getX(), (int)getY()) && TileDrawer.tileList.get(i).getHeight() >= height - 5 && TileDrawer.tileList.get(i).getHeight() <= height + 5)
+                    if(TileDrawer2.tileList.get(i).getPathList().get(j).getPathPolygon().contains((int)getX(), (int)getY()) && TileDrawer2.tileList.get(i).getHeight() >= height - 5 && TileDrawer2.tileList.get(i).getHeight() <= height + 5)
                     {
-                        return TileDrawer.tileList.get(i).getPathList().get(j);
+                        return TileDrawer2.tileList.get(i).getPathList().get(j);
                     }
                 }
             }

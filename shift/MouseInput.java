@@ -40,6 +40,46 @@ public class MouseInput extends MouseAdapter implements ActionListener
     }
     
     /*
+    Consider moving to the Toolbox class. returns the current x and y coords of the position of the mouse on screen, rounded down.
+    */
+    public static int[] getMouseUnitPos()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
+    {
+        double dx = (MouseInput.x-WorldPanel.worldX)*WorldPanel.shrink(WorldPanel.rotation);//calculates unsquashed distance from the center of the world to the mouse ("unsquashing" it in the process so the calculation is what it would be on a flat world)
+        double dy = MouseInput.y-WorldPanel.worldY;//calculates unsquahsed distance from center of map to mouse.
+        
+        double radiusHeight = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));//finds the radius of the oval's height (since circle is squashed by the amount the world is turned)
+        double radiusWidth = radiusHeight/WorldPanel.shrink(WorldPanel.rotation);//finds the radius of the oval's width taking into account the squahsed world
+        
+        double theta = 0.5;//Math.atan2(-dy, dx);
+        
+        double unturneddx = radiusWidth*Math.cos(theta-WorldPanel.radSpin);
+        double unturneddy = radiusHeight*Math.sin(theta-WorldPanel.radSpin);
+        
+        int[] giveReturn = {(int)(Math.ceil(unturneddx/WorldPanel.straightUnit)),(int)(Math.ceil(unturneddy/(WorldPanel.straightUnit*WorldPanel.shrink(WorldPanel.rotation))))};
+        return giveReturn;
+    }
+    
+    /*
+    Consider moving to the Toolbox class. returns the current x and y coords of the position of the mouse on screen, unrounded.
+    */
+    public static double[] getMouseUnitPosDouble()//basically works by "unrotating" the world and applying the same algorithm to the position of the mouse along with it so that it can compare the unrotated mouse pos with the unrotated world pos. Works as intended. 
+    {
+        double dx = (MouseInput.x-WorldPanel.worldX)*WorldPanel.shrink(WorldPanel.rotation);//calculates unsquashed distance from the center of the world to the mouse ("unsquashing" it in the process so the calculation is what it would be on a flat world)
+        double dy = MouseInput.y-WorldPanel.worldY;//calculates unsquahsed distance from center of map to mouse.
+        
+        double radiusHeight = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));//finds the radius of the oval's height (since circle is squashed by the amount the world is turned)
+        double radiusWidth = radiusHeight/WorldPanel.shrink(WorldPanel.rotation);//finds the radius of the oval's width taking into account the squahsed world
+        
+        double theta = 0.5;//Math.atan2(-dy, dx);
+        
+        double unturneddx = radiusWidth*Math.cos(theta-WorldPanel.radSpin);
+        double unturneddy = radiusHeight*Math.sin(theta-WorldPanel.radSpin);
+        
+        double[] giveReturn = {unturneddx/WorldPanel.straightUnit,unturneddy/(WorldPanel.straightUnit*WorldPanel.shrink(WorldPanel.rotation))};
+        return giveReturn;
+    }
+    
+    /*
     handles mouse wheel movement. Sets dScale.
     */
     public void mouseWheelMoved(MouseWheelEvent e)

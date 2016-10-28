@@ -129,7 +129,7 @@ public class BreakShiftTile extends Tile
     
     private void removeSelfFromList()
     {
-        TileDrawer.tileList.remove(this);
+        TileDrawer2.tileList.remove(this);
         for(int j = 0; j < getPathList().size(); j++)
         {
             MergedPaths.pathList.remove(getPathList().get(j));

@@ -154,7 +154,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         Area area = new Area();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
@@ -201,7 +201,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         ArrayList<Polygon> giveReturn = new ArrayList<Polygon>();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
@@ -255,7 +255,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         ArrayList<Tile> giveReturn = new ArrayList<Tile>();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == -WorldPanel.worldTilesHeight/2)
@@ -315,7 +315,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         ArrayList<Polygon> giveReturn = new ArrayList<Polygon>();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
@@ -367,7 +367,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         ArrayList<Tile> giveReturn = new ArrayList<Tile>();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())
@@ -427,7 +427,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         Area area = new Area();
         for(int i = 0; i < blockTiles.size(); i++)
         {
-            switch(WorldPanel.spinQuadrant())
+            switch(WorldPanel.getSpinQuadrant())
             {
                 case 1:
                     if(blockTiles.get(i).getRawX() == -WorldPanel.worldTilesWidth/2 && blockTiles.get(i).getRawY() == (WorldPanel.worldTilesHeight/2)-blockTiles.get(i).getRawLength() && blockTiles.get(i).getRawWidth() > blockTiles.get(i).getRawLength())

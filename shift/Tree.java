@@ -148,19 +148,19 @@ public class Tree extends Scenery implements Runnable
     {
         int[][][] polyPoints = new int[2][2][4];
         int[][][] trunkPoly = threadedTrunkPolygons;
-        if(WorldPanel.spinQuadrant() == 1)//1 and 2
+        if(WorldPanel.getSpinQuadrant() == 1)//1 and 2
         {
             polyPoints[0][0] = trunkPoly[1][0];//polyX one
             polyPoints[0][1] = trunkPoly[1][1];
             polyPoints[1][0] = trunkPoly[2][0];
             polyPoints[1][1] = trunkPoly[2][1];
-        }else if(WorldPanel.spinQuadrant() == 2)//0 and 1
+        }else if(WorldPanel.getSpinQuadrant() == 2)//0 and 1
         {
             polyPoints[0][0] = trunkPoly[0][0];//polyX one
             polyPoints[0][1] = trunkPoly[0][1];
             polyPoints[1][0] = trunkPoly[1][0];
             polyPoints[1][1] = trunkPoly[1][1];
-        }else if(WorldPanel.spinQuadrant() == 3)//3 and 0
+        }else if(WorldPanel.getSpinQuadrant() == 3)//3 and 0
         {
             polyPoints[0][0] = trunkPoly[3][0];//polyX one
             polyPoints[0][1] = trunkPoly[3][1];
@@ -179,19 +179,19 @@ public class Tree extends Scenery implements Runnable
     {
         int[][][] polyPoints = new int[2][2][4];
         int[][][] leavesPoly = threadedLeavesPolygons;
-        if(WorldPanel.spinQuadrant() == 1)//1 and 2
+        if(WorldPanel.getSpinQuadrant() == 1)//1 and 2
         {
             polyPoints[0][0] = leavesPoly[1][0];
             polyPoints[0][1] = leavesPoly[1][1];
             polyPoints[1][0] = leavesPoly[2][0];
             polyPoints[1][1] = leavesPoly[2][1];
-        }else if(WorldPanel.spinQuadrant() == 2)//0 and 1
+        }else if(WorldPanel.getSpinQuadrant() == 2)//0 and 1
         {
             polyPoints[0][0] = leavesPoly[0][0];
             polyPoints[0][1] = leavesPoly[0][1];
             polyPoints[1][0] = leavesPoly[1][0];
             polyPoints[1][1] = leavesPoly[1][1]; 
-        }else if(WorldPanel.spinQuadrant() == 3)//3 and 0
+        }else if(WorldPanel.getSpinQuadrant() == 3)//3 and 0
         {
             polyPoints[0][0] = leavesPoly[3][0];
             polyPoints[0][1] = leavesPoly[3][1];

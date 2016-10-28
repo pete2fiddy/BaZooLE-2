@@ -7,7 +7,7 @@ public class TileSorter implements Runnable
     private Thread thread;
     public static ArrayList<Tile> holdList, tileList;
     
-    private int tempQuadrant = WorldPanel.spinQuadrant();
+    private int tempQuadrant = WorldPanel.getSpinQuadrant();
     public TileSorter()
     {
         holdList = new ArrayList<Tile>();
@@ -25,27 +25,27 @@ public class TileSorter implements Runnable
     public Thread getThread(){return thread;}
     public int getBackPoint()
     {
-        if(WorldPanel.spinQuadrant() != 1)
+        if(WorldPanel.getSpinQuadrant() != 1)
         {
-            return WorldPanel.spinQuadrant() - 2;
+            return WorldPanel.getSpinQuadrant() - 2;
         }
         return 3;
     }
     public int getOrderPoint()//finds the point that determines the order that each tile is drawn so there is no strange overlap... Not sure if I should use back point, or front point.
     {
-        if(WorldPanel.spinQuadrant() != 1)
+        if(WorldPanel.getSpinQuadrant() != 1)
         {
-            return WorldPanel.spinQuadrant() - 2;
+            return WorldPanel.getSpinQuadrant() - 2;
         }
         return 3;
     }
     private int getFrontPoint()
     {
-        if(WorldPanel.spinQuadrant() == 4)
+        if(WorldPanel.getSpinQuadrant() == 4)
         {
             return 0;
         }
-        return WorldPanel.spinQuadrant();
+        return WorldPanel.getSpinQuadrant();
     }
    
     private int[] bottomMapCoord()
@@ -69,7 +69,7 @@ public class TileSorter implements Runnable
     }
     private int getMapTopPoint()//gets the point of the map that is highest displayed
     {
-        int quadrant = WorldPanel.spinQuadrant();
+        int quadrant = WorldPanel.getSpinQuadrant();
         if(quadrant == 4)
         {
             return 0;
@@ -83,11 +83,11 @@ public class TileSorter implements Runnable
         return 3;
     }
     
-    private int getComparePoint(){return WorldPanel.spinQuadrant() - 1;}
+    private int getComparePoint(){return WorldPanel.getSpinQuadrant() - 1;}
     
     private int getLeftPoint()
     {
-        int quadrant = WorldPanel.spinQuadrant();
+        int quadrant = WorldPanel.getSpinQuadrant();
         if(quadrant == 1)
         {
             return 2;
@@ -102,10 +102,10 @@ public class TileSorter implements Runnable
     }
     public void sortByDistance()
     {
-        //if(tempQuadrant!=WorldPanel.spinQuadrant())//(tempQuadrant != WorldPanel.spinQuadrant())
+        //if(tempQuadrant!=WorldPanel.getSpinQuadrant())//(tempQuadrant != WorldPanel.getSpinQuadrant())
         //{
             ArrayList<Tile>temp = new ArrayList<Tile>();
-            tempQuadrant = WorldPanel.spinQuadrant();
+            tempQuadrant = WorldPanel.getSpinQuadrant();
             //int highest = 0;
             int i = 0;
             while(tileList.size()>0)
@@ -188,7 +188,7 @@ public class TileSorter implements Runnable
         
         sortByDistance();
         holdList = tileList;
-        TileDrawer.tileList = TileSorter2.sortByDistance(TileDrawer.tileList);
+        //TileDrawer.tileList = TileSorter2.sortByDistance(TileDrawer.tileList);
         
         
         
