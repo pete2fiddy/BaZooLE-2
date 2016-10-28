@@ -59,15 +59,17 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     public void drawFrontArea(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        g.setColor(WorldPanel.grassColor);
-        g2.fill(getFrontArea());
+        Color lerpedColor = getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd);
+        g.setColor(lerpedColor);
+        //g2.fill(getFrontArea());
         for(Polygon p : getFrontPolygons())
         {
             g.fillPolygon(p);
         }
         for(Tile t : getFrontTiles())
         {
-            t.shadeSides(g);
+            t.draw(g);
+            t.drawShadedSides(g, lerpedColor);
             //t.drawWaterReflectionCover(g);
             //t.drawWaterReflections(g);
         }
@@ -85,6 +87,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
         //g2.draw(getArea());
         for(Tile t : getFrontTiles())
         {
+            
             t.drawAssortedScenery(g);
         }
         
@@ -94,32 +97,35 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     {
         Graphics2D g2 = (Graphics2D)g;
         
-        g.setColor(WorldPanel.grassColor);
+        Color lerpedGrass = getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd);
+        g.setColor(lerpedGrass);
         
         //g.setColor(Color.BLACK);
         for(int i = 0; i < blockTiles.size(); i++)
         {
             blockTiles.get(i).drawWaterReflections(g);
             //blockTiles.get(i).draw(g);
-            g.fillPolygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4);
-            g.fillPolygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4);
+            blockTiles.get(i).draw(g);
+            blockTiles.get(i).drawReverseShadedSides(g, WorldPanel.grassColor);
+            //g.fillPolygon(blockTiles.get(i).getPolyPoints1()[0], blockTiles.get(i).getPolyPoints1()[1], 4);
+            //g.fillPolygon(blockTiles.get(i).getPolyPoints2()[0], blockTiles.get(i).getPolyPoints2()[1], 4);
             //area.add(new Area(blockTiles.get(i).getUpperPolygon()));
         }
         //g.setColor(Color.GREEN);
-        g.setColor(Color.BLACK);
+        //g.setColor(Color.BLACK);
         /*for(Polygon p:getBackPolygons())
         {
             g.drawPolygon(p);
         }*/
         for(Tile t : getBackTiles())
         {
-            
-            t.reverseShadeSides(g);
+            t.draw(g);
+            t.drawReverseShadedSides(g, WorldPanel.grassColor);
             //t.drawWaterReflectionCover(g);
             
         }
-        g.setColor(WorldPanel.grassColor);
-        g2.fill(getBackArea());
+        g.setColor(getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd));
+        //g2.fill(getBackArea());
         g.setColor(Color.BLACK);
         for(Tile t : getBackTiles())
         {

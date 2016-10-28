@@ -2,7 +2,9 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.geom.Area;
 
 public class RectPrism extends SolidShape
 {
@@ -105,10 +107,14 @@ public class RectPrism extends SolidShape
     @Override
     void fill(Graphics g) 
     {
+        Graphics2D g2 = (Graphics2D)g;
         //g.setColor(Color.BLUE);
-        int[][] upperPoints = threadedUpperPoints;//getUpperBoundingShapePolyPoints();
+        //int[][] upperPoints = threadedUpperPoints;//getUpperBoundingShapePolyPoints();
         //int[][] lowerPoints = getLowerBoundingShapePolyPoints();
-        g.fillPolygon(upperPoints[0], upperPoints[1], upperPoints[0].length);
+        Area a = new Area(new Polygon(threadedUpperPoints[0], threadedUpperPoints[1],threadedUpperPoints[0].length));
+        a.intersect(WorldPanel.clipArea);
+        g2.fill(a);
+        //g.fillPolygon(upperPoints[0], upperPoints[1], upperPoints[0].length);
         //g.fillPolygon(lowerPoints[0], lowerPoints[1], lowerPoints[0].length);
         //g.setColor(Color.BLUE);
         //int[][] leftPoints = getLeftBoundingShapePolyPoints();

@@ -55,8 +55,7 @@ public class SpinTile extends Tile implements Runnable
     @Override
     public void drawReflections(Graphics g)
     {
-        
-        //cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
+        cylinder.shadeWaterReflections(g, cylinder.getVisibleSidePolygons());
     }
     @Override
     public void draw(Graphics g)
@@ -67,7 +66,7 @@ public class SpinTile extends Tile implements Runnable
         g.setColor(Color.BLACK);
         //g.drawPolygon(threadedCylinderPoints[0],threadedCylinderPoints[1],32);
         //g.setColor(getColor());
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd));
         Color c = g.getColor();
         g.fillPolygon(threadedTopCylinderPoints[0], threadedTopCylinderPoints[1], 32);
         drawSides(g);

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,11 +59,12 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private JSlider volumeSlider = new JSlider(JSlider.HORIZONTAL, -50, 50, 0);
     public static DayNight dayNight = new DayNight();
     private JButton randomShapes;
-    public static Color waterColor = new Color(30, 144, 255);
+    public static Color baseWaterColor = new Color(30, 144, 255);
+    public static Color waterColor = baseWaterColor;
     private Timer secondTimer;
     //TileSorter ts;
     TileDrawer td;
-    private TileDrawer2 td2 = new TileDrawer2(this);
+    private TileDrawer2 td2;
     Input input = new Input();
     MouseInput mouseInput = new MouseInput(this);
     Player player = new Player(30, 30, 5);
@@ -70,8 +72,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     private WaterRipple[] waterRipples = new WaterRipple[8];
     private Toolbox toolbox = new Toolbox(this, player);
     private int timeCount = 0;
-    private Timer frameTimer=new Timer(2, this);
-    private Mountains mountains;
+    public static final int maxFPS = 60;
+    private Timer frameTimer=new Timer((int)(1000.0/(double)maxFPS), this);
+    public static Area clipArea;
     public static Area belowMapArea;
     public WorldPanel()
     {
@@ -95,6 +98,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         tickTimer.start();//started here so that everything is initialized by the time the timer calls them
         
         DayNight.addSeasonalScenery(DayNight.season);
+        td2 = new TileDrawer2(this);
+        tick();
+        
+        
     }
     
     /*
@@ -148,7 +155,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         frameTimer.setRepeats(true);
         frameTimer.setActionCommand("frame");
         frameTimer.start();
-        mountains = new Mountains();
+        
+        
     }
     
     /*
@@ -188,12 +196,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         resetLevel.setVisible(false);
     }
     
+    @Override
     /*
     the MAIN paint method for the project. Everything painted from here, or from instances called from here.
     */
     public void paintComponent(Graphics g)
     {
-        super.paintComponent(g);   
+        super.paintComponent(g); 
+        setBelowMapArea();
         //VolatileImage vImg = createVolatileImage(screenWidth, screenHeight);
         //Graphics g = vImg.createGraphics();
         //VolatileImage vImg = createVolatileImage(screenWidth, screenHeight);
@@ -212,22 +222,35 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
+        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+        //g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         dayNight.draw(g);
-        mountains.draw(g);
-        drawMapFloor(g);
+        //drawMapFloor(g);
         
         td2.draw(g);
         //fillBelowMap(g);
-        
+        drawFPS(g, g2);
+        /*try {
+            Thread.sleep(Math.abs((int)a.getVolume()));
+        } catch (Exception e) {
+        }*/
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
         ui.draw(g);//draws UI elements like level, etc.*/
         
-        drawFPS(g, g2);
+        
         //gIn.drawImage(vImg, 0,0,null);
         //vImg.flush();
         //gIn.drawImage(vImg, 0, 0, null);
         //vImg.flush();
+        
+    }
+    
+    public Player getPlayer()
+    {
+        return player;
     }
     
     private void drawFPS(Graphics g, Graphics2D g2)
@@ -482,7 +505,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     MINOR PROBLEM: gridding the map is weird. But works.
     paints the floor of the map--whether it is a grid for debugging or just the water. toggles with the drawWater boolean. 
     */
-    private void drawMapFloor(Graphics g)
+    public void drawMapFloor(Graphics g)
     {
         if(!drawWater)
         {
@@ -646,9 +669,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     
     /*Updated every time timer fires it. Handles primarily positioning and 
     dimensions of the world, and starts threads when necessary for objects such as tiles.*/
-    private void tick()
+    public void tick()
     {
-        setBelowMapArea();
+        clipArea = new Area(new Rectangle(screenWidth, screenHeight));
+        
         if(scale < maxScale && MouseInput.dScale > 0)
         {
             scale += MouseInput.dScale;
@@ -721,13 +745,13 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             LevelLoader.sortTiles = false; 
         }
         
-        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        /*for(int i = 0; i < TileDrawer2.tileList.size(); i++)
         {
             TileDrawer2.tileList.get(i).getThread().interrupt();
             Thread t = new Thread(TileDrawer2.tileList.get(i));
             TileDrawer2.tileList.get(i).setThread(t);
             t.start();
-        }
+        }*/
         /*for(int i = 0; i < TileSorter.tileList.size(); i++)
         {
             try{
@@ -784,7 +808,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         {
             //Thread t = new Thread(this);
             //t.start();
-            tick();
+            //tick();
         }else if(command.equals("frame"))
         {
             repaint();
@@ -836,7 +860,6 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public void stateChanged(ChangeEvent e) 
     {
         JSlider numIn = (JSlider)e.getSource();
-        
         a.setVolume((float)numIn.getValue());
     }
 

@@ -30,6 +30,7 @@ public class Pumpkin extends Scenery
         pumpkinShape = new RectPrism(getCoordX(), getCoordY(),tileIn.getHeight(), (defaultPumpkinDim*scale), (defaultPumpkinDim*scale), (int)(defaultPumpkinHeight*scale));
         stemShape = new RectPrism(getCoordX(), getCoordY(), tileIn.getHeight() + (int)(defaultPumpkinHeight*scale), defaultStemDim*scale, defaultStemDim*scale, (int)(defaultStemHeight*scale));
         tileIn.addAssortedScenery(this);
+        setBoundingBoxDimensions(pumpkinShape.getWidth(), pumpkinShape.getLength());
     }
 
     @Override

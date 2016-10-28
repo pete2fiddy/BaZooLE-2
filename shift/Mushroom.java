@@ -43,6 +43,7 @@ public class Mushroom extends Scenery
         shroomHeight = defaultShroomHeight;
         radius = defaultRadius;
         tileIn.addAssortedScenery(this);
+        setBoundingBoxDimensions(shapes[1].getWidth(), shapes[1].getLength());
     }
     
     public Mushroom(Tile tileIn, double offsetXIn, double offsetYIn, double scaleIn) 

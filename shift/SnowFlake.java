@@ -15,6 +15,7 @@ import java.awt.Graphics;
 public class SnowFlake extends Toolbox
 {
     private double x, y;
+    private double[] points;
     private double dx, dy;
     private double height;
     private double fallSpeed = .75 + .75*(Math.random());
@@ -29,6 +30,7 @@ public class SnowFlake extends Toolbox
         dy = y - boundCloud.getCoordY();
         currentTime = System.currentTimeMillis();
         waitTime = (int)(Math.random()*200);
+        tick();
     }
     public SnowFlake(Cloud boundCloudIn, double xIn, double yIn, int baseDelay)
     {
@@ -38,8 +40,52 @@ public class SnowFlake extends Toolbox
         dy = y - boundCloud.getCoordY();
         currentTime = System.currentTimeMillis();
         waitTime = baseDelay + (int)(Math.random() * 400);
+        tick();
     }
     
+    
+    public void tick(){
+        /*if(points == null)
+        {
+            points = convertToPoint(x,y);
+        }*/
+        points = convertToPoint(x,y);
+        if(!boundCloud.outsideOfMap())
+        {
+            //x+=boundCloud.getCloudSpeed();
+            x = boundCloud.getCoordX() + dx;
+            y = boundCloud.getCoordY() + dy;
+            
+            if(currentTime + waitTime < System.currentTimeMillis())
+            {
+                height -= fallSpeed;
+            }
+            if(height < 0)
+            {
+                height = boundCloud.getZPos();
+                fallSpeed = .75 + .75*(Math.random());
+                currentTime = System.currentTimeMillis();
+                waitTime = (int)(50 + Math.random()*200);
+            }
+        }else{
+            //x+=boundCloud.getCloudSpeed();
+            x = boundCloud.getCoordX() + dx;
+            y = boundCloud.getCoordY() + dy;
+            //double[] points = convertToPoint(x,y);
+            if(currentTime + waitTime < System.currentTimeMillis())
+            {
+                height -= fallSpeed;
+            }
+            if(height < 0)
+            {
+                height = boundCloud.getZPos();
+                fallSpeed = .75 + .75*(Math.random());
+                currentTime = System.currentTimeMillis();
+                waitTime = (int)(50 + Math.random()*200);
+            }
+            
+        }
+    }
     private boolean isVisible(Graphics g, double x, double y)
     {
         return (g.getClip().contains(x,y));
@@ -47,59 +93,42 @@ public class SnowFlake extends Toolbox
     
     public void paint(Graphics g)
     {
+        if(!boundCloud.outsideOfMap() && boundCloud.getCloudSpeed() != 0 && currentTime+waitTime < System.currentTimeMillis())
+        {
+            if(boundCloud.getCloudSpeed() != 0)
+            {
+                g.setColor(Color.WHITE);
+                g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
+            }
+
+        }
+        /*
         if(!boundCloud.outsideOfMap())
         {
             //x+=boundCloud.getCloudSpeed();
-            x = boundCloud.getCoordX() + dx;
-            y = boundCloud.getCoordY() + dy;
-            double[] points = convertToPoint(x,y);
-            if(isVisible(g, points[0], points[1]))
+            //x = boundCloud.getCoordX() + dx;
+            //y = boundCloud.getCoordY() + dy;
+            //double[] points = convertToPoint(x,y);
+            if(isVisible(g, points[0], points[1]) && DayNight.season.equals("winter"))
             {
-                if(currentTime + waitTime < System.currentTimeMillis())
+                if(boundCloud.getCloudSpeed() != 0)
                 {
-                    height -= fallSpeed;
-                    if(boundCloud.getCloudSpeed() != 0)
-                    {
-                        g.setColor(Color.WHITE);
-                        g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
-                    }
-                }
-                if(height < 0)
-                {
-                    height = boundCloud.getZPos();
-                    fallSpeed = .75 + .75*(Math.random());
-                    currentTime = System.currentTimeMillis();
-                    waitTime = (int)(50 + Math.random()*200);
+                    g.setColor(Color.WHITE);
+                    g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
                 }
             }
-            /*if(x > (WorldPanel.worldTilesWidth/2) || x < -(WorldPanel.worldTilesWidth/2))
-            {
-                x = -x;
-            }*/
         }else{
-            //x+=boundCloud.getCloudSpeed();
-            x = boundCloud.getCoordX() + dx;
-            y = boundCloud.getCoordY() + dy;
-            double[] points = convertToPoint(x,y);
             if(isVisible(g, points[0], points[1]))
             {
                 if(currentTime + waitTime < System.currentTimeMillis())
                 {
-                    height -= fallSpeed;
                     if(boundCloud.getCloudSpeed() != 0)
                     {
                         g.setColor(new Color(255, 255, 255, (int)(255*boundCloud.getAlphaPercent())));
                         g.fillOval((int)(points[0]-(WorldPanel.scale/2.0)), (int)(points[1]-(WorldPanel.scale/2.0) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale), (int)(WorldPanel.scale));
                     }
                 }
-                if(height < 0)
-                {
-                    height = boundCloud.getZPos();
-                    fallSpeed = .75 + .75*(Math.random());
-                    currentTime = System.currentTimeMillis();
-                    waitTime = (int)(50 + Math.random()*200);
-                }
             }
-        }
+        }*/
     }
 }

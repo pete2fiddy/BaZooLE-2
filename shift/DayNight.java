@@ -43,6 +43,79 @@ public class DayNight implements ActionListener
         fillStarPoints();
     }
     
+    public static void spawnSceneryOnTileType(Class<?> tileType, double rarity, String sceneryType)
+    {
+        double radiusApart = 0.05;
+        
+        for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            if(TileDrawer2.tileList.get(i).getClass() == tileType)
+            {
+                if(Math.random() < rarity)
+                {
+                    double offsetX = radiusApart + 0.05*(int)((1-2*radiusApart)*Math.random()/radiusApart);
+                    double offsetY = radiusApart + 0.05*(int)((1-2*radiusApart)*Math.random()/radiusApart);
+                    if(sceneryType.equals("Pumpkin"))
+                    {
+                        Pumpkin m = new Pumpkin(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                        if(m.getOffsetX() < m.getBoundingBoxWidth()/(double)m.getBoundTile().getRawWidth())
+                        {
+                            m.addUnitsToOffset(m.getBoundingBoxWidth()/2.0, 0);
+                        }else if(m.getOffsetX() > m.getBoundingBoxWidth()/(double)(1-m.getBoundTile().getRawWidth()))
+                        {
+                            m.addUnitsToOffset(-m.getBoundingBoxWidth()/2.0, 0);
+                        }
+                        if(m.getOffsetY() < m.getBoundingBoxLength()/(double)m.getBoundTile().getRawLength())
+                        {
+                            m.addUnitsToOffset(0, m.getBoundingBoxLength()/2.0);
+                        }else if(m.getOffsetY() > m.getBoundingBoxLength()/(double)(1-m.getBoundTile().getRawLength()))
+                        {
+                            m.addUnitsToOffset(0, -m.getBoundingBoxLength());
+                        }
+                    }else if(sceneryType.equals("Tree"))
+                    {
+                        Tree m = new Tree(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                        if(m.getOffsetX() < m.getBoundingBoxWidth()/(double)m.getBoundTile().getRawWidth())
+                        {
+                            m.addUnitsToOffset(m.getBoundingBoxWidth(), 0);
+                        }else if(m.getOffsetX() > m.getBoundingBoxWidth()/(double)(1-m.getBoundTile().getRawWidth()))
+                        {
+                            m.addUnitsToOffset(-m.getBoundingBoxWidth(), 0);
+                        }
+                        if(m.getOffsetY() < m.getBoundingBoxLength()/(double)m.getBoundTile().getRawLength())
+                        {
+                            m.addUnitsToOffset(0, m.getBoundingBoxLength());
+                        }else if(m.getOffsetY() > m.getBoundingBoxLength()/(double)(1-m.getBoundTile().getRawLength()))
+                        {
+                            m.addUnitsToOffset(0, -m.getBoundingBoxLength());
+                        }
+                    }else if(sceneryType.equals("Snowman"))
+                    {
+                        Snowman m = new Snowman(TileDrawer2.tileList.get(i), offsetX, offsetY);
+                        if(m.getOffsetX() < m.getBoundingBoxWidth()/(double)m.getBoundTile().getRawWidth())
+                        {
+                            m.addUnitsToOffset(m.getBoundingBoxWidth()/2.0, 0);
+                        }else if(m.getOffsetX() > m.getBoundingBoxWidth()/(double)(1-m.getBoundTile().getRawWidth()))
+                        {
+                            m.addUnitsToOffset(-m.getBoundingBoxWidth()/2.0, 0);
+                        }
+                        if(m.getOffsetY() < m.getBoundingBoxLength()/(double)m.getBoundTile().getRawLength())
+                        {
+                            m.addUnitsToOffset(0, m.getBoundingBoxLength()/2.0);
+                        }else if(m.getOffsetY() > m.getBoundingBoxLength()/(double)(1-m.getBoundTile().getRawLength()))
+                        {
+                            m.addUnitsToOffset(0, -m.getBoundingBoxLength());
+                        }
+                    }else{
+                        System.err.println("Scenery not supported by method 'spawnSceneryForAllTiles'");
+                    }
+                }
+            }
+        }
+        
+        
+    }
+    
     public static void addSeasonalScenery(String season)
     {
         if(season.equals("winter"))
@@ -256,6 +329,7 @@ public class DayNight implements ActionListener
         if(timeDescriber.equals("evening"))
         {
             Toolbox.nightShadeAdd = Toolbox.nightShadeAdd+Toolbox.maxNightShade*((double)timerIncrement/1000.0)/(double)transitSeconds;
+            WorldPanel.waterColor = Toolbox.getLerpColor(Toolbox.shadeColor, WorldPanel.baseWaterColor, Toolbox.nightShadeAdd);
             sun.controlSun(-(((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(dayColor.getRed() + (secondsTicked/(double)transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(dayColor.getGreen() + (secondsTicked/(double)transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
@@ -263,6 +337,7 @@ public class DayNight implements ActionListener
         }else if(timeDescriber.equals("morning"))
         {
             Toolbox.nightShadeAdd = Toolbox.nightShadeAdd - Toolbox.maxNightShade*(((double)timerIncrement/1000.0))/(double)transitSeconds;
+            WorldPanel.waterColor = Toolbox.getLerpColor(Toolbox.shadeColor, WorldPanel.baseWaterColor, Toolbox.nightShadeAdd);
             sun.controlSun((((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(nightColor.getRed() - (secondsTicked/transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(nightColor.getGreen() - (secondsTicked/transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 

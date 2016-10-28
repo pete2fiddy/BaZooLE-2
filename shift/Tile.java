@@ -78,7 +78,7 @@ public abstract class Tile extends Toolbox implements Runnable
         TileDrawer2.tileList.add(this);
         thread.start();
         player = getPlayer();
-        //addRandomScenery();
+        addRandomScenery();
         sortAllScenery();
         setGrassSkip();
     }
@@ -103,6 +103,7 @@ public abstract class Tile extends Toolbox implements Runnable
     }
     
     public void setIndex(int i){index = i;}
+    
     
     /*
     setters
@@ -311,10 +312,24 @@ public abstract class Tile extends Toolbox implements Runnable
         int numFlowers = min+(int)(max*Math.random());
         for(int i = 0; i < numFlowers; i++)
         {
-            double randomX = 0.05*(int)(Math.random()/radiusApart);
-            double randomY = 0.05*(int)(Math.random()/radiusApart);
+            double randomX = radiusApart + 0.05*(int)((1-2*radiusApart)*Math.random()/radiusApart);
+            double randomY = radiusApart + 0.05*(int)((1-2*radiusApart)*Math.random()/radiusApart);
             int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
-            Flower f = new Flower(this,randomX,randomY,randomHeight, 1.0);
+            Flower m = new Flower(this,randomX,randomY,randomHeight, 1.0);
+            if(m.getOffsetX() < m.getBoundingBoxWidth()/(double)getRawWidth())
+            {
+                m.addUnitsToOffset(m.getBoundingBoxWidth()/2.0, 0);
+            }else if(m.getOffsetX() > m.getBoundingBoxWidth()/(double)(1-getRawWidth()))
+            {
+                m.addUnitsToOffset(-m.getBoundingBoxWidth()/2.0, 0);
+            }
+            if(m.getOffsetY() < m.getBoundingBoxLength()/(double)getRawLength())
+            {
+                m.addUnitsToOffset(0, m.getBoundingBoxLength()/2.0);
+            }else if(m.getOffsetY() > m.getBoundingBoxLength()/(double)(1-getRawLength()))
+            {
+                m.addUnitsToOffset(0, -m.getBoundingBoxLength());
+            }
         }
     }
     
@@ -329,10 +344,24 @@ public abstract class Tile extends Toolbox implements Runnable
         int numPerUnit = 9;
         for(int i = 0; i < numShrooms; i++)
         {
-            double randomX = 0.05*(int)(Math.random()/radiusApart);
-            double randomY = 0.05*(int)(Math.random()/radiusApart);
+            double randomX = radiusApart + radiusApart*(int)((1-2*radiusApart)*Math.random()/radiusApart);
+            double randomY = radiusApart + radiusApart*(int)((1-2*radiusApart)*Math.random()/radiusApart);
             //int randomHeight = heightMin + ((int)(Math.random()*(heightMax-heightMin))/(heightMax-heightMin));
             Mushroom m = new Mushroom(this,randomX,randomY, 0.25+(Math.random()*.5));
+            if(m.getOffsetX() < m.getBoundingBoxWidth()/(double)getRawWidth())
+            {
+                m.addUnitsToOffset(m.getBoundingBoxWidth()/2.0, 0);
+            }else if(m.getOffsetX() > m.getBoundingBoxWidth()/(double)(1-getRawWidth()))
+            {
+                m.addUnitsToOffset(-m.getBoundingBoxWidth()/2.0, 0);
+            }
+            if(m.getOffsetY() < m.getBoundingBoxLength()/(double)getRawLength())
+            {
+                m.addUnitsToOffset(0, m.getBoundingBoxLength()/2.0);
+            }else if(m.getOffsetY() > m.getBoundingBoxLength()/(double)(1-getRawLength()))
+            {
+                m.addUnitsToOffset(0, -m.getBoundingBoxLength());
+            }
         }
         /*for(int i = 0; i < width*numPerUnit; i++)
         {
@@ -1444,9 +1473,9 @@ public abstract class Tile extends Toolbox implements Runnable
         ///double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(2-1);
         //double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(2-1);
         //g.setColor(new Color((int)(darkColor.getRed()), (int)(darkColor.getGreen()), (int)(darkColor.getBlue())));
-        g.setColor(darkColor);
-        g.fillPolygon(rightPoints[0], rightPoints[1], rightPoints[0].length);
         g.setColor(lightColor);
+        g.fillPolygon(rightPoints[0], rightPoints[1], rightPoints[0].length);
+        g.setColor(darkColor);
         g.fillPolygon(leftPoints[0], leftPoints[1], leftPoints[0].length);
         //g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
 
@@ -1500,8 +1529,69 @@ public abstract class Tile extends Toolbox implements Runnable
         g.setColor(Color.BLACK);
     }
     
+    public void drawReverseShadedSides(Graphics g, Color lowerColor)
+    {
+        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g.setColor(darkColor);
+        //g.fillPolygon(sidePolygons[0]);
+        //Polygon[] sides = sidePolygons.clone();
+        //g.setColor(lightColor);
+        //g.fillPolygon(sidePolygons[1]);
+        //int numSides = sides.length;
+        //System.out.println("Dark Color " + darkColor);
+        //System.out.println("Light Color " + lightColor);
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        //double dr = (double)(lightColor.getRed()-darkColor.getRed())/(double)(2-1);
+        ///double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(2-1);
+        //double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(2-1);
+        //g.setColor(new Color((int)(darkColor.getRed()), (int)(darkColor.getGreen()), (int)(darkColor.getBlue())));
+        g.setColor(darkColor);
+        g.fillPolygon(rightPoints[0], rightPoints[1], rightPoints[0].length);
+        g.setColor(lightColor);
+        g.fillPolygon(leftPoints[0], leftPoints[1], leftPoints[0].length);
+        //g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+
+        /*for (int i = 0; i < 2; i++) {
+            g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+            //g.fillPolygon(rightPoints[i]);
+        }*/
+        /*
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        double leftAlpha = 0.31372549019608-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        
+        
+        if(thisClicked)
+        {
+            g.setColor(getLerpColor(Color.RED,getLerpColor(Color.BLACK, color, leftAlpha),0.5));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }else{
+            g.setColor(getLerpColor(Color.BLACK, color, leftAlpha));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }
+        
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        double rightAlpha = 0.19607843137255-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        if(thisClicked)
+        {
+            g.setColor(getLerpColor(Color.RED, getLerpColor(Color.BLACK, color, rightAlpha),0.5));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+            
+        }else{
+            g.setColor(getLerpColor(Color.BLACK, color, rightAlpha));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+        }
+        
+        
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);*/
+        
+    }
+    
     public void reverseShadeSides(Graphics g)
     {
+        
         int[][] leftPoints = getLeftSidePoints();
         //int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         double leftAlpha = 0.07843137254902 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
@@ -1872,6 +1962,26 @@ public abstract class Tile extends Toolbox implements Runnable
         sortScenery(grassList);*/
         calculatePolyPoints();
         threadedTilePolygon = new Polygon(myThreadedLowerPoints[0], myThreadedLowerPoints[1],4);
+        /*if(moveable)
+        {
+            if(!tileCurrentlyMoving)
+            {
+                mouseInteraction();
+            }
+            transitMovement();
+        }else if(spinnable)
+        {
+            if(!tileCurrentlyMoving)
+            {
+                spinMouseInteraction();
+            }
+            spinAnimation();
+        }*/
+        
+    }
+    
+    public void tileMovement()
+    {
         if(moveable)
         {
             if(!tileCurrentlyMoving)
@@ -1887,6 +1997,5 @@ public abstract class Tile extends Toolbox implements Runnable
             }
             spinAnimation();
         }
-        
     }
 }

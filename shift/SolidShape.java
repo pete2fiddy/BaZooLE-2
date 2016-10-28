@@ -540,6 +540,7 @@ public abstract class SolidShape
     
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons, Color lowerColor)
     {
+        Graphics2D g2 = (Graphics2D)g;
         visibleShapeSidePolygons = sidePolygons.clone();
         Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.highShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.lowShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
@@ -555,8 +556,11 @@ public abstract class SolidShape
         double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(numSides-1);
         double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(numSides-1);
         for (int i = 0; i < numSides; i++) {
+            Area a = new Area(sides[i]);
+            a.intersect(WorldPanel.clipArea);
             g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
-            g.fillPolygon(sides[i]);
+            g2.fill(a);
+            //g.fillPolygon(sides[i]);
         }
         /*int numSides = sidePolygons.length;
         int maxZPos = 500;

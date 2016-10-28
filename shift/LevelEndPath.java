@@ -20,7 +20,7 @@ public class LevelEndPath extends Path implements Runnable
     {
         updateLinks();
         //Graphics2D g2 = (Graphics2D)g;
-        g.setColor(WorldPanel.grassColor);
+        g.setColor(getLerpColor(Toolbox.shadeColor,WorldPanel.grassColor,Toolbox.nightShadeAdd));
         g.fillPolygon(getBoundTile().threadedUpperPoints()[0], getBoundTile().threadedUpperPoints()[1],4);
         
         /*g2.setPaint(Color.YELLOW);

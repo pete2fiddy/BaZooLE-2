@@ -30,6 +30,8 @@ public class Toolbox
     public static double highShade = 0.2;
     public static double maxNightShade = 0.25;
     public static double nightShadeAdd = 0;
+    
+    public static Color shadeColor = Color.BLACK;
     public Toolbox(WorldPanel wpIn, Player playerIn)
     {
         worldPanel = wpIn;
@@ -60,7 +62,7 @@ public class Toolbox
         
     }
     
-    public Color getLerpColor(Color topColor, Color bottomColor, double alpha)
+    public static Color getLerpColor(Color topColor, Color bottomColor, double alpha)
     {
         //double alphaNum = (double)(.65 - (.15*(WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         

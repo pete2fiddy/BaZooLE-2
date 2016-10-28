@@ -39,7 +39,7 @@ public class Mountain
         x = xIn;
         relX = (x-WorldPanel.worldX);
         y = yIn;
-        dSpin = Math.toRadians(1.5+Math.random()*2.0);
+        dSpin = Math.toRadians(0.75+Math.random());
         fillMountainPoints(mountainType, minScale);
         sortDistance = sortDistanceIn;
         spinRadius = 7 + (8*Math.random());
@@ -192,12 +192,8 @@ public class Mountain
         
         //Composite originalComposite = g2.getComposite();
         
-        setMountainPolygon();
-        spin += dSpin;
-        if(spin > 2*Math.PI)
-        {
-            spin -= 2*Math.PI;
-        }
+        
+        
         
         
         /*int upperAlpha = 120;
@@ -314,6 +310,16 @@ public class Mountain
         int green = (int)(shadeColor.getGreen() + ((1-alphaNum)*(backgroundColor.getGreen()-shadeColor.getGreen())));
         int blue = (int)(shadeColor.getBlue() + ((1-alphaNum)*(backgroundColor.getBlue()-shadeColor.getBlue())));
         return new Color(red, green, blue);
+    }
+    
+    public void moveMountain()
+    {
+        spin += dSpin;
+        if(spin > 2*Math.PI)
+        {
+            spin -= 2*Math.PI;
+        }
+        setMountainPolygon();
     }
     
     public Polygon getMountainPolygon()

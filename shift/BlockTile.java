@@ -46,14 +46,20 @@ public class BlockTile extends Tile
     public void draw(Graphics g)
     {
         //Graphics2D g2 = (Graphics2D)g;
+        Color c = getLerpColor(Toolbox.shadeColor, WorldPanel.grassColor, Toolbox.nightShadeAdd);
+        g.setColor(c);
+        g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
+        if(isEdgeBlock)
+        {
+           drawShadedSides(g, c);
+        }
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
         
-        g.setColor(WorldPanel.grassColor);
-        g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
-        g.setColor(Color.BLACK);
+        //g.setColor(Color.BLACK);
         
-        g.drawPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.drawPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        //g.drawPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.drawPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
     }   
 }
     

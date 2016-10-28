@@ -58,7 +58,7 @@ public class LevelEndTile extends Tile
             }
         }
         drawEarlyScenery(g);
-        g.setColor(getColor());
+        g.setColor(getLerpColor(Toolbox.shadeColor,getColor(), Toolbox.nightShadeAdd));
         fillPolygons(g);
         
         for(Lake lake : getLakes())
@@ -66,8 +66,9 @@ public class LevelEndTile extends Tile
             lake.draw(g);
         }
         
-        drawSidePolygons(g);//draws the sides of the tile.
-        shadeSides(g);
+        //drawShadedSides(g, getColor());
+        //drawSidePolygons(g);//draws the sides of the tile.
+        //shadeSides(g);
         
         g.setColor(Color.BLACK);
         
@@ -109,9 +110,10 @@ public class LevelEndTile extends Tile
     
     private void fillPolygons(Graphics g)
     {
-        g.setColor(Color.MAGENTA);
-        g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
-        g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        //g.setColor(Color.MAGENTA);
+        drawShadedSides(g,Color.MAGENTA);
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
     }
     
 }

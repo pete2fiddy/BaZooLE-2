@@ -87,17 +87,8 @@ public class Cloud
     }
     public int getZPos(){return zPos;}
     
-    public void fill(Graphics g)
+    public void updatePosition()
     {
-        
-        if(flakeList != null)
-        {
-            for(SnowFlake sf : flakeList)
-            {
-                sf.paint(g);
-            }
-        }
-        //s.paint(g);
         cloudShape.updateShapePolygons();
         x+=cloudSpeed;
         //y+=cloudSpeed;
@@ -110,6 +101,21 @@ public class Cloud
         }
         cloudShape.setCenterCoordX(x);
         cloudShape.setCenterCoordY(y);
+    }
+    
+    public void fill(Graphics g)
+    {
+        
+        
+        if(flakeList != null)
+        {
+            for(SnowFlake sf : flakeList)
+            {
+                sf.paint(g);
+            }
+        }
+        //s.paint(g);
+        
         g.setColor(new Color(255,255,255,alpha));
         
         
@@ -172,5 +178,12 @@ public class Cloud
         
         cloudShape.setZPos(zPos);
         fillFlakeList();
+    }
+    public void updateSnowFlakes()
+    {
+        for(SnowFlake s : flakeList)
+        {
+            s.tick();
+        }
     }
 }   

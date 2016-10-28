@@ -52,6 +52,8 @@ public class Audio implements LineListener
         }
     }
     
+    public float getVolume(){return musicVolume.getValue();}
+    
     public void setVolume(float f)
     {
         musicVolume.setValue(f);

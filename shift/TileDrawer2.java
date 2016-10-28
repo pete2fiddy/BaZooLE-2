@@ -9,14 +9,17 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 /**
  *
  * @author phusisian
  */
-public class TileDrawer2 implements Runnable
+public class TileDrawer2 implements Runnable, ActionListener
 {
     public static ArrayList<Tile> tileList = new ArrayList<Tile>();
     public static ArrayList<WaterDroplet> waterDroplets = new ArrayList<WaterDroplet>();
@@ -27,6 +30,9 @@ public class TileDrawer2 implements Runnable
     private WaterRipple[] waterRipples=new WaterRipple[8];
     private WorldPanel worldPanel;
     private static ArrayList<Cloud> cloudList = new ArrayList<Cloud>();
+    private Timer movementTimer;
+    private Mountains mountains = new Mountains();
+    
     public TileDrawer2(WorldPanel wp)
     {
         ll= new LevelLoader();   
@@ -35,11 +41,18 @@ public class TileDrawer2 implements Runnable
         thread.start();
         fillWaterRipples();
         worldPanel= wp;
-        populateCloudList();
+        //populateCloudList();
+        movementTimer = new Timer(16, this);
+        movementTimer.setActionCommand("move");
+        movementTimer.setRepeats(true);
+        movementTimer.start();
     }
     
     public static void populateCloudList()
     {
+        cloudList.clear();
+        System.out.println("world width: " + WorldPanel.worldTilesWidth);
+        System.out.println("world height: " + WorldPanel.worldTilesHeight);
         int numClouds = (int)(((WorldPanel.worldTilesWidth-1)*(WorldPanel.worldTilesHeight-1))/6);
         double sizeBound = ((WorldPanel.worldTilesWidth-1)*(WorldPanel.worldTilesHeight-1))/100.0;
         for(int i = 0; i < numClouds; i++)
@@ -86,6 +99,14 @@ public class TileDrawer2 implements Runnable
         Graphics2D g2 = (Graphics2D)g;
         
         
+        mountains.draw(g);
+        worldPanel.drawMapFloor(g);
+        for(WaterRipple wr : waterRipples)
+        {
+            wr.draw(g);
+        }
+        //worldPanel.drawTransparentGridLines(g);//removing has negligible change in fps
+        mbt.draw(g);
         for(int i = 0; i < tileList.size(); i++)//removing causes negligible change in FPS
         {
             
@@ -103,17 +124,15 @@ public class TileDrawer2 implements Runnable
                 }
             }
         }
-        worldPanel.drawTransparentGridLines(g);//removing has negligible change in fps
-        for(WaterRipple wr : waterRipples)
-        {
-            wr.draw(g);
-        }
+        
+        
         
         /*mbt.getThread().interrupt();//doesn't do anything?
         mbt.setThread(new Thread(mbt));
         mbt.getThread().start();*/
         
-        mbt.draw(g);
+        //mbt.draw(g);
+        
         for(int i = 0; i < tileList.size(); i++)
         {
             if(tileList.get(i).getClass() != BlockTile.class)
@@ -223,5 +242,35 @@ public class TileDrawer2 implements Runnable
             }
         }
         return highest;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        /*for(int i = 0; i < TileDrawer2.tileList.size(); i++)
+        {
+            
+        }*/
+        String action = e.getActionCommand();
+        if(action.equals("move"))
+        {
+            for(Cloud c : cloudList)
+            {
+                c.updatePosition();
+                c.updateSnowFlakes();
+            }
+            //System.out.println("ticking");
+            worldPanel.tick();
+            mountains.moveMountains();
+            for (int i = 0; i < tileList.size(); i++) {
+                tileList.get(i).tileMovement();
+                TileDrawer2.tileList.get(i).getThread().interrupt();
+                Thread t = new Thread(TileDrawer2.tileList.get(i));
+                TileDrawer2.tileList.get(i).setThread(t);
+                t.start();
+
+            }
+            worldPanel.getPlayer().tick();
+        }
     }
 }

@@ -113,6 +113,7 @@ public class Snowman extends Scenery
                 
             }
         }
+        setBoundingBoxDimensions(shapes[0].getWidth(), shapes[0].getLength());
         tileIn.addAssortedScenery(this);
     }
     
@@ -161,7 +162,7 @@ public class Snowman extends Scenery
             for(RectPrism r : shapes)
             {
                 r.updateShapePolygons();
-                g.setColor(r.getColor());
+                g.setColor(getLerpColor(Toolbox.shadeColor,r.getColor(), Toolbox.nightShadeAdd));
                 r.fill(g);
                 g.setColor(r.getColor());
                 r.paintShading(g);

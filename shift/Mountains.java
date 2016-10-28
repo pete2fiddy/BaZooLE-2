@@ -70,4 +70,12 @@ public class Mountains
         //g2.fill(a);
     }
     
+    public void moveMountains()
+    {
+        for(Mountain m : mountainList)
+        {
+            m.moveMountain();
+        }
+    }
+    
 }
