@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -21,9 +20,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-/*
-reminder to set lake to use RectPrism with "drawExcludingTop"
-*/
 public class WorldPanel extends JPanel implements ActionListener, ChangeListener, Runnable
 {
     public static final Color defaultSnowColor = new Color(251, 251, 251);
