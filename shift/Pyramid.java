@@ -87,9 +87,15 @@ public class Pyramid extends SolidShape
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public void fillExcludingTop(Graphics g)
+    {
+        fill(g);
+        System.err.println("fillExcludingTop not usable with pyramids (pyramid without a top is just a base)");
+    }
+    
     public void drawExcludingTop(Graphics g)
     {
-        
+         System.err.println("drawExcludingTop not usable with pyramids (pyramid without a top is just a base)");
     }
 
     @Override

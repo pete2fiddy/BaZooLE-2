@@ -154,4 +154,11 @@ public class LayeredSolidShape extends SolidShape
             g.drawPolygon(threadedVisibleSidePolygons.get(i));   
         }   
     }
+
+    @Override
+    void fillExcludingTop(Graphics g) 
+    {
+        fill(g);
+        System.out.println("fillExcludingTop defers to filling normally");
+    }
 }

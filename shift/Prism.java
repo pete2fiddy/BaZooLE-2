@@ -116,7 +116,35 @@ public class Prism extends SolidShape
     }
 
     @Override
-    void fill(Graphics g) 
+    public void fillExcludingTop(Graphics g)
+    {
+        Color c = g.getColor();
+        //g.setColor(Color.BLUE);
+        Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
+        try{
+            for(Polygon p : sidePolygons)
+            {
+                g.fillPolygon(p);
+            }
+        
+        
+        
+        g.setColor(Color.BLACK);
+        for(Polygon p : threadedVisibleSidePolygons)
+        {
+            g.fillPolygon(p);
+            
+        }
+        
+        shadeSidePolygons(g, sidePolygons, c);
+        }catch(Exception e)
+        {
+             System.out.println("TruncatedPyramid drawExcludingTop called with empty list!");//added because after tiles would be removed to be respawned, truncated pyramids still (for some reason) would try to draw themselves.
+
+        }
+    }
+    @Override
+    public void fill(Graphics g) 
     {
         Color c = g.getColor();
         Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();

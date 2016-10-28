@@ -85,6 +85,44 @@ public class RectPrism extends SolidShape
         //TruncatedPyramid tp = new TruncatedPyramid(1,-2, 0, 0.4, 50, 4, 0.5);
         //tp.draw(g);
     }
+    
+    
+    
+    @Override
+    public void fillExcludingTop(Graphics g)
+    {
+        Color c = g.getColor();
+        //g.setColor(Color.BLUE);
+        int[][] upperPoints = threadedUpperPoints;//getUpperBoundingShapePolyPoints();
+        //int[][] lowerPoints = getLowerBoundingShapePolyPoints();
+        //g.fillPolygon(upperPoints[0], upperPoints[1], upperPoints[0].length);
+        //g.fillPolygon(lowerPoints[0], lowerPoints[1], lowerPoints[0].length);
+        //g.setColor(Color.BLUE);
+        //int[][] leftPoints = getLeftBoundingShapePolyPoints();
+        //int[][] rightPoints = getRightBoundingShapePolyPoints();
+        g.fillPolygon(threadedVisibleSidePolygons[0]);
+        g.fillPolygon(threadedVisibleSidePolygons[1]);
+        
+        g.setColor(Color.BLACK);
+        
+        //g.drawPolygon(upperPoints[0], upperPoints[1], upperPoints[0].length);
+        //g.drawPolygon(lowerPoints[0], lowerPoints[1], lowerPoints[0].length);
+        
+        g.fillPolygon(threadedVisibleSidePolygons[0]);
+        g.fillPolygon(threadedVisibleSidePolygons[1]);
+        
+        //paintShading(g);
+        Polygon[] poly = threadedVisibleSidePolygons;
+        shadeSidePolygons(g, poly, c);
+        
+        //Pyramid py = new Pyramid(3, 3, 0, 1, 100, 8);
+        //py.draw(g);
+        //FlatShape stretchShape = new FlatShape(-3, -2, 0, 1, 2, 4);
+        //g.fillPolygon(stretchShape.getShapePolyPoints()[0], stretchShape.getShapePolyPoints()[1], stretchShape.getNumSides());
+        //TruncatedPyramid tp = new TruncatedPyramid(1,-2, 0, 0.4, 50, 4, 0.5);
+        //tp.draw(g);
+    }
+    
     public void paintShading(Graphics g) 
     {
         Color c = g.getColor();

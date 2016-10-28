@@ -109,6 +109,27 @@ public class TruncatedPyramid extends SolidShape
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public void fillExcludingTop(Graphics g)
+    {
+        Color c = g.getColor();
+        //g.setColor(Color.BLUE);
+        Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
+        for(Polygon p : sidePolygons)
+        {
+            g.fillPolygon(p);
+        }
+        //int[][] topShapePoints = topShape.getShapePolyPoints();
+        //g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
+        g.setColor(Color.BLACK);
+        for(Polygon p : threadedVisibleSidePolygons)
+        {
+            g.drawPolygon(p);
+            
+        }
+        shadeSidePolygons(g, sidePolygons,c);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public void drawExcludingTop(Graphics g) 
     {
         Color c = g.getColor();
@@ -144,10 +165,6 @@ public class TruncatedPyramid extends SolidShape
         Color c = g.getColor();
         try {
             Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
-            for(Polygon p : sidePolygons)
-            {
-                //g.fillPolygon(p);
-            }
             int[][] topShapePoints = topShape.getShapePolyPoints();
             g.fillPolygon(topShapePoints[0], topShapePoints[1], topShapePoints[0].length);
 
