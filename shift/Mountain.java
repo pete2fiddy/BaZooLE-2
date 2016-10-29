@@ -23,10 +23,11 @@ public class Mountain
     private int[] xPoints, yPoints;
     private Polygon mountainPolygon;
     private Point topPoint;
+    
     /*
     Initialization:
     */
-    public Mountain(double xIn, double yIn, int mountainType, int sortDistanceIn, double minScale)
+    public Mountain(double xIn, int mountainType, int sortDistanceIn, double minScale)
     {
         x = xIn;
         relX = (x-WorldPanel.worldX);
@@ -118,13 +119,8 @@ public class Mountain
     */
     
     
-    
-    
-    
-    
     public void draw(Graphics g, Area a, Area drawnArea, Area undrawnArea, int mountainCount, Mountain[] mountains, Area screenArea)
     {
-        
         Graphics2D g2 = (Graphics2D)g;
         
         Area underMapArea = new Area(new Rectangle(0,(int)WorldPanel.worldY-5,WorldPanel.screenWidth, (int)(20*WorldPanel.scale)));
@@ -135,13 +131,6 @@ public class Mountain
         int grayInc = 5;
         Color backgroundColor = new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance);
         Color backdropColor;
-        
-        /*if(mountainCount > 0 && mountains[mountainCount-1] != null)
-        {
-            backdropColor = getMountainBehindColor(mountainCount, mountains);
-        }else{
-            backdropColor = backgroundColor;
-        }*/
         Mountain[] lowerMountains = getLowerMountains();
         g.setColor(backgroundColor);
         Area thisMountainArea = new Area(getScaledMountainPolygon(1));
@@ -161,17 +150,11 @@ public class Mountain
                 g2.fill(resizedArea);
             }
         }
-        //int grayInc = 5;
         g.setColor(backgroundColor);
-        //Area thisMountainArea = new Area(getScaledMountainPolygon(1));
-        
         thisMountainArea.subtract(underMapArea);
         thisMountainArea.subtract(undrawnArea);
         thisMountainArea.intersect(screenArea);
-        //thisMountainArea.subtract(drawnArea);
         g2.fill(thisMountainArea);
-        //g.fillPolygon(getScaledPolygon(1));
-        
         g2.setStroke(new BasicStroke(1));
     }
     
@@ -235,26 +218,6 @@ public class Mountain
         return new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance);
     }
     
-    public Color getMountainBehindColor(int mountainCount, Mountain[] mountains)
-    {
-        Color returnColor = new Color(0,0,0);
-        boolean colorFound = false;
-        Area thisArea = new Area(getMountainPolygon());
-        for(int i = mountainCount; i > 0; i--)
-        {
-            if(thisArea.contains(mountains[i].getMountainPolygon().getBounds()))
-            {
-                colorFound = true;
-                returnColor = getColorAtSortDistance(mountains[i].getSortDistance());
-            }
-        }
-        if(colorFound)
-        {
-            return returnColor;
-        }
-        return getColorAtSortDistance(sortDistance);
-    }
-    
     public double getX()
     {
         return x;
@@ -296,5 +259,25 @@ public class Mountain
         int green = (int)(shadeColor.getGreen() + ((1-alphaNum)*(backgroundColor.getGreen()-shadeColor.getGreen())));
         int blue = (int)(shadeColor.getBlue() + ((1-alphaNum)*(backgroundColor.getBlue()-shadeColor.getBlue())));
         return new Color(red, green, blue);
+    }*/
+    
+    /*public Color getMountainBehindColor(int mountainCount, Mountain[] mountains)
+    {
+        Color returnColor = new Color(0,0,0);
+        boolean colorFound = false;
+        Area thisArea = new Area(getMountainPolygon());
+        for(int i = mountainCount; i > 0; i--)
+        {
+            if(thisArea.contains(mountains[i].getMountainPolygon().getBounds()))
+            {
+                colorFound = true;
+                returnColor = getColorAtSortDistance(mountains[i].getSortDistance());
+            }
+        }
+        if(colorFound)
+        {
+            return returnColor;
+        }
+        return getColorAtSortDistance(sortDistance);
     }*/
 }

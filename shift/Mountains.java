@@ -6,6 +6,9 @@ import java.awt.geom.Area;
 
 /*
 Holds and draws all the mountains in the background.
+Issue: Mountains is a mostly static class, and if I wanted to have multiple sets of mountains
+using the mountains class as a container, I couldn't. I can't forsee myself needing more than
+one list of mountains, so I haven't taken efforts to fix this. 
 */
 public class Mountains 
 {
@@ -20,15 +23,14 @@ public class Mountains
     
     public static void fillMountainList()
     {
-        int zPos = 995;
         int centerScreen = (int)((double)WorldPanel.screenWidth/(2.0));
-        mountainList[0] = new Mountain(centerScreen+(int)((double)((-57)-centerScreen)/WorldPanel.minScale),zPos, 1, 4, WorldPanel.minScale);
-        mountainList[1] = new Mountain(centerScreen+(int)((double)(145-centerScreen)/WorldPanel.minScale),zPos, 2, 3,WorldPanel.minScale);
-        mountainList[6] = new Mountain(centerScreen+(int)((double)(298-centerScreen)/WorldPanel.minScale),zPos, 3,0,WorldPanel.minScale);
-        mountainList[5] = new Mountain(centerScreen+(int)((double)(468-centerScreen)/WorldPanel.minScale),zPos, 4,1,WorldPanel.minScale);
-        mountainList[4] = new Mountain(centerScreen+(int)((double)(635-centerScreen)/WorldPanel.minScale),zPos, 5,2,WorldPanel.minScale);
-        mountainList[2] = new Mountain(centerScreen+(int)((double)(845-centerScreen)/WorldPanel.minScale),zPos, 6, 4,WorldPanel.minScale);
-        mountainList[3] = new Mountain(centerScreen+(int)((double)(1091-centerScreen)/WorldPanel.minScale),zPos, 7, 3,WorldPanel.minScale);
+        mountainList[0] = new Mountain(centerScreen+(int)((double)((-57)-centerScreen)/WorldPanel.minScale), 1, 4, WorldPanel.minScale);
+        mountainList[1] = new Mountain(centerScreen+(int)((double)(145-centerScreen)/WorldPanel.minScale), 2, 3,WorldPanel.minScale);
+        mountainList[6] = new Mountain(centerScreen+(int)((double)(298-centerScreen)/WorldPanel.minScale), 3,0,WorldPanel.minScale);
+        mountainList[5] = new Mountain(centerScreen+(int)((double)(468-centerScreen)/WorldPanel.minScale), 4,1,WorldPanel.minScale);
+        mountainList[4] = new Mountain(centerScreen+(int)((double)(635-centerScreen)/WorldPanel.minScale), 5,2,WorldPanel.minScale);
+        mountainList[2] = new Mountain(centerScreen+(int)((double)(845-centerScreen)/WorldPanel.minScale), 6, 4,WorldPanel.minScale);
+        mountainList[3] = new Mountain(centerScreen+(int)((double)(1091-centerScreen)/WorldPanel.minScale), 7, 3,WorldPanel.minScale);
     }
     /*
     ----------------------------------------------------------------------------
