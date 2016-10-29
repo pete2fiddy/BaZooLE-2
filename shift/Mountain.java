@@ -15,7 +15,7 @@ public class Mountain
     private double relX;
     private Point[] mountainPoints;
     private int height;
-    private double x, y;
+    private double x;
     private double dSpin;
     private double spin = 0;
     private double spinRadius;
@@ -23,11 +23,13 @@ public class Mountain
     private int[] xPoints, yPoints;
     private Polygon mountainPolygon;
     private Point topPoint;
+    /*
+    Initialization:
+    */
     public Mountain(double xIn, double yIn, int mountainType, int sortDistanceIn, double minScale)
     {
         x = xIn;
         relX = (x-WorldPanel.worldX);
-        y = yIn;
         dSpin = Math.toRadians(0.75+Math.random());
         fillMountainPoints(mountainType, minScale);
         sortDistance = sortDistanceIn;
@@ -35,15 +37,16 @@ public class Mountain
         setMountainPolygon();
     }
     
-    public int getSortDistance()
-    {
-        return sortDistance;
-    }
     
+    
+    /*
+    Populates the list of mountain points (baseMountainPoints, they are scaled and moved around based on position and scale of the world)
+    MountainType is the type of mountain it is, of which there are seven. Each mountain type has it's own mountain polygon.
+    */
     private void fillMountainPoints(int mountainType, double minScale)
     {
         switch(mountainType)
-        {//switched from using points to int x and y vals
+        {
             case 1:
                 mountainPoints = new Point[3];
                 mountainPoints[0] = new Point(0,(int)(479.0/minScale));
@@ -109,102 +112,20 @@ public class Mountain
         }
     }
     
-    private void setMountainPolygon()
-    {
-        y=WorldPanel.worldY-spinRadius;
-        xPoints = new int[mountainPoints.length];
-        yPoints = new int[mountainPoints.length];
-        int centerX = (int)(mountainPoints[mountainPoints.length-1].getX()/2);
-        for(int i = 0; i < mountainPoints.length; i++)
-        {
-            xPoints[i] = (int)(WorldPanel.worldX + WorldPanel.scale*relX + (mountainPoints[i].getX()*WorldPanel.scale));
-            //xPoints[i] = (int)(WorldPanel.worldX + WorldPanel.scale*(x-WorldPanel.worldX) + ((mountainPoints[i].getX()*WorldPanel.scale)));
-            //xPoints[i]=(int)(WorldPanel.worldX+WorldPanel.scale*(x-WorldPanel.worldX)+(mountainPoints[i].getX()*WorldPanel.scale));
-            yPoints[i]=(int)(WorldPanel.worldY-(height*WorldPanel.scale)+(mountainPoints[i].getY()*WorldPanel.scale) - (WorldPanel.scale*Math.sin(spin)*spinRadius));
-        }
-        mountainPolygon = new Polygon(xPoints, yPoints, xPoints.length);
-        
-    }
+    /*
+    ----------------------------------------------------------------------------
+    Painting:
+    */
     
-    /*private Polygon resizePolygon(int xPoints[], int yPoints[], double x, double y, double scale)
-    {
-        //Polygon poly = (Polygon)p.clone();
-        int xPoints2[] = new int[xPoints.length];
-        int yPoints2[] = new int[yPoints.length];
-        
-        for(int i = 0; i < xPoints.length; i++)
-        {
-            xPoints2[i]= (int)(xPoints[i]-(x/WorldPanel.scale));
-            yPoints2[i] = (int)(yPoints[i]-(y/WorldPanel.scale));
-        }
-        int centerX = (int)((double)(xPoints[xPoints.length-1])/2.0);
-        int height = (int)(new Polygon(xPoints, yPoints, xPoints.length).getBoundingBox().getHeight()*WorldPanel.scale);
-        System.out.println(centerX);
-        for(int i = 0; i < xPoints.length; i++)
-        {
-            int dx = xPoints[i]-centerX;
-            
-            xPoints2[i] = (int)( centerX + scale*(dx));
-            yPoints2[i] = (int)(y-height + scale*yPoints[i]);
-        }
-        return new Polygon(xPoints2, yPoints2, xPoints2.length);
-    }*/
     
-    private Polygon getScaledPolygon(double scale)
-    {
-        //y=WorldPanel.worldY;
-        int[] xPoints2 = new int[mountainPoints.length];
-        int[] yPoints2 = new int[mountainPoints.length];
-        double normalWidth = (topPoint.getX()*WorldPanel.scale);
-        int centerX = (int)(mountainPoints[mountainPoints.length-1].getX()/2);
-        for(int i = 0; i < mountainPoints.length; i++)
-        {
-            double amountShift = ((normalWidth*scale)-normalWidth);
-            xPoints2[i] = (int)(WorldPanel.worldX + WorldPanel.scale*relX + (mountainPoints[i].getX()*WorldPanel.scale*scale)-amountShift);
-            //xPoints[i] = (int)(WorldPanel.worldX + WorldPanel.scale*(x-WorldPanel.worldX) + ((mountainPoints[i].getX()*WorldPanel.scale)));
-            //xPoints[i]=(int)(WorldPanel.worldX+WorldPanel.scale*(x-WorldPanel.worldX)+(mountainPoints[i].getX()*WorldPanel.scale));
-            yPoints2[i]=(int)(WorldPanel.worldY-(height*WorldPanel.scale*scale)+(mountainPoints[i].getY()*WorldPanel.scale*scale) - (WorldPanel.scale*Math.sin(spin)*spinRadius));
-        }
-        return new Polygon(xPoints2, yPoints2, xPoints2.length);
-        
-    }
     
-    public double getX()
-    {
-        return x;
-    }
+    
+    
     
     public void draw(Graphics g, Area a, Area drawnArea, Area undrawnArea, int mountainCount, Mountain[] mountains, Area screenArea)
     {
         
         Graphics2D g2 = (Graphics2D)g;
-        
-        //Composite originalComposite = g2.getComposite();
-        
-        
-        
-        
-        
-        /*int upperAlpha = 120;
-        int lowerAlpha = 20;
-        int numShades = 10;
-        
-        
-        //Area shaderArea = new Area();
-        for(int i = 1; i < numShades+1; i++)
-        {
-            Area aCopy = (Area)a.clone();
-            aCopy.intersect(new Area(getScaledPolygon(1+.1*((double)i/(double)numShades))));
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)(((((upperAlpha) - (lowerAlpha)))/numShades)/255.0));
-            g2.setComposite(ac);
-            
-            
-            g.setColor(new Color(65, 0, 120));
-            g2.fill(aCopy);
-        }
-        g2.setComposite(originalComposite);*/
-        
-        Area shadeArea = new Area(getScaledPolygon(1));
         
         Area underMapArea = new Area(new Rectangle(0,(int)WorldPanel.worldY-5,WorldPanel.screenWidth, (int)(20*WorldPanel.scale)));
         double lowerAlpha = 0.07843137254902;
@@ -213,37 +134,36 @@ public class Mountain
         Color shadeColor = new Color(65, 0, 120);
         int grayInc = 5;
         Color backgroundColor = new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance);
-        /*for(int i = numShades+1; i > 1; i--)
-        {
-            Polygon resizedPolygon = getScaledPolygon(1+.1*((double)i/(double)numShades));
-            Area resizedArea = new Area(resizedPolygon);
-            resizedArea.subtract(a);
-            g.setColor(Color.BLUE);
-            g2.fill(resizedArea);
-        }*/
         Color backdropColor;
-        if(mountainCount > 0 && mountains[mountainCount-1] != null)
+        
+        /*if(mountainCount > 0 && mountains[mountainCount-1] != null)
         {
             backdropColor = getMountainBehindColor(mountainCount, mountains);
         }else{
             backdropColor = backgroundColor;
-        }
-        for(int i = numShades+1; i > 1; i--)
+        }*/
+        Mountain[] lowerMountains = getLowerMountains();
+        g.setColor(backgroundColor);
+        Area thisMountainArea = new Area(getScaledMountainPolygon(1));
+        for(Mountain m : lowerMountains)
         {
-            Area resizedArea = new Area(getScaledPolygon(1+0.1*(double)i/(double)numShades));
-            resizedArea.intersect(drawnArea);
-            //Area drawnCopy = (Area)drawnArea.clone();
-            //resizedArea.intersect(drawnCopy);
-            double alphaNum = upperAlpha - i*((upperAlpha-lowerAlpha)/(double)numShades);
-            g.setColor(getAlphaColor(alphaNum,shadeColor, backdropColor));
-            resizedArea.subtract(underMapArea);
-            resizedArea.intersect(screenArea);
-            g2.fill(resizedArea);
+            backdropColor = getColorAtSortDistance(m.getSortDistance());
+            for(int i = numShades+1; i > 1; i--)
+            {
+                Area resizedArea = new Area(getScaledMountainPolygon(1+0.1*(double)i/(double)numShades));
+                resizedArea.intersect(drawnArea);
+                double alphaNum = upperAlpha - i*((upperAlpha-lowerAlpha)/(double)numShades);
+                g.setColor(ColorPalette.getLerpColor(shadeColor, backdropColor, alphaNum));//getAlphaColor(alphaNum,shadeColor, backdropColor));
+                resizedArea.subtract(underMapArea);
+                resizedArea.intersect(screenArea);
+                resizedArea.intersect(new Area(m.getScaledMountainPolygon(1)));
+                resizedArea.subtract(thisMountainArea);
+                g2.fill(resizedArea);
+            }
         }
-        
         //int grayInc = 5;
         g.setColor(backgroundColor);
-        Area thisMountainArea = new Area(getScaledPolygon(1));
+        //Area thisMountainArea = new Area(getScaledMountainPolygon(1));
         
         thisMountainArea.subtract(underMapArea);
         thisMountainArea.subtract(undrawnArea);
@@ -253,14 +173,66 @@ public class Mountain
         //g.fillPolygon(getScaledPolygon(1));
         
         g2.setStroke(new BasicStroke(1));
-       
-        
-        //g.setColor(Color.BLUE);
-        //g2.fill(aCopy);
-        //g2.fill(a);
-        /*g.setColor(Color.BLACK);
-        g2.setStroke(new BasicStroke(1));
-        g.drawPolygon(xPoints, yPoints, xPoints.length);*/
+    }
+    
+    /*
+    ----------------------------------------------------------------------------
+    Getters:
+    */
+    
+    private Mountain[] getLowerMountains()
+    {
+        Mountain[] mountains = new Mountain[0];
+        for(Mountain m : Mountains.mountainList)
+        {
+            if(m.getSortDistance() > sortDistance)
+            {
+                mountains = addMountain(mountains, m);
+            }
+        }
+        System.out.println(mountains.length);
+        return mountains;
+    }
+    
+    private Mountain[] addMountain(Mountain[] mountains, Mountain mountain)
+    {
+        Mountain[] mountainReturn = new Mountain[mountains.length+1];
+        for(int i = 0; i < mountains.length; i++)
+        {
+            mountainReturn[i] = mountains[i];
+        }
+        mountainReturn[mountains.length] = mountain;
+        return mountainReturn;
+    }
+    
+    private Polygon getScaledMountainPolygon(double scale)
+    {
+        int[] xPoints2 = new int[mountainPoints.length];
+        int[] yPoints2 = new int[mountainPoints.length];
+        double normalWidth = (topPoint.getX()*WorldPanel.scale);
+        for(int i = 0; i < mountainPoints.length; i++)
+        {
+            double amountShift = ((normalWidth*scale)-normalWidth);
+            xPoints2[i] = (int)(WorldPanel.worldX + WorldPanel.scale*relX + (mountainPoints[i].getX()*WorldPanel.scale*scale)-amountShift);
+            yPoints2[i]=(int)(WorldPanel.worldY-(height*WorldPanel.scale*scale)+(mountainPoints[i].getY()*WorldPanel.scale*scale) - (WorldPanel.scale*Math.sin(spin)*spinRadius));
+        }
+        return new Polygon(xPoints2, yPoints2, xPoints2.length);
+    }
+    
+    public int getSortDistance()
+    {
+        return sortDistance;
+    }
+    
+    public Polygon getMountainPolygon()
+    {
+        return mountainPolygon;
+    }
+    
+    public Color getColorAtSortDistance(int sortDistance)
+    {
+        int grayInc = 5;
+        return new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance);
     }
     
     public Color getMountainBehindColor(int mountainCount, Mountain[] mountains)
@@ -273,32 +245,37 @@ public class Mountain
             if(thisArea.contains(mountains[i].getMountainPolygon().getBounds()))
             {
                 colorFound = true;
-                returnColor = getColor(mountains[i].getSortDistance());
+                returnColor = getColorAtSortDistance(mountains[i].getSortDistance());
             }
         }
         if(colorFound)
         {
             return returnColor;
         }
-        return getColor(sortDistance);
+        return getColorAtSortDistance(sortDistance);
     }
     
-    public Color getColor(int sortDistance)
+    public double getX()
     {
-        int grayInc = 5;
-        return new Color(Color.GRAY.getRed() - grayInc * sortDistance, Color.GRAY.getGreen() - grayInc * sortDistance, Color.GRAY.getBlue() - grayInc * sortDistance);
+        return x;
     }
     
-    private Color getAlphaColor(double alphaNum, Color shadeColor, Color backgroundColor)
+    /*
+    ----------------------------------------------------------------------------
+    Setters:
+    */
+    
+    private void setMountainPolygon()
     {
+        xPoints = new int[mountainPoints.length];
+        yPoints = new int[mountainPoints.length];
+        for(int i = 0; i < mountainPoints.length; i++)
+        {
+            xPoints[i] = (int)(WorldPanel.worldX + WorldPanel.scale*relX + (mountainPoints[i].getX()*WorldPanel.scale));
+            yPoints[i]=(int)(WorldPanel.worldY-(height*WorldPanel.scale)+(mountainPoints[i].getY()*WorldPanel.scale) - (WorldPanel.scale*Math.sin(spin)*spinRadius));
+        }
+        mountainPolygon = new Polygon(xPoints, yPoints, xPoints.length);
         
-        //int red = (int)(shadeColor.getRed() + (alphaNum*(backgroundColor.getRed()-shadeColor.getRed())));
-        //int green = (int)(shadeColor.getGreen() + (alphaNum*(backgroundColor.getGreen()-shadeColor.getGreen())));
-        //int blue = (int)(shadeColor.getBlue() + (alphaNum*(backgroundColor.getBlue()-shadeColor.getBlue())));
-        int red = (int)(shadeColor.getRed() + ((1-alphaNum)*(backgroundColor.getRed()-shadeColor.getRed())));
-        int green = (int)(shadeColor.getGreen() + ((1-alphaNum)*(backgroundColor.getGreen()-shadeColor.getGreen())));
-        int blue = (int)(shadeColor.getBlue() + ((1-alphaNum)*(backgroundColor.getBlue()-shadeColor.getBlue())));
-        return new Color(red, green, blue);
     }
     
     public void moveMountain()
@@ -311,8 +288,13 @@ public class Mountain
         setMountainPolygon();
     }
     
-    public Polygon getMountainPolygon()
+    /*DELETABLE*/
+    
+    /*private Color getAlphaColor(double alphaNum, Color shadeColor, Color backgroundColor)
     {
-        return mountainPolygon;
-    }
+        int red = (int)(shadeColor.getRed() + ((1-alphaNum)*(backgroundColor.getRed()-shadeColor.getRed())));
+        int green = (int)(shadeColor.getGreen() + ((1-alphaNum)*(backgroundColor.getGreen()-shadeColor.getGreen())));
+        int blue = (int)(shadeColor.getBlue() + ((1-alphaNum)*(backgroundColor.getBlue()-shadeColor.getBlue())));
+        return new Color(red, green, blue);
+    }*/
 }

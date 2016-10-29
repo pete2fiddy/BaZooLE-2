@@ -12,7 +12,7 @@ public class Mountains
     /*
     Initialization:
     */
-    private static Mountain[] mountainList = new Mountain[7];
+    public static Mountain[] mountainList = new Mountain[7];
     public Mountains()
     {
         fillMountainList();
