@@ -112,7 +112,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         frameTimer.start();
         
         Toolbox.setWorldPanel(this);
-        Toolbox.setPlayer(player);
+        Toolbox.setToolboxPlayer(player);
     }
     
     /*

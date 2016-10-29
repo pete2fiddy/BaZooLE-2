@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.awt.Color;
@@ -12,10 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
-/**
- *
- * @author phusisian
- */
 public class DayNight implements ActionListener
 {
     private final double starSpeed = .05;
@@ -299,7 +290,6 @@ public class DayNight implements ActionListener
             removeSeasonalScenery(season);
             ColorPalette.grassColor = ColorPalette.defaultSnowColor;
             //Toolbox.grassColor = Toolbox.defaultSnowColor;
-            WorldPanel.grassImage = Toolbox.defaultSnowImage;
             Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;
             shortenGrass(3);
         }else if(season.equals("winter"))
@@ -310,7 +300,6 @@ public class DayNight implements ActionListener
             removeSeasonalScenery(season);
             ColorPalette.grassColor = ColorPalette.defaultGrassColor;
             //Toolbox.grassColor = Toolbox.defaultGrassColor;
-            WorldPanel.grassImage = Toolbox.defaultGrassImage;
             Grass.lowGrassShade = Grass.defaultLowGrassShade;
             restoreGrassHeight();
         }
@@ -334,7 +323,7 @@ public class DayNight implements ActionListener
             ColorPalette.nightShadeAlpha = ColorPalette.nightShadeAlpha + ColorPalette.maxNightShadeAlpha*((double)timerIncrement/1000.0)/(double)transitSeconds;
             ColorPalette.updateShadedGrassColor();
             //ColorPalette.nightShadeAlpha = ColorPalette.nightShadeAlpha+Toolbox.maxNightShade*((double)timerIncrement/1000.0)/(double)transitSeconds;
-            WorldPanel.waterColor = ColorPalette.ColorPalette.getLerpColor(ColorPalette.shadeColor, WorldPanel.baseWaterColor, ColorPalette.nightShadeAlpha);
+            WorldPanel.waterColor = ColorPalette.getLerpColor(ColorPalette.shadeColor, WorldPanel.baseWaterColor, ColorPalette.nightShadeAlpha);
             sun.controlSun(-(((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(dayColor.getRed() + (secondsTicked/(double)transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(dayColor.getGreen() + (secondsTicked/(double)transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 
@@ -344,7 +333,7 @@ public class DayNight implements ActionListener
             ColorPalette.updateShadedGrassColor();
             ColorPalette.nightShadeAlpha = ColorPalette.nightShadeAlpha - ColorPalette.maxNightShadeAlpha*((double)timerIncrement/1000.0)/(double)transitSeconds;
             //ColorPalette.nightShadeAlpha = ColorPalette.nightShadeAlpha - Toolbox.maxNightShade*(((double)timerIncrement/1000.0))/(double)transitSeconds;
-            WorldPanel.waterColor = ColorPalette.ColorPalette.getLerpColor(ColorPalette.shadeColor, WorldPanel.baseWaterColor, ColorPalette.nightShadeAlpha);
+            WorldPanel.waterColor = ColorPalette.getLerpColor(ColorPalette.shadeColor, WorldPanel.baseWaterColor, ColorPalette.nightShadeAlpha);
             sun.controlSun((((double)timerIncrement/1000.0)/(double)transitSeconds) * sun.getBaseMaxHeight());
             color = new Color((int)(nightColor.getRed() - (secondsTicked/transitSeconds)*(nightColor.getRed() - dayColor.getRed())),
             (int)(nightColor.getGreen() - (secondsTicked/transitSeconds)*(nightColor.getGreen() - dayColor.getGreen())), 

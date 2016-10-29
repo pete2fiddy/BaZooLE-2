@@ -61,7 +61,7 @@ public class Toolbox
         
     }
     
-     public static void setPlayer(Player p){player = p;}
+     public static void setToolboxPlayer(Player p){player = p;}
      public static void setWorldPanel(WorldPanel wpIn){worldPanel = wpIn;}
     
     
