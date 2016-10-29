@@ -57,7 +57,8 @@ public class TileDrawer2 implements Runnable, ActionListener
             wr.draw(g);
         }
         worldPanel.drawTransparentGridLines(g);
-        mbt.draw(g);
+        mbt.updateAreas();
+        mbt.drawBackEdges(g);
         for(int i = 0; i < tileList.size(); i++)
         {
             if(tileList.get(i).getClass() != BlockTile.class)
@@ -93,7 +94,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             wd.draw(g);
         }
-        mbt.drawFrontArea(g);
+        mbt.drawFrontEdges(g);
         
         for(Cloud c : clouds)
         {
@@ -230,6 +231,10 @@ public class TileDrawer2 implements Runnable, ActionListener
                 TileDrawer2.tileList.get(i).setThread(t);
                 t.start();
 
+            }
+            for(WaterRipple wr : waterRipples)
+            {
+                wr.update();
             }
             worldPanel.getPlayer().tick();
         }

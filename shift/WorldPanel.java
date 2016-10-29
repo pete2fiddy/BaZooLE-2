@@ -84,6 +84,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //"talk-to" instances created.
         td2 = new TileDrawer2(this);
         tick();
+        ColorPalette.updateShadedGrassColor();
     }
     
     /*
@@ -179,6 +180,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
         ui.draw(g);//draws UI elements like level, etc.*/
+        drawDebugInfo(g);
+        drawRotationLine(g);
     }
     
     /*

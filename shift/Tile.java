@@ -1515,6 +1515,74 @@ public abstract class Tile extends Toolbox implements Runnable
         
     }
     
+    public void drawClippedShadedSides(Graphics g, Area clipArea, Color lowerColor)
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        Color darkColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        //g.setColor(darkColor);
+        //g.fillPolygon(sidePolygons[0]);
+        //Polygon[] sides = sidePolygons.clone();
+        //g.setColor(lightColor);
+        //g.fillPolygon(sidePolygons[1]);
+        //int numSides = sides.length;
+        //System.out.println("Dark Color " + darkColor);
+        //System.out.println("Light Color " + lightColor);
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        //double dr = (double)(lightColor.getRed()-darkColor.getRed())/(double)(2-1);
+        ///double dg = (double)(lightColor.getGreen()-darkColor.getGreen())/(double)(2-1);
+        //double db = (double)(lightColor.getBlue()-darkColor.getBlue())/(double)(2-1);
+        //g.setColor(new Color((int)(darkColor.getRed()), (int)(darkColor.getGreen()), (int)(darkColor.getBlue())));
+        g.setColor(lightColor);
+        Area rightArea = new Area(new Polygon(rightPoints[0], rightPoints[1], rightPoints[0].length));
+        rightArea.intersect(clipArea);
+        g2.fill(rightArea);
+        //g.fillPolygon(rightPoints[0], rightPoints[1], rightPoints[0].length);
+        g.setColor(darkColor);
+        Area leftArea = new Area(new Polygon(leftPoints[0], leftPoints[1], leftPoints[0].length));
+        leftArea.intersect(clipArea);
+        g2.fill(leftArea);
+        
+        //g.fillPolygon(leftPoints[0], leftPoints[1], leftPoints[0].length);
+        //g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+
+        /*for (int i = 0; i < 2; i++) {
+            g.setColor(new Color((int)(darkColor.getRed() + dr*i), (int)(darkColor.getGreen() + dg*i), (int)(darkColor.getBlue() + db*i)));
+            //g.fillPolygon(rightPoints[i]);
+        }*/
+        /*
+        int[][] leftPoints = getLeftSidePoints();
+        int[][] rightPoints = getRightSidePoints();
+        double leftAlpha = 0.31372549019608-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        
+        
+        if(thisClicked)
+        {
+            g.setColor(ColorPalette.getLerpColor(Color.RED,ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha),0.5));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }else{
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha));
+            g.fillPolygon(leftPoints[0],leftPoints[1],4);
+        }
+        
+        //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
+        double rightAlpha = 0.19607843137255-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        if(thisClicked)
+        {
+            g.setColor(ColorPalette.getLerpColor(Color.RED, ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha),0.5));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+            
+        }else{
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha));
+            g.fillPolygon(rightPoints[0], rightPoints[1],4);
+        }
+        
+        
+        //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);*/
+        
+    }
+    
     public void shadeSides(Graphics g)
     {
         int leftAlpha = 80-(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));

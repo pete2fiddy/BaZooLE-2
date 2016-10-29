@@ -173,7 +173,6 @@ public class Mountain
                 mountains = addMountain(mountains, m);
             }
         }
-        System.out.println(mountains.length);
         return mountains;
     }
     
