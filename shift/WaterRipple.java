@@ -43,7 +43,7 @@ public class WaterRipple extends Toolbox
             double pos[] = convertToPoint(x, y);
             for(int i = 1; i < numCircles+1; i++)
             {
-                g.setColor(getLerpColor(color, WorldPanel.waterColor, (double)(((54+(((int)(200*((initialScale*1.5)-scale)))/(double)i))))/255.0));
+                g.setColor(ColorPalette.getLerpColor(color, WorldPanel.waterColor, (double)(((54+(((int)(200*((initialScale*1.5)-scale)))/(double)i))))/255.0));
                 //g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(54+(((int)(200*((initialScale*1.5)-scale)))/(double)i))));
                 g.drawOval((int)(pos[0]-(baseRadius*scale*i*WorldPanel.scale)), (int)(pos[1]-(baseRadius*scale*i*WorldPanel.scale*WorldPanel.getShrink)), (int)(baseRadius*2*i*scale*WorldPanel.scale), (int)(baseRadius*2*i*scale*WorldPanel.scale*WorldPanel.getShrink));
                 //g.drawOval((int)(pos[0]-(baseRadius*scale*i)), (int)(pos[1]-(baseRadius*scale.WorldPanel.getShrink*i)), (int)(baseRadius*2*scale*i), (int)(baseRadius*2*scale*WorldPanel.scale*WorldPanel.getShrink));

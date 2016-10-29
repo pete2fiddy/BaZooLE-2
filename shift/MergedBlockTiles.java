@@ -59,7 +59,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     public void drawFrontArea(Graphics g)
     {
         Graphics2D g2 = (Graphics2D)g;
-        Color lerpedColor = getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd);
+        Color lerpedColor = ColorPalette.getLerpColor(ColorPalette.shadeColor, ColorPalette.grassColor, ColorPalette.nightShadeAlpha);
         g.setColor(lerpedColor);
         //g2.fill(getFrontArea());
         for(Polygon p : getFrontPolygons())
@@ -97,7 +97,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
     {
         Graphics2D g2 = (Graphics2D)g;
         
-        Color lerpedGrass = getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd);
+        Color lerpedGrass = ColorPalette.getLerpColor(ColorPalette.shadeColor, ColorPalette.grassColor, ColorPalette.nightShadeAlpha);
         g.setColor(lerpedGrass);
         
         //g.setColor(Color.BLACK);
@@ -124,7 +124,7 @@ public class MergedBlockTiles extends Toolbox implements Runnable
             //t.drawWaterReflectionCover(g);
             
         }
-        g.setColor(getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd));
+        g.setColor(ColorPalette.getLerpColor(ColorPalette.shadeColor, ColorPalette.grassColor, ColorPalette.nightShadeAlpha));
         //g2.fill(getBackArea());
         g.setColor(Color.BLACK);
         for(Tile t : getBackTiles())

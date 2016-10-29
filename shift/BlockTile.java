@@ -46,7 +46,7 @@ public class BlockTile extends Tile
     public void draw(Graphics g)
     {
         //Graphics2D g2 = (Graphics2D)g;
-        Color c = getLerpColor(Toolbox.shadeColor, ColorPalette.grassColor, Toolbox.nightShadeAdd);
+        Color c = ColorPalette.getLerpColor(ColorPalette.shadeColor, ColorPalette.grassColor, ColorPalette.nightShadeAlpha);
         g.setColor(c);
         g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
         if(isEdgeBlock)

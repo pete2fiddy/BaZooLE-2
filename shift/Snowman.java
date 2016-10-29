@@ -162,7 +162,7 @@ public class Snowman extends Scenery
             for(RectPrism r : shapes)
             {
                 r.updateShapePolygons();
-                g.setColor(getLerpColor(Toolbox.shadeColor,r.getColor(), Toolbox.nightShadeAdd));
+                g.setColor(ColorPalette.getLerpColor(ColorPalette.shadeColor,r.getColor(), ColorPalette.nightShadeAlpha));
                 r.fill(g);
                 g.setColor(r.getColor());
                 r.paintShading(g);

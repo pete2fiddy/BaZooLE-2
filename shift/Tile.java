@@ -268,7 +268,7 @@ public abstract class Tile extends Toolbox implements Runnable
                     
                     for(Point p : points)
                     {
-                        if(TileDrawer2.pointCovered(index, (int)p.getX(), (int)p.getY()))
+                        if(RenderCut.pointCovered(index, (int)p.getX(), (int)p.getY()))
                         {
                             numCovered++;
                         }
@@ -1355,7 +1355,7 @@ public abstract class Tile extends Toolbox implements Runnable
         //int red = (int)(c.getRed() - (alphaNum*(c.getRed()-WorldPanel.waterColor.getRed())));
         //int green = (int)(c.getGreen() - (alphaNum*(c.getGreen()-WorldPanel.waterColor.getGreen())));
         //int blue = (int)(c.getBlue() - (alphaNum*(c.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(c, WorldPanel.waterColor, alphaNum));
+        g.setColor(ColorPalette.getLerpColor(c, WorldPanel.waterColor, alphaNum));
         int[][] clone1= getLeftSidePoints();
         int[][] clone2 = getRightSidePoints();
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();int red
@@ -1389,7 +1389,7 @@ public abstract class Tile extends Toolbox implements Runnable
         //red = (int)(c.getRed() - (alphaNum*(c.getRed()-WorldPanel.waterColor.getRed())));
         //green = (int)(c.getGreen() - (alphaNum*(c.getGreen()-WorldPanel.waterColor.getGreen())));
         //blue = (int)(c.getBlue() - (alphaNum*(c.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(c,WorldPanel.waterColor,alphaNum));
+        g.setColor(ColorPalette.getLerpColor(c,WorldPanel.waterColor,alphaNum));
         a = new Area(new Polygon(points2[0], points2[1], points2[0].length));
         a.subtract(WorldPanel.belowMapArea);
         g2.fill(a);
@@ -1411,7 +1411,7 @@ public abstract class Tile extends Toolbox implements Runnable
         //int red = (int)(ColorPalette.grassColor.getRed() - (alphaNum*(ColorPalette.grassColor.getRed()-WorldPanel.waterColor.getRed())));
         //int green = (int)(ColorPalette.grassColor.getGreen() - (alphaNum*(ColorPalette.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
         //int blue = (int)(ColorPalette.grassColor.getBlue() - (alphaNum*(ColorPalette.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
+        g.setColor(ColorPalette.getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
         int[][] clone1= getLeftSidePoints();
         int[][] clone2 = getRightSidePoints();
         int[][] points1 = new int[2][4];//getLeftSidePoints().clone();
@@ -1445,7 +1445,7 @@ public abstract class Tile extends Toolbox implements Runnable
         //red = (int)(ColorPalette.grassColor.getRed() - (alphaNum*(ColorPalette.grassColor.getRed()-WorldPanel.waterColor.getRed())));
         //green = (int)(ColorPalette.grassColor.getGreen() - (alphaNum*(ColorPalette.grassColor.getGreen()-WorldPanel.waterColor.getGreen())));
         //blue = (int)(ColorPalette.grassColor.getBlue() - (alphaNum*(ColorPalette.grassColor.getBlue()-WorldPanel.waterColor.getBlue())));
-        g.setColor(getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
+        g.setColor(ColorPalette.getLerpColor(ColorPalette.grassColor, WorldPanel.waterColor, alphaNum));
         a = new Area(new Polygon(points2[0], points2[1], points2[0].length));
         a.subtract(WorldPanel.belowMapArea);
         g2.fill(a);
@@ -1457,8 +1457,8 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public void drawShadedSides(Graphics g, Color lowerColor)
     {
-        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color darkColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         //g.setColor(darkColor);
         //g.fillPolygon(sidePolygons[0]);
         //Polygon[] sides = sidePolygons.clone();
@@ -1491,10 +1491,10 @@ public abstract class Tile extends Toolbox implements Runnable
         
         if(thisClicked)
         {
-            g.setColor(getLerpColor(Color.RED,getLerpColor(Color.BLACK, color, leftAlpha),0.5));
+            g.setColor(ColorPalette.getLerpColor(Color.RED,ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha),0.5));
             g.fillPolygon(leftPoints[0],leftPoints[1],4);
         }else{
-            g.setColor(getLerpColor(Color.BLACK, color, leftAlpha));
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha));
             g.fillPolygon(leftPoints[0],leftPoints[1],4);
         }
         
@@ -1502,11 +1502,11 @@ public abstract class Tile extends Toolbox implements Runnable
         double rightAlpha = 0.19607843137255-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         if(thisClicked)
         {
-            g.setColor(getLerpColor(Color.RED, getLerpColor(Color.BLACK, color, rightAlpha),0.5));
+            g.setColor(ColorPalette.getLerpColor(Color.RED, ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha),0.5));
             g.fillPolygon(rightPoints[0], rightPoints[1],4);
             
         }else{
-            g.setColor(getLerpColor(Color.BLACK, color, rightAlpha));
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha));
             g.fillPolygon(rightPoints[0], rightPoints[1],4);
         }
         
@@ -1531,8 +1531,8 @@ public abstract class Tile extends Toolbox implements Runnable
     
     public void drawReverseShadedSides(Graphics g, Color lowerColor)
     {
-        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color darkColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + highShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + lowShade - (highShade-lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         //g.setColor(darkColor);
         //g.fillPolygon(sidePolygons[0]);
         //Polygon[] sides = sidePolygons.clone();
@@ -1565,10 +1565,10 @@ public abstract class Tile extends Toolbox implements Runnable
         
         if(thisClicked)
         {
-            g.setColor(getLerpColor(Color.RED,getLerpColor(Color.BLACK, color, leftAlpha),0.5));
+            g.setColor(ColorPalette.getLerpColor(Color.RED,ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha),0.5));
             g.fillPolygon(leftPoints[0],leftPoints[1],4);
         }else{
-            g.setColor(getLerpColor(Color.BLACK, color, leftAlpha));
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, leftAlpha));
             g.fillPolygon(leftPoints[0],leftPoints[1],4);
         }
         
@@ -1576,11 +1576,11 @@ public abstract class Tile extends Toolbox implements Runnable
         double rightAlpha = 0.19607843137255-(0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         if(thisClicked)
         {
-            g.setColor(getLerpColor(Color.RED, getLerpColor(Color.BLACK, color, rightAlpha),0.5));
+            g.setColor(ColorPalette.getLerpColor(Color.RED, ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha),0.5));
             g.fillPolygon(rightPoints[0], rightPoints[1],4);
             
         }else{
-            g.setColor(getLerpColor(Color.BLACK, color, rightAlpha));
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, color, rightAlpha));
             g.fillPolygon(rightPoints[0], rightPoints[1],4);
         }
         
@@ -1595,12 +1595,12 @@ public abstract class Tile extends Toolbox implements Runnable
         int[][] leftPoints = getLeftSidePoints();
         //int leftAlpha = 20+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         double leftAlpha = 0.07843137254902 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, leftAlpha));
+        g.setColor(ColorPalette.getLerpColor(Color.BLACK, ColorPalette.grassColor, leftAlpha));
         g.fillPolygon(leftPoints[0], leftPoints[1], 4);
         //g.fillPolygon(getPolyPoints2()[0], getPolyPoints2()[1], 4);
         //int rightAlpha = 50+(int)(30 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         double rightAlpha = 0.19607843137255 + (0.11764705882353 * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, rightAlpha));
+        g.setColor(ColorPalette.getLerpColor(Color.BLACK, ColorPalette.grassColor, rightAlpha));
         int[][] rightPoints = getRightSidePoints();
         //g.fillPolygon(getPolyPoints1()[0], getPolyPoints1()[1], 4);
         g.fillPolygon(rightPoints[0], rightPoints[1], 4);

@@ -542,8 +542,8 @@ public abstract class SolidShape
     {
         Graphics2D g2 = (Graphics2D)g;
         visibleShapeSidePolygons = sidePolygons.clone();
-        Color darkColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.highShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
-        Color lightColor = getLerpColor(Color.BLACK, lowerColor, Toolbox.nightShadeAdd + Toolbox.lowShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color darkColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + Toolbox.highShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
+        Color lightColor = ColorPalette.getLerpColor(Color.BLACK, lowerColor, ColorPalette.nightShadeAlpha + Toolbox.lowShade - (Toolbox.highShade-Toolbox.lowShade)*((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)));
         //g.setColor(darkColor);
         //g.fillPolygon(sidePolygons[0]);
         Polygon[] sides = sidePolygons.clone();
@@ -588,13 +588,13 @@ public abstract class SolidShape
         for(int i = sidePolygons.length-1; i >= 0; i--)
         {
             shadeAlpha -= (30.0/(double)numSides)/255.0;
-            g.setColor(getLerpColor(shadeColor, lowerColor, shadeAlpha));
+            g.setColor(ColorPalette.getLerpColor(shadeColor, lowerColor, shadeAlpha));
             g.fillPolygon(sidePolygons[i]);
         }*/
         /*for(Polygon p : sidePolygons)
         {
             shadeAlpha += (30.0/(double)numSides)/255.0;
-            g.setColor(getLerpColor(shadeColor, lowerColor, shadeAlpha));
+            g.setColor(ColorPalette.getLerpColor(shadeColor, lowerColor, shadeAlpha));
             //g.setColor(new Color(0,0,0, shadeAlpha - (int)((30.0/(double)numSides) * ((WorldPanel.radSpin%(Math.PI/2.0))/(Math.PI/2.0)))));
             g.fillPolygon(p);
             //g.setColor(Color.WHITE);

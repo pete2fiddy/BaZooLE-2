@@ -41,7 +41,7 @@ public abstract class Scenery extends Toolbox implements Runnable
         if(g.getClip().contains(x, y))
         {
             return true;
-            //return !TileDrawer2.pointCovered(getBoundTile().getIndex(), x, y);
+            //return !RenderCut.pointCovered(getBoundTile().getIndex(), x, y);
         }
         return false;
     }

@@ -58,7 +58,7 @@ public class LevelEndTile extends Tile
             }
         }
         drawEarlyScenery(g);
-        g.setColor(getLerpColor(Toolbox.shadeColor,getColor(), Toolbox.nightShadeAdd));
+        g.setColor(ColorPalette.getLerpColor(ColorPalette.shadeColor,getColor(), ColorPalette.nightShadeAlpha));
         fillPolygons(g);
         
         for(Lake lake : getLakes())

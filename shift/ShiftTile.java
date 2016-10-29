@@ -44,7 +44,7 @@ public class ShiftTile extends Tile
             g.setColor(ColorPalette.grassColor);
             fillPolygons(g);
             //g.setColor(ColorPalette.grassColor);
-            g.setColor(getLerpColor(Color.BLACK, ColorPalette.grassColor, Toolbox.nightShadeAdd));
+            g.setColor(ColorPalette.getLerpColor(Color.BLACK, ColorPalette.grassColor, ColorPalette.nightShadeAlpha));
             g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             if(getClicked())
             {
