@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Area;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
@@ -46,7 +45,6 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             double randX = WorldPanel.worldTilesWidth*Math.random()-(WorldPanel.worldTilesWidth/2);
             double randY = (WorldPanel.worldTilesHeight*Math.random())-(WorldPanel.worldTilesHeight/2);
-            //System.out.println("randY: " +randY);
             double randWidth = sizeBound+(sizeBound*1.5)*Math.random();
             double randLength = sizeBound+(sizeBound*1.5)*Math.random();
             int randHeight = (int)(5+10*Math.random());
@@ -182,15 +180,6 @@ public class TileDrawer2 implements Runnable, ActionListener
     }
 
     
-    private void drawReflectionOutlines(Graphics g)
-    {
-        Graphics2D g2 = (Graphics2D)g;
-        g.setColor(new Color(0, 0, 0, 80));
-        for(int i = 0; i < tileList.size(); i++)
-        {
-            g2.draw(tileList.get(i).getLeftReflectionArea());
-        }
-    }
     
     @Override
     public void run()
@@ -291,5 +280,15 @@ public class TileDrawer2 implements Runnable, ActionListener
             a.add(tileList.get(i).getLeftReflectionArea());
         }
         return a;
+    }*/
+    
+    /*private void drawReflectionOutlines(Graphics g)
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        g.setColor(new Color(0, 0, 0, 80));
+        for(int i = 0; i < tileList.size(); i++)
+        {
+            g2.draw(tileList.get(i).getLeftReflectionArea());
+        }
     }*/
 }
