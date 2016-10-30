@@ -110,7 +110,7 @@ public class Mushroom extends Scenery
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         g.setColor(Color.WHITE);
         shapes[0].fill(g);
-        shapes[1].fillDropShadowOntoSolid(g, shapes[0].getVisibleShapeSidePolygons(), (int)((double)stemHeight/2.0));
+        //shapes[1].fillDropShadowOntoSolid(g, shapes[0].getVisibleShapeSidePolygons(), (int)((double)stemHeight/2.0));
         g.setColor(Color.RED);
         shapes[1].fill(g);
         

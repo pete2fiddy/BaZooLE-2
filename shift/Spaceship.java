@@ -31,7 +31,7 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
     {
         super(tileIn, offsetXIn, offsetYIn);
         try{
-        shipImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Images/RocketShip3.png"));
+        //shipImage = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Images/RocketShip3.png"));
 //ImageIO.read(new File("/Users/phusisian/Dropbox/Shift/Images/RocketShip3.png"));
         /*BufferedImage[] tempArray = {ImageIO.read(new File("/Users/phusisian/Dropbox/Shift/Images/Fire1.png")), 
             ImageIO.read(new File("/Users/phusisian/Dropbox/Shift/Images/Fire2.png")),
@@ -70,7 +70,7 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
         {
             System.out.println(e.getMessage());
         }
-        scaledShip = shipImage.getScaledInstance((int)(50 * WorldPanel.scale), (int)(WorldPanel.scale*distortedHeight((int)(50 * 3.60))), Image.SCALE_FAST);
+        //scaledShip = shipImage.getScaledInstance((int)(50 * WorldPanel.scale), (int)(WorldPanel.scale*distortedHeight((int)(50 * 3.60))), Image.SCALE_FAST);
         thread = new Thread(this);
         initShapes();
         //initShapes();

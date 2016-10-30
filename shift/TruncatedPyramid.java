@@ -112,6 +112,15 @@ public class TruncatedPyramid extends SolidShape
     public void fillExcludingTop(Graphics g)
     {
         Color c = g.getColor();
+        try {
+            Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
+            
+
+            shadeSidePolygons(g, sidePolygons,c);
+            } catch (Exception e) {
+            }
+        /*
+        Color c = g.getColor();
         //g.setColor(Color.BLUE);
         Polygon[] sidePolygons = threadedVisibleSidePolygons;//getVisibleSidePolygons();
         for(Polygon p : sidePolygons)
@@ -126,7 +135,7 @@ public class TruncatedPyramid extends SolidShape
             g.drawPolygon(p);
             
         }
-        shadeSidePolygons(g, sidePolygons,c);
+        shadeSidePolygons(g, sidePolygons,c);*/
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

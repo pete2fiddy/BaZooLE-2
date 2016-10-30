@@ -289,6 +289,7 @@ public class DayNight implements ActionListener
             addSeasonalScenery(season);
             removeSeasonalScenery(season);
             ColorPalette.grassColor = ColorPalette.defaultSnowColor;
+            ColorPalette.updateShadedGrassColor();
             //Toolbox.grassColor = Toolbox.defaultSnowColor;
             Grass.lowGrassShade = Grass.defaultLowGrassSnowShade;
             shortenGrass(3);
@@ -299,6 +300,7 @@ public class DayNight implements ActionListener
             addSeasonalScenery(season);
             removeSeasonalScenery(season);
             ColorPalette.grassColor = ColorPalette.defaultGrassColor;
+            ColorPalette.updateShadedGrassColor();
             //Toolbox.grassColor = Toolbox.defaultGrassColor;
             Grass.lowGrassShade = Grass.defaultLowGrassShade;
             restoreGrassHeight();

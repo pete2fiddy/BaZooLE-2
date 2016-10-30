@@ -170,7 +170,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g); 
-        
+        requestFocus();
         addSpin();
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
@@ -192,8 +192,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         ui.draw(g);//draws UI elements like level, etc.*/
         drawDebugInfo(g);
         drawRotationLine(g);
-        
-        //tick();
+        System.out.println("dRotation " + Input.dRotation);
+        tick();
     }
     
     /*
@@ -545,7 +545,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         mapRadius = (int)(baseMapRadius*scale);
         mapHeight = (int)(baseMapHeight * scale);
         mapThickness = (int)(baseMapThickness * scale);
-        requestFocus();
+        
         MouseInput.updatePos();//updates the mouse's position.
         getShrink = shrink(rotation);//static getShrink is used so that other classes can get it easily.
         mapPoints = mapTopPoints(spin, mapRadius);//more efficient to have an instance variable that updates position rather than having to calculated it every time it is called. 

@@ -212,35 +212,6 @@ public class Tree extends Scenery implements Runnable
         
         run();
         Graphics2D g2 = (Graphics2D)g;
-        /*
-        float dash1[] = {3.0f};
-        
-        g2.setStroke(new BasicStroke((float)(1), BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-        
-        for(int i = 0; i < 2; i++)//fill and stroke trunk
-        {
-            g.setColor(new Color(86, 53, 17));
-            g.fillPolygon(threadedVisibleTrunkPolygons[i][0],threadedVisibleTrunkPolygons[i][1],4);
-            g.setColor(Color.BLACK);
-            g.drawPolygon(threadedVisibleTrunkPolygons[i][0],threadedVisibleTrunkPolygons[i][1],4);
-        }
-        
-        //g.setColor(getBoundTile().getColor());
-        g2.setPaint(WorldPanel.leavesTexture);
-        for(int i = 0; i < 4; i++)//fill leaves
-        {
-            g.fillPolygon(threadedLeavesPolygons[i][0], threadedLeavesPolygons[i][1],3);
-        }
-        
-        g.setColor(Color.BLACK);
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        for(int i = 0; i < 2; i++)
-        {
-            g.drawPolygon(threadedVisibleLeavesPolygons[i][0], threadedVisibleLeavesPolygons[i][1],3);
-        }
-        
-        g2.setStroke(Toolbox.worldStroke);
-        */
         
         treeShapes[1].fillDropShadow(g, getBoundTile().getHeight());
         g.setColor(new Color(86, 53, 17));
@@ -255,18 +226,15 @@ public class Tree extends Scenery implements Runnable
             
             if(i < treeShapes.length -1)
             {
-                treeShapes[i].fill(g);//drawExcludingTop(g);
-                //treeShapes[i].shadeBoundingBoxSides(g);
+                treeShapes[i].fillExcludingTop(g);//drawExcludingTop(g);
                 if(i != 1)
                 {
-                    treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
+                    treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4, ColorPalette.grassColor);
                 }
                 //g.drawString(Double.toString(treeShapes[i].getWidth()), (int)treeShapes[i].convertToPointX(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()), (int)treeShapes[i].convertToPointY(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()));
             }else{
-                //treeShapes[i].draw(g);
-                treeShapes[i].fillExcludingTop(g);
-                
-                treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4);
+                treeShapes[i].fill(g);
+                treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4, ColorPalette.grassColor);
                 //System.out.println(treeShapes[i-1].getVisibleShapeSidePolygons() == null);
             }
             

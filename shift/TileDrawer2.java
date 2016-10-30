@@ -221,7 +221,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             
             changeInSpin += Input.dSpin;//*((double)60/(double)REFRESH_PER_SEC);
-            worldPanel.tick();
+            //worldPanel.tick();
             for(Cloud c : clouds)
             {
                 c.updatePosition();
