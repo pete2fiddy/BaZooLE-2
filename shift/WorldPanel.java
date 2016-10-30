@@ -84,6 +84,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //"talk-to" instances created.
         td2 = new TileDrawer2(this);
         tick();
+        setFocusable(true);
         ColorPalette.updateShadedGrassColor();
     }
     

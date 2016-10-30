@@ -23,7 +23,7 @@ public class TileDrawer2 implements Runnable, ActionListener
     private Timer movementTimer;
     private Mountains mountains = new Mountains();
     public static double changeInSpin = 0;
-    public static final int REFRESH_PER_SEC = 500;
+    public static final int REFRESH_PER_SEC =200;
     
     /*
     Initialization:
