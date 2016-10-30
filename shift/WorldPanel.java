@@ -155,6 +155,14 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     Painting
     */
     
+    private void addSpin()
+    {
+        spin += TileDrawer2.changeInSpin;
+        spinCalc += TileDrawer2.changeInSpin;
+        radSpin += TileDrawer2.changeInSpin;
+        TileDrawer2.changeInSpin = 0;
+    }
+    
     /*
     the MAIN paint method for the project. Everything painted from here, or from instances called from here.
     */
@@ -162,6 +170,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g); 
+        
+        addSpin();
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
         g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
@@ -182,6 +192,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         ui.draw(g);//draws UI elements like level, etc.*/
         drawDebugInfo(g);
         drawRotationLine(g);
+        
+        //tick();
     }
     
     /*
@@ -549,9 +561,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             worldX = (MouseInput.tempWorldX - (MouseInput.dragdx));
             worldY = (MouseInput.tempWorldY - (MouseInput.dragdy));
         }
-        spin += Input.dSpin;
-        spinCalc += Input.dSpin;//spinCalc can spin on indefinitely. Could add another if/else if clause along with rotation and radspin.
-        radSpin += Input.dSpin;
+        //spin += Input.dSpin;
+        //spinCalc += Input.dSpin;//spinCalc can spin on indefinitely. Could add another if/else if clause along with rotation and radspin.
+        //radSpin += Input.dSpin;
         rotation+=Input.dRotation;
         if(rotation > 1.3659){
             rotation = 1.3659;

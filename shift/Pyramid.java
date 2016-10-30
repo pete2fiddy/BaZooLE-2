@@ -90,7 +90,6 @@ public class Pyramid extends SolidShape
     public void fillExcludingTop(Graphics g)
     {
         fill(g);
-        System.err.println("fillExcludingTop not usable with pyramids (pyramid without a top is just a base)");
     }
     
     public void drawExcludingTop(Graphics g)
@@ -103,11 +102,11 @@ public class Pyramid extends SolidShape
         Color c = g.getColor();
         //g.setColor(Color.BLUE);
         //Polygon[] sidePolygons = getVisibleSidePolygons();
-        for(Polygon p : threadedVisibleSidePolygons)
+        /*for(Polygon p : threadedVisibleSidePolygons)
         {
             g.fillPolygon(p);
             
-        }
+        }*/
         
         
         shadeSidePolygons(g, threadedVisibleSidePolygons,c);

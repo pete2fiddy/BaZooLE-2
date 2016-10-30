@@ -22,6 +22,8 @@ public class TileDrawer2 implements Runnable, ActionListener
     private static Cloud[] clouds = new Cloud[0];
     private Timer movementTimer;
     private Mountains mountains = new Mountains();
+    public static double changeInSpin = 0;
+    public static final int REFRESH_PER_SEC = 500;
     
     /*
     Initialization:
@@ -33,7 +35,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         thread.start();
         fillWaterRipples();
         worldPanel= wp;
-        movementTimer = new Timer(16, this);
+        movementTimer = new Timer((int)(1000.0/(double)REFRESH_PER_SEC), this);
         movementTimer.setActionCommand("move");
         movementTimer.setRepeats(true);
         movementTimer.start();
@@ -217,14 +219,26 @@ public class TileDrawer2 implements Runnable, ActionListener
         String action = e.getActionCommand();
         if(action.equals("move"))
         {
+            
+            changeInSpin += Input.dSpin;//*((double)60/(double)REFRESH_PER_SEC);
+            worldPanel.tick();
+            //Input.dSpin = 0.05;
+            
             for(Cloud c : clouds)
             {
                 c.updatePosition();
                 c.updateSnowFlakes();
             }
-            worldPanel.tick();
+            
             mountains.moveMountains();
-            for (int i = 0; i < tileList.size(); i++) {
+            
+            for(WaterRipple wr : waterRipples)
+            {
+                wr.update();
+            }
+            worldPanel.getPlayer().tick();
+            for (int i = 0; i < tileList.size(); i++) 
+            {
                 tileList.get(i).tileMovement();
                 TileDrawer2.tileList.get(i).getThread().interrupt();
                 Thread t = new Thread(TileDrawer2.tileList.get(i));
@@ -232,15 +246,8 @@ public class TileDrawer2 implements Runnable, ActionListener
                 t.start();
 
             }
-            for(WaterRipple wr : waterRipples)
-            {
-                wr.update();
-            }
-            worldPanel.getPlayer().tick();
         }
     }
-    
-    
     
     /*DELETABLE:*/
     

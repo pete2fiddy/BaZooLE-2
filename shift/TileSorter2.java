@@ -57,7 +57,7 @@ public class TileSorter2
         }
         for(int i = 0; i < giveReturn.size(); i++)
         {
-            giveReturn.get(i).setIndex(i);
+            //giveReturn.get(i).setIndex(i);
         }
         Tile.resortTiles = false;
         return giveReturn;

@@ -192,7 +192,16 @@ public abstract class SolidShape
         g.fillOval((int)convertToPointX(cornerX, cornerY)-5, (int)(convertToPointY(cornerX, cornerY)-5-getScaledDistortedHeight(zPos)), 10, 10);
          
     }
-    
+    public void setCoordX(double newX)
+    {
+        xCoord = newX;
+        centerCoordX = xCoord + width/2.0;
+    }
+    public void setCoordY(double newY)
+    {
+        yCoord = newY;
+        centerCoordY = yCoord + length/2.0;
+    }
     public void setCenterCoordX(double newX)
     {
         centerCoordX = newX;
