@@ -23,7 +23,7 @@ public class TileDrawer2 implements Runnable, ActionListener
     private Timer movementTimer;
     private Mountains mountains = new Mountains();
     public static double changeInSpin = 0;
-    public static final int REFRESH_PER_SEC =200;
+    public static final int REFRESH_PER_SEC =250;
     
     /*
     Initialization:
@@ -221,7 +221,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             
             changeInSpin += Input.dSpin;//*((double)60/(double)REFRESH_PER_SEC);
-            //worldPanel.tick();
+            worldPanel.tick();
             for(Cloud c : clouds)
             {
                 c.updatePosition();

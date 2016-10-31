@@ -190,7 +190,7 @@ public class LevelLoader
         
         Mountains.fillMountainList();
         Sun.setHeightWithScale(WorldPanel.minScale);
-        DayNight.spawnSceneryOnTileType(BlockTile.class, 1.0, "Tree");
+        //DayNight.spawnSceneryOnTileType(BlockTile.class, 1.0, "Tree");
         isLoading = false;
     }
     

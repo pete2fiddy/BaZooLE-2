@@ -171,7 +171,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g); 
-        requestFocus();
+        //requestFocus();
         addSpin();
         Graphics2D g2 = (Graphics2D)g;
         g2.setStroke(Toolbox.worldStroke);
@@ -191,10 +191,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
         ui.draw(g);//draws UI elements like level, etc.*/
-        drawDebugInfo(g);
-        drawRotationLine(g);
-        System.out.println("dRotation " + Input.dRotation);
-        tick();
+        //drawDebugInfo(g);
+        //drawRotationLine(g);
+        //tick();
     }
     
     /*
@@ -528,7 +527,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             screenWidth = (int)frameBounds.getWidth();
             screenHeight = (int)frameBounds.getHeight();
         }
-        clipArea = new Area(frameBounds);
+        clipArea = new Area(new Rectangle(screenWidth,screenHeight));//new Area(frameBounds);
         
         if(scale < maxScale && MouseInput.dScale > 0)
         {
