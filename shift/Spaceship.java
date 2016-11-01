@@ -188,19 +188,14 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
             fireAnimationCount += .25;  
             
            
-            for(SolidShape s : shipShapes)
-            {
-                s.setDZ(10);
-                //s.setZPos(s.getZPos() + 10);
-                //System.out.println("Z Pos: " + s.getZPos());
-            }
+            
              y += 10.0*WorldPanel.scale;
             if(fireAnimationCount >= 15)
             {
                 fireAnimationCount = 0;
             }
             Image scaledFire = flameArray[(int)fireAnimationCount].getScaledInstance((int)(WorldPanel.scale*34), (int)(WorldPanel.scale*distortedHeight(21)), Image.SCALE_AREA_AVERAGING);
-            g.drawImage(scaledFire, (int)(getX()-(int)(WorldPanel.scale*17)), (int)(getY()- distortedHeight((int)(y)) +(int)(WorldPanel.scale*distortedHeight(5))), null);
+            g.drawImage(scaledFire, (int)(getX()-(int)(WorldPanel.scale*17)), (int)(getY()-distortedHeight((int)(y)) +(int)(WorldPanel.scale*distortedHeight(5))), null);
             if(y > (WorldPanel.screenHeight/distortedHeight(WorldPanel.screenHeight))*WorldPanel.screenHeight)
             {
                 shipShapes = new SolidShape[0];
@@ -221,6 +216,7 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
         }
         for(SolidShape s : shipShapes)
         {
+            
             //System.out.println("Order Constant: " + s.getSortDistanceConstant());
             
             //s.setZPos(s.getZPos() + (int)s.getDZ());
@@ -232,6 +228,14 @@ public class Spaceship extends Scenery implements Runnable//image scaling still 
             }else{
                 s.fillDropShadow(g, getBoundTile().getHeight());
                 g.setColor(Color.RED);
+            }
+            if(takeoff)
+            {
+                s.setDZ(10);
+                //s.fill(g);
+                //s.setZPos(s.getZPos() + 10);
+                //System.out.println("Z Pos: " + s.getZPos());
+            
             }
             s.fill(g);
         }

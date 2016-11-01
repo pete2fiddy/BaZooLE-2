@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package shift;
 
 import java.awt.AlphaComposite;
@@ -10,13 +5,10 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 
-/**
- *
- * @author phusisian
- */
 public abstract class SolidShape
 {
     private Color color;
@@ -42,7 +34,6 @@ public abstract class SolidShape
         height = inHeight;
         spin = 0;
         offsetX = 0; offsetY = 0;
-        //visibleShapeSidePolygons = getV
     }
     
     public SolidShape(double inX, double inY, int inZPos, double inWidth, double inLength, int inHeight, double spinIn)//consider adding a keyword saying from where the shape is spawned. E.G. points passed to it are from the top right, instead of middle, etc.
@@ -584,6 +575,30 @@ public abstract class SolidShape
         return giveReturn;
     }
     
+    public double[] getCoordAtHeightAndSpin( int heightIn, double rotation, FlatShape lowShape, FlatShape highShape)
+    {
+        double radiusIn = highShape.getRadius()-((double)heightIn/(highShape.getZPos() - lowShape.getZPos())) * (highShape.getRadius() - lowShape.getRadius());
+        FlatShape shape = new FlatShape(lowShape.getCenterCoordX(), lowShape.getCenterCoordY(), lowShape.getZPos()+heightIn, radiusIn, lowShape.getNumSides());
+        //g.setColor(Color.BLACK);
+        //g.drawPolygon(shape.getShapePolyPoints()[0], shape.getShapePolyPoints()[1], 4);
+        double[] giveReturn = shape.getCoordAtRotation(rotation);
+        return giveReturn;
+    }
+    
+    public double[] getVisibleCoordAtHeightAndSpin( int heightIn, double rotation, FlatShape lowShape, FlatShape highShape)
+    {
+        double radiusIn = highShape.getRadius()-((double)heightIn/(highShape.getZPos() - lowShape.getZPos())) * (highShape.getRadius() - lowShape.getRadius());
+        FlatShape shape = new FlatShape(lowShape.getCenterCoordX(), lowShape.getCenterCoordY(), lowShape.getZPos()+heightIn, radiusIn, lowShape.getNumSides());
+        //g.setColor(Color.BLACK);
+        //g.drawPolygon(shape.getShapePolyPoints()[0], shape.getShapePolyPoints()[1], 4);
+        double[] giveReturn = shape.getVisibleCoordAtRotation(rotation);
+        if(giveReturn != null)
+        {
+            return giveReturn;
+        }
+        return null;
+    }
+    
     public void shadeSidePolygons(Graphics g, Polygon[] sidePolygons, Color lowerColor)
     {
         Graphics2D g2 = (Graphics2D)g;
@@ -706,6 +721,8 @@ public abstract class SolidShape
         }
         
     }
+    
+    
     
     abstract void updateShapePolygons();
     abstract void fill(Graphics g);

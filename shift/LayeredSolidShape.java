@@ -99,24 +99,20 @@ public class LayeredSolidShape extends SolidShape
         Color drawColor = g.getColor();
         int numPolygons = 0;
         
-        for(int i = 0; i < threadedVisibleSidePolygons.size(); i++)
+        /*for(int i = 0; i < threadedVisibleSidePolygons.size(); i++)
         {
             g.setColor(drawColor);
-            g.fillPolygon(threadedVisibleSidePolygons.get(i));
             
-            if(((i)%(int)(Math.ceil((double)numSides/2.0))) == 1)
-            {
-                Polygon[] sides = new Polygon[(int)(Math.ceil((double)numSides/2.0))];
-                for(int j = 0; j < sides.length; j++)
-                {
-                    sides[j] = threadedVisibleSidePolygons.get(i-1+ j);
-                }
-            }
-        }
+            
+            //g.fillPolygon(threadedVisibleSidePolygons.get(i));
+            
+            
+        }*/
         for(int i = 0; i < flatShapes.length - 1; i++)
         {
             Polygon[] visibleSides = getVisibleSidePolygonsAtIndex(i);
-            shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
+            shadeSidePolygons(g, visibleSides, drawColor);
+            //shadeSidePolygonsWithZPos(g, visibleSides, flatShapes[i].getZPos());
         }
     }
 

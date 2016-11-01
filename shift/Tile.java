@@ -499,7 +499,7 @@ public abstract class Tile extends Toolbox implements Runnable
             Point p1 = new Point(myThreadedUpperPoints[0][i], myThreadedUpperPoints[1][i]);
             Point p2 = new Point(myThreadedLowerPoints[0][i], myThreadedLowerPoints[1][i]);
             
-            if(g.getClip().contains(p1) || g.getClip().contains(p2))
+            if(WorldPanel.frameBounds.contains(p1) || WorldPanel.frameBounds.contains(p2)) //g.getClip().contains(p1) || g.getClip().contains(p2))
             {
                 /*Rectangle[] rects = getBoundingRects();
                 int numCovered = 0;

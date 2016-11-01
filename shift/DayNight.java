@@ -10,7 +10,7 @@ import javax.swing.Timer;
 public class DayNight implements ActionListener
 {
     private final double starSpeed = .05;
-    private static final int daySeconds = 2;
+    private static final int daySeconds = 10;
     private static final int transitSeconds = 5;
     private String timeDescriber = "day";
     private static final Color nightColor = new Color(42, 57, 86);

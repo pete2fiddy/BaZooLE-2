@@ -15,7 +15,7 @@ public class TileDrawer2 implements Runnable, ActionListener
     public static boolean drawGrass = false;
     public static ArrayList<Tile> tileList = new ArrayList<Tile>();
     public static WaterDroplet[] waterDroplets = new WaterDroplet[0];
-    private MergedBlockTiles mbt = new MergedBlockTiles();
+    private MergedBlockTiles mbt;
     private Thread thread;
     private WaterRipple[] waterRipples=new WaterRipple[8];
     private WorldPanel worldPanel;
@@ -30,6 +30,8 @@ public class TileDrawer2 implements Runnable, ActionListener
     */
     public TileDrawer2(WorldPanel wp)
     {
+        
+        
         new LevelLoader().spawnLevel(UI.level);
         thread = new Thread(this);
         thread.start();
@@ -39,6 +41,7 @@ public class TileDrawer2 implements Runnable, ActionListener
         movementTimer.setActionCommand("move");
         movementTimer.setRepeats(true);
         movementTimer.start();
+        mbt = new MergedBlockTiles();
     }
     
     /*

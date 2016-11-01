@@ -97,7 +97,7 @@ public class SnowFlake extends Toolbox
         {
             if(boundCloud.getCloudSpeed() != 0)
             {
-                g.setColor(Color.WHITE);
+                g.setColor(ColorPalette.grassColor);
                 g.fillOval((int)(points[0]-(WorldPanel.scale*1)), (int)(points[1]-(WorldPanel.scale*1) - scaledDistortedHeight((int)height)), (int)(WorldPanel.scale*2), (int)(WorldPanel.scale*2));
             }
 

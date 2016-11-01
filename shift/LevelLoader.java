@@ -187,7 +187,10 @@ public class LevelLoader
         DayNight.addSeasonalScenery(DayNight.season);
         
         //setTileInfo();
-        
+        for(Tile t : TileDrawer2.tileList)
+        {
+            t.sortAllScenery();
+        }
         Mountains.fillMountainList();
         Sun.setHeightWithScale(WorldPanel.minScale);
         //DayNight.spawnSceneryOnTileType(BlockTile.class, 1.0, "Tree");

@@ -201,6 +201,7 @@ public class MergedBlockTiles extends Toolbox
         {
             area.add(new Area(bt.getUpperPolygon()));
         }
+        area.intersect(WorldPanel.clipArea);
         return area;  
     }
     
@@ -214,6 +215,7 @@ public class MergedBlockTiles extends Toolbox
         {
             area.add(new Area(bt.getLowerPolygon()));
         }
+        area.intersect(WorldPanel.clipArea);
         return area;
     }
     

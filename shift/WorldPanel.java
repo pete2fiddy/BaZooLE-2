@@ -55,10 +55,10 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     Player player = new Player(30, 30, 5);
     public static final int maxFPS = 60;
     private Timer frameTimer=new Timer((int)(1000.0/(double)maxFPS), this);
-    public static Area clipArea;
+    public static Area clipArea = new Area(new Rectangle(screenWidth, screenHeight));
     public static Area belowMapArea;
     private JFrame frame;
-    private Rectangle frameBounds;
+    public static Rectangle frameBounds;
     
     /*Initialization
     ----------------------------------------------------------------------------
@@ -84,6 +84,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //"talk-to" instances created.
         td2 = new TileDrawer2(this);
         tick();
+        
         setFocusable(true);
         ColorPalette.updateShadedGrassColor();
     }
@@ -181,6 +182,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         setBelowMapArea();//set here rather than during the game update timer because there won't be a lag behind the bottom map clipping and map movement if it's set first here.
         
+        //g.setClip(0,0,700,700);
         g.setClip(0,0, screenWidth, screenHeight);
         setBackground(dayNight.getColor());//sets the color of the background based on the trig values of backgroundColorRotaion
         frameCount++;//adds one to the number of frames so that the FPS counter knows how many frames have passed since the last interval
@@ -527,7 +529,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             screenWidth = (int)frameBounds.getWidth();
             screenHeight = (int)frameBounds.getHeight();
         }
-        clipArea = new Area(new Rectangle(screenWidth,screenHeight));//new Area(frameBounds);
+        clipArea = new Area(frameBounds);//new Area(new Rectangle(screenWidth,screenHeight));//new Area(frameBounds);
         
         if(scale < maxScale && MouseInput.dScale > 0)
         {
@@ -609,6 +611,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             MergedBlockTiles.blockTiles.get(i).setThread(new Thread(MergedBlockTiles.blockTiles.get(i)));
             MergedBlockTiles.blockTiles.get(i).getThread().start();
         }
+        setBelowMapArea();
     }
     
     /*

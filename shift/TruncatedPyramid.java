@@ -20,6 +20,7 @@ public class TruncatedPyramid extends SolidShape
     private FlatShape baseShape, topShape;
     private Polygon[] threadedVisibleSidePolygons;
     private int numSides;
+    private double spinAdd = 0;
     public TruncatedPyramid(double inX, double inY, int inZPos, double radiusIn, int inHeight, int numSidesIn, double topSideScaleIn)
     {
         super(inX, inY, inZPos, 2*radiusIn, 2*radiusIn, inHeight);
@@ -119,6 +120,20 @@ public class TruncatedPyramid extends SolidShape
             shadeSidePolygons(g, sidePolygons,c);
             } catch (Exception e) {
             }
+        /*spinAdd += Math.PI/64.0;
+        double[] points = getCoordAtHeightAndSpin(g, getHeight()/2, spinAdd, baseShape, topShape);
+        g.setColor(Color.BLUE);
+        g.fillOval((int)(convertToPointX(points[0], points[1]))-5, (int)(convertToPointY(points[0], points[1]) - getScaledDistortedHeight(getZPos() + getHeight()/2))-5, 10,10);
+        double[][] coords = baseShape.getShapeCoords();
+        int[][] pointsTwo = new int[2][4];
+        for(int i = 0; i < coords[0].length; i++)
+        {
+            pointsTwo[0][i] = (int)convertToPointX(coords[0][i], coords[1][i]);
+            pointsTwo[1][i] = (int)convertToPointY(coords[0][i], coords[1][i]);
+        }
+        g.fillPolygon(pointsTwo[0], pointsTwo[1], 4);
+        */
+        
         /*
         Color c = g.getColor();
         //g.setColor(Color.BLUE);
@@ -165,6 +180,7 @@ public class TruncatedPyramid extends SolidShape
              System.out.println("TruncatedPyramid drawExcludingTop called with empty list!");//added because after tiles would be removed to be respawned, truncated pyramids still (for some reason) would try to draw themselves.
 
         }
+        
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -183,6 +199,9 @@ public class TruncatedPyramid extends SolidShape
             //dotSortCorner(g);
     }
 
+    public FlatShape getBaseShape(){return baseShape;}
+    public FlatShape getTopShape(){return topShape;}
+    
     @Override
     void stroke(Graphics g) 
     {

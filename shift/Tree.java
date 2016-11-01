@@ -12,7 +12,7 @@ public class Tree extends Scenery implements Runnable
     private int[][] threadedUpperTrunkPoints, threadedBasePoints;
     int[][][] threadedTrunkPolygons, threadedLeavesPolygons, threadedVisibleTrunkPolygons, threadedVisibleLeavesPolygons;
     private SolidShape[] treeShapes;
-    
+    private Ornament[] ornaments = new Ornament[36];
     public Tree(Tile tileIn, double offsetXIn, double offsetYIn)
     {
         super(tileIn, offsetXIn, offsetYIn);
@@ -26,6 +26,8 @@ public class Tree extends Scenery implements Runnable
         threadedVisibleLeavesPolygons = getVisibleLeavesPolygons();
         treeScale = 1.0;
         tileIn.addAssortedScenery(this);
+        TruncatedPyramid pyr = (TruncatedPyramid)treeShapes[1];
+        
         
         initShapes();
     }
@@ -55,6 +57,8 @@ public class Tree extends Scenery implements Runnable
         double scaleNumber = 1.0;
         treeShapes[0]=trunkRect;
         int numShapes = 1;
+        int ornamentCount = 0;
+        double spinCount = 0;
         for(int heightCount = 10; heightCount < 50; heightCount+= 10)
         {
             //double topSideRadius = (scaleNumber*(1.0/4.0)) - 0.173;
@@ -64,7 +68,18 @@ public class Tree extends Scenery implements Runnable
             tp.setTopShape((scaleNumber*(1.0/4.0))-0.1);
             scaleNumber -= 0.15;
             treeShapes[numShapes] = tp;
+            
+            
+            for(int i = 0; i < ornaments.length/4; i++)
+            {
+                System.out.println();
+                ornaments[ornamentCount] = new Ornament(treeShapes[numShapes], (int)(i*(10.0/((double)ornaments.length/4.0))), spinCount, (ornamentCount%Ornament.colors.length));
+                ornamentCount++;
+                spinCount += Math.PI/5.0;
+                
+            }
             numShapes++;
+            
             //tp.draw(g);
         }
         setBoundingBoxDimensions(treeShapes[1].getWidth(), treeShapes[1].getLength());
@@ -229,7 +244,16 @@ public class Tree extends Scenery implements Runnable
                 treeShapes[i].fillExcludingTop(g);//drawExcludingTop(g);
                 if(i != 1)
                 {
+                    //TruncatedPyramid pyr = (TruncatedPyramid)treeShapes[i];
+                    
+                    
                     treeShapes[i].fillDropShadowOntoSolid(g, treeShapes[i-1].getVisibleShapeSidePolygons(), treeShapes[i].getHeight()/4, ColorPalette.grassColor);
+                    /*double[] coord = pyr.getVisibleCoordAtHeightAndSpin(5, Math.PI/3.0, pyr.getBaseShape(), pyr.getTopShape());
+                    if(coord != null)
+                    {
+                        Ornament o = new Ornament(treeShapes[1].getCoordAtHeightAndSpin(5, Math.PI/2.0, pyr.getBaseShape(), pyr.getTopShape())[0], treeShapes[1].getCoordAtHeightAndSpin(5, Math.PI/2.0, pyr.getBaseShape(), pyr.getTopShape())[1], pyr.getZPos());
+                        o.draw(g);
+                    }*/
                 }
                 //g.drawString(Double.toString(treeShapes[i].getWidth()), (int)treeShapes[i].convertToPointX(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()), (int)treeShapes[i].convertToPointY(treeShapes[i].getCenterCoordX(), treeShapes[i].getCenterCoordY()));
             }else{
@@ -239,6 +263,14 @@ public class Tree extends Scenery implements Runnable
             }
             
         }
+        if(DayNight.season.equals("winter"))
+        {
+            for(Ornament o:ornaments)
+            {
+                o.draw(g);
+            }
+        }
+        
         
         //.setColor(Color.WHITE);
         //g.drawString(Double.toString((int)(100.0*getSortDistanceConstant())/100.0), (int)getX(), (int)getY());
@@ -268,16 +300,19 @@ public class Tree extends Scenery implements Runnable
         //{
             int heightCount = 0;
 
-
-            for(SolidShape s : treeShapes)
-            {
-                //System.out.println("called");
-                s.setCenterCoordX(getCoordX());
-                s.setCenterCoordY(getCoordY());
-                s.setZPos(getBoundTile().getHeight() + heightCount);
-                s.updateShapePolygons();
-                heightCount += 10;
+            try {
+                for(SolidShape s : treeShapes)
+                {
+                    //System.out.println("called");
+                    s.setCenterCoordX(getCoordX());
+                    s.setCenterCoordY(getCoordY());
+                    s.setZPos(getBoundTile().getHeight() + heightCount);
+                    s.updateShapePolygons();
+                    heightCount += 10;
+                }
+            } catch (Exception e) {
             }
+            
        //}
         
         

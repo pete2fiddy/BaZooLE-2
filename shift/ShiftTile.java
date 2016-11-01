@@ -2,11 +2,16 @@ package shift;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.Area;
 
 public class ShiftTile extends Tile
 {
+    //private FlatShape shape = new FlatShape(0,0,0,1,4);
     public static final Color redAlpha = new Color(255, 0, 0, 100);
     //private RectPrism tilePrism;
+    private double extraSpin = 0;
     public ShiftTile(int inX, int inY, int inWidth, int inLength, int inHeight) 
     {
         super(inX, inY, inWidth, inLength,inHeight);
@@ -32,6 +37,7 @@ public class ShiftTile extends Tile
         if(isVisible(g))
         {
             //Graphics2D g2 = (Graphics2D)g;
+            Graphics2D g2 = (Graphics2D)g;
             drawHitPolygon(g);
             for(Waterfall wf : getWaterfalls())
             {
@@ -44,6 +50,10 @@ public class ShiftTile extends Tile
             fillPolygons(g);
             //g.setColor(ColorPalette.grassColor);
             g.setColor(ColorPalette.getLerpColor(Color.BLACK, ColorPalette.grassColor, ColorPalette.nightShadeAlpha));
+            //Polygon topPoly = new Polygon(threadedUpperPoints()[0], threadedUpperPoints()[1], threadedUpperPoints()[0].length);
+            //Area topArea = new Area(topPoly);
+            //topArea.intersect(WorldPanel.clipArea);
+            //g2.fill(topArea);
             g.fillPolygon(threadedUpperPoints()[0],threadedUpperPoints()[1], 4);
             if(getClicked())
             {
@@ -75,6 +85,13 @@ public class ShiftTile extends Tile
         //g.setColor(ColorPalette.shadedGrassColor);
         //tilePrism.fill(g);
         //tilePrism.paintShading(g);
+        g.setColor(Color.BLACK);
+        //g.drawPolygon(shape.getShapePolyPoints()[0], shape.getShapePolyPoints()[1], 4);
+        //shape.draw(g);
+        g.setColor(Color.BLACK);
+        /*extraSpin += Math.PI/52.0;
+        double[] point = shape.getCoordAtRotation(extraSpin%(Math.PI*2.0));
+        g.fillOval((int)Toolbox.convertToPoint(point[0], point[1])[0]-5, (int)convertToPoint(point[0], point[1])[1]-5, 10, 10);*/
     }
     
     private void drawSidePolygons(Graphics g)
