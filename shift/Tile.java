@@ -1040,7 +1040,7 @@ public abstract class Tile extends Toolbox implements Runnable
     }
     public int[] getPoint(int point)
     {
-        int[] giveReturn = {getPoints()[0][point], getPoints()[1][point]};
+        int[] giveReturn = {myThreadedLowerPoints[0][point], myThreadedLowerPoints[1][point]};
         return giveReturn;
     }
     

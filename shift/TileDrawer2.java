@@ -54,8 +54,9 @@ public class TileDrawer2 implements Runnable, ActionListener
         {
             Grass.setGrassPoints();//currently has no grass because of FPS impact, and looks (to me) cleaner without it. Will likely add functionality to enable it through graphics settings
         }
-        
-        mountains.draw(g);
+        //long startTime = System.currentTimeMillis();
+        mountains.draw(g);//mountains are a performance hit.
+        //System.out.println("draw time: " + (System.currentTimeMillis()-startTime));
         worldPanel.drawMapFloor(g);
         for(WaterRipple wr : waterRipples)
         {
@@ -80,7 +81,7 @@ public class TileDrawer2 implements Runnable, ActionListener
                 }
             }
         }
-        
+        long startTime = System.currentTimeMillis();
         for(int i = 0; i < tileList.size(); i++)
         {
             if(tileList.get(i).getClass() != BlockTile.class)
@@ -94,6 +95,14 @@ public class TileDrawer2 implements Runnable, ActionListener
                 }
             }
         }
+        System.out.println("draw time: " + (System.currentTimeMillis()-startTime));
+        
+       
+        
+        
+        
+        
+        
         
         for(WaterDroplet wd : waterDroplets)
         {

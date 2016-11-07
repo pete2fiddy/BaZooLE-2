@@ -15,7 +15,7 @@ http://freemusicarchive.org/music/Poor_Alexei_1268/Music_For_Headphones/
 */
 public class Audio implements LineListener
 {
-    private boolean mute = false;
+    private boolean mute = true;
     private Clip musicClip1, musicClip2;
     private AudioInputStream musicStream1, musicStream2;
     private int backgroundClipNumber = 1;

@@ -35,7 +35,7 @@ public class Ornament
     
     public void draw(Graphics g)
     {
-        System.out.println(zPos);
+        //System.out.println(zPos);
         TruncatedPyramid pyr = (TruncatedPyramid)boundShape;
         FlatShape s1 = pyr.getBaseShape();
         double baseR = s1.getRadius();

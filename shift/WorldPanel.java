@@ -53,7 +53,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     Input input = new Input();
     MouseInput mouseInput = new MouseInput(this);
     Player player = new Player(30, 30, 5);
-    public static final int maxFPS = 60;
+    public static final int maxFPS = 300;
     private Timer frameTimer=new Timer((int)(1000.0/(double)maxFPS), this);
     public static Area clipArea = new Area(new Rectangle(screenWidth, screenHeight));
     public static Area belowMapArea;
@@ -172,6 +172,8 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g); 
+        long startFrameTime = System.currentTimeMillis();
+        
         //requestFocus();
         addSpin();
         Graphics2D g2 = (Graphics2D)g;
@@ -188,7 +190,9 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         frameCount++;//adds one to the number of frames so that the FPS counter knows how many frames have passed since the last interval
         
         dayNight.draw(g);
+        //long startTd2Time = System.currentTimeMillis();
         td2.draw(g);
+        //System.out.println("Tile Paint Time:" + (System.currentTimeMillis()-startTd2Time));
         drawFPS(g, g2);
         player.drawPlayersChain(g);//draws the player's chain on top of everything else being drawn so it can always be easily seen
         player.drawTransparentPlayer(g);//draws a transparent player superimposed over where the player is being drawn so that it can be see-through if covered by something.
@@ -196,6 +200,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         //drawDebugInfo(g);
         //drawRotationLine(g);
         //tick();
+        System.out.println("Frame Time: " + (System.currentTimeMillis()-startFrameTime));
     }
     
     /*
@@ -529,7 +534,7 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
             screenWidth = (int)frameBounds.getWidth();
             screenHeight = (int)frameBounds.getHeight();
         }
-        clipArea = new Area(frameBounds);//new Area(new Rectangle(screenWidth,screenHeight));//new Area(frameBounds);
+        clipArea = new Area(new Rectangle(screenWidth,screenHeight));//new Area(frameBounds);
         
         if(scale < maxScale && MouseInput.dScale > 0)
         {
@@ -550,11 +555,12 @@ public class WorldPanel extends JPanel implements ActionListener, ChangeListener
         
         MouseInput.updatePos();//updates the mouse's position.
         getShrink = shrink(rotation);//static getShrink is used so that other classes can get it easily.
-        mapPoints = mapTopPoints(spin, mapRadius);//more efficient to have an instance variable that updates position rather than having to calculated it every time it is called. 
+        //mapPoints = mapTopPoints(spin, mapRadius);//more efficient to have an instance variable that updates position rather than having to calculated it every time it is called. 
+        int[][] mapPointsClone = mapTopPoints(spin, mapRadius);
         for(int i = 0; i < 4; i++)//places the map in relation to its position, as the method that gets its array only gives its position compared to nothing else. May be a little slower to do them separately, but shouldn't really matter much.
         {
-            mapPoints[0][i] = (int)worldX + mapTopPoints(spin, mapRadius)[0][i];
-            mapPoints[1][i] = (int)worldY+(int)(mapTopPoints(spin, mapRadius)[1][i] * shrink(rotation));
+            mapPoints[0][i] = (int)(worldX + mapPointsClone[0][i]);
+            mapPoints[1][i] = (int)(worldY+mapPointsClone[1][i] * shrink(rotation));
         }
         if(!MouseInput.clicked)
         {
